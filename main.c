@@ -41,6 +41,23 @@ int SetupCallbacks(void) {
 
 //declaration
 OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google;
+
+//variables
+int cursor_position;
+
+//function declarations
+void controls();
+void internet();
+
+int initOSLib(){
+    oslInit(0);
+    oslInitGfx(OSL_PF_8888, 1);
+    oslInitAudio();
+    oslSetQuitOnLoadFailure(1);
+    oslSetKeyAutorepeatInit(40);
+    oslSetKeyAutorepeatInterval(10);
+    return 0;
+}
  
 int main()
 {
@@ -54,7 +71,7 @@ int main()
 	oslSetTransparentColor(RGB(0,0,255));
 
 	//loads our images into memory
-	background = oslLoadImageFile("System/Home/Wallpapers/1.png", OSL_IN_RAM, OSL_PF_5551);
+	background = oslLoadImageFileJPG("System/Home/Wallpapers/1.jpg", OSL_IN_RAM, OSL_PF_5551);
 	cursor = oslLoadImageFilePNG("System/Cursor/cursor.png", OSL_IN_RAM, OSL_PF_5551);
 	appicon = oslLoadImageFilePNG("System/Home/Icons/appicon1.png", OSL_IN_RAM, OSL_PF_5551);
 	appicon2 = oslLoadImageFile("System/Home/Icons/appicon2.png", OSL_IN_RAM, OSL_PF_5551);
@@ -73,21 +90,25 @@ int main()
 	if (!background || !cursor)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
+	//Sets the cursor's original position on the screen
+	cursor->x = 240;
+	cursor->y = 136;
+		
 	//Main loop to run the program
 	while (!osl_quit)
 	{
 		//Draws images onto the screen
 		oslStartDrawing();
 		
+		//calls the controls() function
+		controls();	
+		if (cursor->x >= 276 & cursor->x <= 321 & cursor->y >= 195 & cursor->y <= 240 & OSL_KEY_CROSS) {
+					internet();
+		}
+		
 		//Initiate the PSP's controls
 		oslReadKeys();
 		
-		//Cursor movement
-		if (osl_keys->held.down) cursor->y += 4;
-		if (osl_keys->held.up) cursor->y -= 4;
-		if (osl_keys->held.left) cursor->x -= 4;
-		if (osl_keys->held.right) cursor->x += 4;
-
 		//Print the images onto the screen
 		oslDrawImage(background);
 		oslDrawImage(cursor);
@@ -113,4 +134,81 @@ int main()
 	oslQuit();
 	return 0;
 }
+
+void controls()
+{
+		//Cursor movement
+		//Enable default analog handler
+		oslSetKeyAnalogToDPad(80);
+		//Read keys
+		oslReadKeys();
+		//The stick is upwards OR the D-pad's up direction is held
+		if (osl_pad.held.up)
+        {cursor->y -= 4;}
+		if (osl_pad.held.down)
+        {cursor->y += 4;}
+		if (osl_pad.held.left)
+        {cursor->x -= 4;}
+		if (osl_pad.held.right)
+        {cursor->x += 4;}
+		
+}
+
+void internet()
+{
+    int skip = 0;
+    char message[100] = "";
+    int browser = 0;
+    SetupCallbacks();
+
+    initOSLib();
+    oslIntraFontInit(INTRAFONT_CACHE_MED);
+	oslNetInit();
+
+    //Load font:
+    OSL_FONT *font = oslLoadFontFile("flash0:/font/ltn0.pgf");
+    oslSetFont(font);
+
+    while(runningFlag && !osl_quit){
+		browser = oslBrowserIsActive();
+            if (browser){
+                oslDrawBrowser();
+                if (oslGetBrowserStatus() == PSP_UTILITY_DIALOG_NONE){
+					sprintf(message, "Browser closed");
+                    oslEndBrowser();
+                }
+            }
+            oslEndDrawing();
+        }
+        oslEndFrame();
+        skip = oslSyncFrame();
+
+        if (!browser){
+                int res = oslBrowserInit("http://www.ps2dev.org/", "/PSP/PHOTO", 5*1024*1024,
+                                         PSP_UTILITY_HTMLVIEWER_DISPLAYMODE_SMART_FIT,
+                                         PSP_UTILITY_HTMLVIEWER_DISABLE_STARTUP_LIMITS,
+                                         PSP_UTILITY_HTMLVIEWER_INTERFACEMODE_FULL,
+                                         PSP_UTILITY_HTMLVIEWER_CONNECTMODE_MANUAL_ALL);
+                memset(message, 0, sizeof(message));
+				if (res)
+					sprintf(message, "Error %i initializing browser!", res);
+				else
+					sprintf(message, "Browser initialized.");
+			}
+			
+    //Quit OSL:
+	oslNetTerm();
+	oslEndGfx();
+    oslQuit();
+
+    sceKernelExitGame();
+    return 0;
+
+}
+
+
+		
+		
+
+
 

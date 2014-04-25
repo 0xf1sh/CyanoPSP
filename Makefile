@@ -2,14 +2,15 @@ TARGET = CyanogenMod
 OBJS = main.o
 
 INCDIR = 
-CFLAGS = -G4 -Wall -O2 
+CFLAGS = -G4 -Wall -O2 -g -G0
 CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti
 ASFLAGS = $(CFLAGS)
 
 LIBDIR =
 LDFLAGS =
 STDLIBS= -losl -lpng -lz \
-		-lpspsdk -lpspctrl -lpspumd -lpsprtc -lpsppower -lpspgu -lpspaudiolib -lpspaudio -lm -ljpeg -lpsphprm
+         -lpsphprm -lpspsdk -lpspctrl -lpspumd -lpsprtc -lpsppower -lpspgu -lpspgum  -lpspaudiolib -lpspaudio -lpsphttp -lpspssl -lpspwlan \
+         -lpspnet_adhocmatching -lpspnet_adhoc -lpspnet_adhocctl -lm -ljpeg
 LIBS=$(STDLIBS)$(YOURLIBS)
 
 
