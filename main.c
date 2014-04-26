@@ -80,7 +80,7 @@ int main()
     oslInitAudio();
 	
 	//loads our sound
-	tone = oslLoadSoundFile("System/Sounds/touchtone.wav", OSL_FMT_NONE);
+	tone = oslLoadSoundFile("System/Media/Audio/Ui/KeypressStandard.wav", OSL_FMT_NONE);
 
 	//loads our images into memory
 	background = oslLoadImageFileJPG("System/Home/Wallpapers/1.jpg", OSL_IN_RAM, OSL_PF_5551);
@@ -137,7 +137,7 @@ int main()
 		//Synchronizes the screen 
 		oslSyncFrame();	
 
-	    //For the sleep
+	    //For sleep
         oslAudioVSync();
 	}
 	
@@ -152,8 +152,10 @@ void controls()
 		//Cursor movement
 		//Enable default analog handler
 		oslSetKeyAnalogToDPad(80);
+		
 		//Read keys
 		oslReadKeys();
+		
 		//The stick is upwards OR the D-pad's up direction is held
 		if (osl_pad.held.up)
         {cursor->y -= 4;}
@@ -217,14 +219,13 @@ void internet()
 					sprintf(message, "Browser initialized.");
 			}
 			
-    //Quit OSL:
+    //Quit OsLib:
 	oslNetTerm();
 	oslEndGfx();
     oslQuit();
 
     sceKernelExitGame();
     return 0;
-
 }
 
 
