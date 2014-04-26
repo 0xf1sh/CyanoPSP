@@ -1,15 +1,16 @@
 CyanogenMod-PSP-C
 =================
 
-This is a C port of my CyanogenMod Shell (based on Lua)
+This is a C port of my CyanogenMod Shell. This isn't a port of cyanogenmod for android, it's a project created from scratch. It will never allow you to run android apps, the psp system doesn't have the hardware capabilities to run android. It's purpose is similar to that of "iR Shell", but with a UI inspired by CyanogenMod.
 
 This is not ready for release. Kindly wait for more updates.
 
 
 What's working
 =================
-- Cursor (using directional buttons)
+- Cursor (using directional and analog buttons)
 - Home Menu
+- Touch tones, when pressing the cross button on an app/widget.
 
 What's not working
 =================
