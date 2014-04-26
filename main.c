@@ -49,6 +49,9 @@ int cursor_position;
 void controls();
 void internet();
 
+//definition of our sounds
+OSL_SOUND *tone;
+
 int initOSLib(){
     oslInit(0);
     oslInitGfx(OSL_PF_8888, 1);
@@ -69,6 +72,15 @@ int main()
 	
 	//Sets the transparency color (blue)
 	oslSetTransparentColor(RGB(0,0,255));
+	
+	//Initialization of Oslib's text console
+    oslInitConsole();
+
+    //Initialization of Oslib's audio console
+    oslInitAudio();
+	
+	//loads our sound
+	tone = oslLoadSoundFile("System/Sounds/touchtone.wav", OSL_FMT_NONE);
 
 	//loads our images into memory
 	background = oslLoadImageFileJPG("System/Home/Wallpapers/1.jpg", OSL_IN_RAM, OSL_PF_5551);
@@ -102,13 +114,10 @@ int main()
 		
 		//calls the controls() function
 		controls();	
-		if (cursor->x >= 276 & cursor->x <= 321 & cursor->y >= 195 & cursor->y <= 240 & OSL_KEY_CROSS) {
-					internet();
-		}
 		
 		//Initiate the PSP's controls
 		oslReadKeys();
-		
+
 		//Print the images onto the screen
 		oslDrawImage(background);
 		oslDrawImage(cursor);
@@ -126,7 +135,10 @@ int main()
 		oslEndDrawing();
 
 		//Synchronizes the screen 
-		oslSyncFrame();		
+		oslSyncFrame();	
+
+	    //For the sleep
+        oslAudioVSync();
 	}
 	
 	//Terminates/Ends the program
@@ -152,6 +164,15 @@ void controls()
 		if (osl_pad.held.right)
         {cursor->x += 4;}
 		
+		//Touch tones
+        if (osl_keys->pressed.cross) oslPlaySound(tone, 1);         
+        // It loads the sound file defined in the tones variable  when the
+        //  cross button is pressed, in channel 1. 
+		
+		//Launching the browser
+		if (cursor->x >= 276 & cursor->x <= 321 & cursor->y >= 195 & cursor->y <= 240 && OSL_KEY_CROSS) {
+					internet();
+		}		
 }
 
 void internet()
@@ -184,7 +205,7 @@ void internet()
         skip = oslSyncFrame();
 
         if (!browser){
-                int res = oslBrowserInit("http://www.ps2dev.org/", "/PSP/PHOTO", 5*1024*1024,
+                int res = oslBrowserInit("http://www.google.com", "/PSP/PHOTO", 5*1024*1024,
                                          PSP_UTILITY_HTMLVIEWER_DISPLAYMODE_SMART_FIT,
                                          PSP_UTILITY_HTMLVIEWER_DISABLE_STARTUP_LIMITS,
                                          PSP_UTILITY_HTMLVIEWER_INTERFACEMODE_FULL,
