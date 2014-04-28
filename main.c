@@ -44,10 +44,12 @@ OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo,
 
 //variables
 int cursor_position;
+int app_drawer;
 
 //function declarations
 void controls();
 void internet();
+void app_menu();
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -83,16 +85,16 @@ int main()
 	tone = oslLoadSoundFile("System/Media/Audio/Ui/KeypressStandard.wav", OSL_FMT_NONE);
 
 	//loads our images into memory
-	background = oslLoadImageFileJPG("System/Home/Wallpapers/1.jpg", OSL_IN_RAM, OSL_PF_5551);
-	cursor = oslLoadImageFilePNG("System/Cursor/cursor.png", OSL_IN_RAM, OSL_PF_5551);
-	appicon = oslLoadImageFilePNG("System/Home/Icons/appicon1.png", OSL_IN_RAM, OSL_PF_5551);
-	appicon2 = oslLoadImageFile("System/Home/Icons/appicon2.png", OSL_IN_RAM, OSL_PF_5551);
-	navbar = oslLoadImageFile("System/Home/Icons/nav.png", OSL_IN_RAM, OSL_PF_5551);
+	background = oslLoadImageFilePNG("System/Home/Wallpapers/1.png", OSL_IN_RAM, OSL_PF_8888);
+	cursor = oslLoadImageFilePNG("System/Cursor/cursor.png", OSL_IN_RAM, OSL_PF_8888);
+	appicon = oslLoadImageFilePNG("System/Home/Icons/appicon1.png", OSL_IN_RAM, OSL_PF_8888);
+	appicon2 = oslLoadImageFile("System/Home/Icons/appicon2.png", OSL_IN_RAM, OSL_PF_8888);
+	navbar = oslLoadImageFile("System/Home/Icons/nav.png", OSL_IN_RAM, OSL_PF_8888);
 	wificon = oslLoadImageFile("System/Home/Icons/wificon.png", OSL_IN_RAM, OSL_PF_5551);
 	apollo = oslLoadImageFilePNG("System/Home/Icons/apollo.png", OSL_IN_RAM, OSL_PF_5551);
 	gmail = oslLoadImageFilePNG("System/Home/Icons/gmail.png", OSL_IN_RAM, OSL_PF_5551);
 	message = oslLoadImageFilePNG("System/Home/Icons/message.png", OSL_IN_RAM, OSL_PF_5551);
-	browser = oslLoadImageFile("System/Home/Icons/browser.png", OSL_IN_RAM, OSL_PF_5551);
+	browser = oslLoadImageFile("System/Home/Icons/browser.png", OSL_IN_RAM, OSL_PF_8888);
 	google = oslLoadImageFile("System/Home/Icons/google.png", OSL_IN_RAM, OSL_PF_5551);
 	
 	//Disables the transpaent color (blue)
@@ -105,7 +107,9 @@ int main()
 	//Sets the cursor's original position on the screen
 	cursor->x = 240;
 	cursor->y = 136;
-		
+	
+	app_drawer = 1;
+	
 	//Main loop to run the program
 	while (!osl_quit)
 	{
@@ -120,7 +124,13 @@ int main()
 
 		//Print the images onto the screen
 		oslDrawImage(background);
-		oslDrawImage(cursor);
+		
+		if (cursor->x  >= 215 && cursor->x  <= 243 && cursor->y >= 195 && cursor->y <= 230)
+		oslDrawImageXY(appicon2,223,205);
+	
+		else
+		oslDrawImageXY(appicon,223,205);
+		
 		oslDrawImageXY(navbar, 103, 241);
 		oslDrawImageXY(wificon, 387, 1);
 		oslDrawImageXY(google, 22, 26);
@@ -128,9 +138,10 @@ int main()
 		oslDrawImageXY(browser, 276, 195);
 		oslDrawImageXY(gmail, 331, 195);
 		oslDrawImageXY(message, 160, 195);
-		oslDrawImageXY(appicon2, 223, 205);
 		oslDrawImage(cursor);
+	
 
+				
 		//Ends printing
 		oslEndDrawing();
 
@@ -172,9 +183,10 @@ void controls()
         //  cross button is pressed, in channel 1. 
 		
 		//Launching the browser
-		if (cursor->x >= 276 & cursor->x <= 321 & cursor->y >= 195 & cursor->y <= 240 && OSL_KEY_CROSS) {
+		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross) {
 					internet();
-		}		
+		}
+				
 }
 
 void internet()
@@ -225,7 +237,7 @@ void internet()
     oslQuit();
 
     sceKernelExitGame();
-    return 0;
+	return 0;
 }
 
 
