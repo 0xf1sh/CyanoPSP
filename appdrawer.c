@@ -109,10 +109,7 @@ int appdrawer()
 	    //For sleep
         oslAudioVSync();
 	}
-	
-	//Terminates/Ends the program
-	oslEndGfx();
-	oslQuit();
-	return 0;
+
+	return 1;
 }
 

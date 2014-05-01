@@ -55,7 +55,6 @@ int notif_enable;
 //function declarations
 void controls();
 void internet();
-void app_menu();
 void android_notif();
 
 //definition of our sounds
@@ -95,14 +94,6 @@ void controls()
         // It loads the sound file defined in the tones variable  when the
         //  cross button is pressed, in channel 1. 
 			
-}
-
-void app_menu()
-{
-if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
-{
-    int result = app_drawer_open(1);
-}
 }
 
 void android_notif()
@@ -251,6 +242,9 @@ int main()
 		controls();	
 		android_notif();
 		
+		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
+		appdrawer();
+		
 		//Launching the browser
 		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
 			{internet();}
@@ -287,7 +281,6 @@ int main()
 	}
 	
 	//Terminates/Ends the program
-	oslEndGfx();
 	oslQuit();
 	return 0;
 }
