@@ -3,6 +3,7 @@
 #include <pspnet_inet.h>
 #include <pspnet_apctl.h>
 #include <oslib/oslib.h>
+#include "appdrawer.h"
  
 PSP_MODULE_INFO("CyanogenMod PSP", 0, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
@@ -40,16 +41,22 @@ int SetupCallbacks(void) {
 }
 
 //declaration
-OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google;
+OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif;
 
 //variables
 int cursor_position;
 int app_drawer;
+int result;
+int notif_y;
+int notif_up;
+int notif_down;
+int notif_enable;
 
 //function declarations
 void controls();
 void internet();
 void app_menu();
+void android_notif();
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -64,6 +71,129 @@ int initOSLib(){
     return 0;
 }
  
+void controls()
+{
+		//Cursor movement
+		//Enable default analog handler
+		oslSetKeyAnalogToDPad(80);
+		
+		//Read keys
+		oslReadKeys();
+		
+		//The stick is upwards OR the D-pad's up direction is held
+		if (osl_pad.held.up)
+        {cursor->y -= 4;}
+		if (osl_pad.held.down)
+        {cursor->y += 4;}
+		if (osl_pad.held.left)
+        {cursor->x -= 4;}
+		if (osl_pad.held.right)
+        {cursor->x += 4;}
+		
+		//Touch tones
+        if (osl_keys->pressed.cross) oslPlaySound(tone, 1);         
+        // It loads the sound file defined in the tones variable  when the
+        //  cross button is pressed, in channel 1. 
+			
+}
+
+void app_menu()
+{
+if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
+{
+    int result = app_drawer_open(1);
+}
+}
+
+void android_notif()
+{
+		notif_y = -246;
+		oslDrawImageXY(notif,0,notif_y);
+		
+		if ((osl_keys->pressed.cross && notif_y == 26 && cursor->y <= 26) || (osl_keys->pressed.cross && notif_y == 26 && cursor->y >= 246))
+			notif_up = 1;
+			notif_down = 0;
+
+		if (notif_up == 1) 
+			notif_y=notif_y-10;
+
+		if (notif_y <= -246) 
+			notif_y = -246;
+			notif_enable = 0;
+			notif_up = 0;
+
+		if (notif_y < -246)
+			notif_y = -246;
+
+		if (osl_keys->pressed.cross && cursor->y <= 26 && notif_y == -246) 
+			notif_down = 1;
+			notif_up = 0;
+			notif_enable = 1;
+
+		if (notif_down == 1) 
+			notif_y = notif_y+10;
+
+		if (notif_y == 26)
+			notif_down = 0;
+			notif_enable = 1;
+
+		if (notif_y > 26) 
+			notif_y = 26;	
+}
+
+void internet()
+{
+    int skip = 0;
+    char message[100] = "";
+    int browser = 0;
+    SetupCallbacks();
+
+    initOSLib();
+    oslIntraFontInit(INTRAFONT_CACHE_MED);
+	oslNetInit();
+
+    //Load font:
+    OSL_FONT *font = oslLoadFontFile("flash0:/font/ltn0.pgf");
+    oslSetFont(font);
+
+    while(runningFlag && !osl_quit){
+		browser = oslBrowserIsActive();
+		if (!skip){
+            oslStartDrawing();
+            oslDrawString(30, 200, message);
+
+            if (browser){
+                oslDrawBrowser();
+                if (oslGetBrowserStatus() == PSP_UTILITY_DIALOG_NONE){
+					sprintf(message, "Browser closed");
+                    oslEndBrowser();
+                }
+            }
+            oslEndDrawing();
+        }
+        oslEndFrame();
+        skip = oslSyncFrame();
+
+        if (!browser){
+            oslReadKeys();
+                int res = oslBrowserInit("http://www.google.com", "/PSP/PHOTO", 5*1024*1024,
+                                         PSP_UTILITY_HTMLVIEWER_DISPLAYMODE_SMART_FIT,
+                                         PSP_UTILITY_HTMLVIEWER_DISABLE_STARTUP_LIMITS,
+                                         PSP_UTILITY_HTMLVIEWER_INTERFACEMODE_FULL,
+                                         PSP_UTILITY_HTMLVIEWER_CONNECTMODE_MANUAL_ALL);
+                memset(message, 0, sizeof(message));
+				if (res)
+					sprintf(message, "Error %i initializing browser!", res);
+				else
+					sprintf(message, "Browser initialized.");
+			}
+        }
+    //Quit OSL:
+	oslNetTerm();
+	oslEndGfx();
+    oslQuit();
+}	
+
 int main()
 {
 	//Initialization of the Oslib's library
@@ -96,6 +226,7 @@ int main()
 	message = oslLoadImageFilePNG("System/Home/Icons/message.png", OSL_IN_RAM, OSL_PF_5551);
 	browser = oslLoadImageFile("System/Home/Icons/browser.png", OSL_IN_RAM, OSL_PF_8888);
 	google = oslLoadImageFile("System/Home/Icons/google.png", OSL_IN_RAM, OSL_PF_5551);
+	notif = oslLoadImageFile("System/Home/Menu/notif.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	//Disables the transpaent color (blue)
 	oslDisableTransparentColor();
@@ -116,9 +247,14 @@ int main()
 		//Draws images onto the screen
 		oslStartDrawing();
 		
-		//calls the controls() function
+		//calls the functions
 		controls();	
+		android_notif();
 		
+		//Launching the browser
+		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
+			{internet();}
+					
 		//Initiate the PSP's controls
 		oslReadKeys();
 
@@ -139,9 +275,7 @@ int main()
 		oslDrawImageXY(gmail, 331, 195);
 		oslDrawImageXY(message, 160, 195);
 		oslDrawImage(cursor);
-	
-
-				
+					   
 		//Ends printing
 		oslEndDrawing();
 
@@ -157,92 +291,4 @@ int main()
 	oslQuit();
 	return 0;
 }
-
-void controls()
-{
-		//Cursor movement
-		//Enable default analog handler
-		oslSetKeyAnalogToDPad(80);
-		
-		//Read keys
-		oslReadKeys();
-		
-		//The stick is upwards OR the D-pad's up direction is held
-		if (osl_pad.held.up)
-        {cursor->y -= 4;}
-		if (osl_pad.held.down)
-        {cursor->y += 4;}
-		if (osl_pad.held.left)
-        {cursor->x -= 4;}
-		if (osl_pad.held.right)
-        {cursor->x += 4;}
-		
-		//Touch tones
-        if (osl_keys->pressed.cross) oslPlaySound(tone, 1);         
-        // It loads the sound file defined in the tones variable  when the
-        //  cross button is pressed, in channel 1. 
-		
-		//Launching the browser
-		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross) {
-					internet();
-		}
-				
-}
-
-void internet()
-{
-    int skip = 0;
-    char message[100] = "";
-    int browser = 0;
-    SetupCallbacks();
-
-    initOSLib();
-    oslIntraFontInit(INTRAFONT_CACHE_MED);
-	oslNetInit();
-
-    //Load font:
-    OSL_FONT *font = oslLoadFontFile("flash0:/font/ltn0.pgf");
-    oslSetFont(font);
-
-    while(runningFlag && !osl_quit){
-		browser = oslBrowserIsActive();
-            if (browser){
-                oslDrawBrowser();
-                if (oslGetBrowserStatus() == PSP_UTILITY_DIALOG_NONE){
-					sprintf(message, "Browser closed");
-                    oslEndBrowser();
-                }
-            }
-            oslEndDrawing();
-        }
-        oslEndFrame();
-        skip = oslSyncFrame();
-
-        if (!browser){
-                int res = oslBrowserInit("http://www.google.com", "/PSP/PHOTO", 5*1024*1024,
-                                         PSP_UTILITY_HTMLVIEWER_DISPLAYMODE_SMART_FIT,
-                                         PSP_UTILITY_HTMLVIEWER_DISABLE_STARTUP_LIMITS,
-                                         PSP_UTILITY_HTMLVIEWER_INTERFACEMODE_FULL,
-                                         PSP_UTILITY_HTMLVIEWER_CONNECTMODE_MANUAL_ALL);
-                memset(message, 0, sizeof(message));
-				if (res)
-					sprintf(message, "Error %i initializing browser!", res);
-				else
-					sprintf(message, "Browser initialized.");
-			}
-			
-    //Quit OsLib:
-	oslNetTerm();
-	oslEndGfx();
-    oslQuit();
-
-    sceKernelExitGame();
-	return 0;
-}
-
-
-		
-		
-
-
 
