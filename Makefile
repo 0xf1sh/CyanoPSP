@@ -1,5 +1,5 @@
 TARGET = CyanogenMod
-OBJS = main.o
+OBJS = main.o appdrawer.o
 
 INCDIR = 
 CFLAGS = -G4 -Wall -O2 -g -G0
