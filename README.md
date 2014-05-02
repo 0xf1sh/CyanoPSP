@@ -30,3 +30,6 @@ This method only allows you to compile on Windows. I'm not sure how you'd go abo
 3. Install OsLib Mod v2 from here https://github.com/dogo/oslibmodv2 - Instructions included.
 4. Run compile.bat
 
+
+License can be found here https://github.com/joel16/CyanogenMod-PSP-C/blob/master/License
+
