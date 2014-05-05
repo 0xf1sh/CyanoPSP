@@ -41,7 +41,7 @@ int SetupCallbacks(void) {
 }
 
 //declaration
-OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif;
+OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge;
 
 //variables
 int cursor_position;
@@ -51,11 +51,16 @@ int notif_y;
 int notif_up;
 int notif_down;
 int notif_enable;
+int batx = 415;
+int baty = 2;
+int batteryLife;
 
 //function declarations
 void controls();
 void internet();
 void android_notif();
+void battery();
+void appdrawericon();
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -94,6 +99,39 @@ void controls()
         // It loads the sound file defined in the tones variable  when the
         //  cross button is pressed, in channel 1. 
 			
+}
+
+void battery()
+{
+		batteryLife = scePowerGetBatteryLifePercent();
+ 
+		if (batteryLife == 100)
+			oslDrawImageXY(batt100,batx,baty);
+		else if (batteryLife >80 && batteryLife <= 100) 
+			oslDrawImageXY(batt80,batx,baty);
+		else if (batteryLife >60 && batteryLife <= 80)
+			oslDrawImageXY(batt60,batx,baty);
+		else if (batteryLife >40 && batteryLife <= 60)
+			oslDrawImageXY(batt40,batx,baty);
+		else if (batteryLife >20 && batteryLife <= 40) 
+			oslDrawImageXY(batt20,batx,baty);
+		else if (batteryLife >10 && batteryLife <= 20)
+			oslDrawImageXY(batt10,batx,baty);
+		else if (batteryLife >0 && batteryLife <= 10)
+			oslDrawImageXY(batt0,batx,baty);
+			
+		if (scePowerIsBatteryCharging() == 1)
+			oslDrawImageXY(battcharge,batx,baty);
+		
+}
+
+void appdrawericon()
+{
+		if (cursor->x  >= 215 && cursor->x  <= 243 && cursor->y >= 195 && cursor->y <= 230)
+		oslDrawImageXY(appicon2,223,205);
+	
+		else
+		oslDrawImageXY(appicon,223,205);
 }
 
 void android_notif()
@@ -211,13 +249,21 @@ int main()
 	appicon = oslLoadImageFilePNG("System/Home/Icons/appicon1.png", OSL_IN_RAM, OSL_PF_8888);
 	appicon2 = oslLoadImageFile("System/Home/Icons/appicon2.png", OSL_IN_RAM, OSL_PF_8888);
 	navbar = oslLoadImageFile("System/Home/Icons/nav.png", OSL_IN_RAM, OSL_PF_8888);
-	wificon = oslLoadImageFile("System/Home/Icons/wificon.png", OSL_IN_RAM, OSL_PF_5551);
+	wificon = oslLoadImageFile("System/Home/Icons/wificon.png", OSL_IN_RAM, OSL_PF_8888);
 	apollo = oslLoadImageFilePNG("System/Home/Icons/apollo.png", OSL_IN_RAM, OSL_PF_5551);
 	gmail = oslLoadImageFilePNG("System/Home/Icons/gmail.png", OSL_IN_RAM, OSL_PF_5551);
 	message = oslLoadImageFilePNG("System/Home/Icons/message.png", OSL_IN_RAM, OSL_PF_5551);
 	browser = oslLoadImageFile("System/Home/Icons/browser.png", OSL_IN_RAM, OSL_PF_8888);
 	google = oslLoadImageFile("System/Home/Icons/google.png", OSL_IN_RAM, OSL_PF_5551);
 	notif = oslLoadImageFile("System/Home/Menu/notif.png", OSL_IN_RAM, OSL_PF_8888);
+	batt100 = oslLoadImageFile("System/Home/Icons/100.png", OSL_IN_RAM, OSL_PF_5551);
+	batt80 = oslLoadImageFile("System/Home/Icons/80.png", OSL_IN_RAM, OSL_PF_5551);
+	batt60 = oslLoadImageFile("System/Home/Icons/60.png", OSL_IN_RAM, OSL_PF_5551);
+	batt40 = oslLoadImageFile("System/Home/Icons/40.png", OSL_IN_RAM, OSL_PF_5551);
+	batt20 = oslLoadImageFile("System/Home/Icons/20.png", OSL_IN_RAM, OSL_PF_5551);
+	batt10 = oslLoadImageFile("System/Home/Icons/10.png", OSL_IN_RAM, OSL_PF_5551);
+	batt0 = oslLoadImageFile("System/Home/Icons/0.png", OSL_IN_RAM, OSL_PF_5551);
+	battcharge = oslLoadImageFile("System/Home/Icons/charge.png", OSL_IN_RAM, OSL_PF_5551);
 	
 	//Disables the transpaent color (blue)
 	oslDisableTransparentColor();
@@ -240,27 +286,15 @@ int main()
 		
 		//calls the functions
 		controls();	
-		android_notif();
-		
+				
 		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
 		appdrawer();
-		
-		//Launching the browser
-		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
-			{internet();}
-					
+							
 		//Initiate the PSP's controls
 		oslReadKeys();
 
 		//Print the images onto the screen
-		oslDrawImage(background);
-		
-		if (cursor->x  >= 215 && cursor->x  <= 243 && cursor->y >= 195 && cursor->y <= 230)
-		oslDrawImageXY(appicon2,223,205);
-	
-		else
-		oslDrawImageXY(appicon,223,205);
-		
+		oslDrawImage(background);		
 		oslDrawImageXY(navbar, 103, 241);
 		oslDrawImageXY(wificon, 387, 1);
 		oslDrawImageXY(google, 22, 26);
@@ -268,14 +302,21 @@ int main()
 		oslDrawImageXY(browser, 276, 195);
 		oslDrawImageXY(gmail, 331, 195);
 		oslDrawImageXY(message, 160, 195);
+		appdrawericon();
+		battery();
+		android_notif();
 		oslDrawImage(cursor);
-					   
+		
+		//Launching the browser
+		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
+			{internet();}
+			
 		//Ends printing
 		oslEndDrawing();
 
 		//Synchronizes the screen 
 		oslSyncFrame();	
-
+					   
 	    //For sleep
         oslAudioVSync();
 	}
