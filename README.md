@@ -11,6 +11,17 @@ What's working
 - Cursor (using directional and analog buttons)
 - Home Menu
 - Touch tones, when pressing the cross button on an app/widget.
+- Battery functions. (Displays the battery percentage, by using icons.)
+
+What's yet to work
+=================
+- Internet
+- App drawer
+- Notification slider
+- Apollo music player
+- Fully functional calculator app
+- A little settings tweaker (possibly to change battery icons and such)
+- Boot animation (I'll use a set of 20 images in a zip file probably - These images can be replaced by using another zip with the same file names and format)
 
 What's not working
 =================
