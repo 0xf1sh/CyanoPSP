@@ -286,10 +286,7 @@ int main()
 		
 		//calls the functions
 		controls();	
-				
-		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
-		appdrawer();
-							
+											
 		//Initiate the PSP's controls
 		oslReadKeys();
 
@@ -309,7 +306,10 @@ int main()
 		
 		//Launching the browser
 		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
-			{internet();}
+			internet();
+			
+		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
+			appdrawer();
 			
 		//Ends printing
 		oslEndDrawing();
