@@ -11,6 +11,7 @@ What's working
 - Cursor (using directional and analog buttons)
 - Home Menu
 - Touch tones, when pressing the cross button on an app/widget.
+- App drawer highlighting effect. 
 - Battery functions. (Displays the battery percentage, by using icons.)
 
 What's yet to work
