@@ -13,6 +13,7 @@ What's working
 - Touch tones, when pressing the cross button on an app/widget.
 - App drawer highlighting effect. 
 - Battery functions. (Displays the battery percentage, by using icons.)
+- App drawer
 
 What's yet to work
 =================
