@@ -4,6 +4,7 @@
 #include <pspnet_apctl.h>
 #include <oslib/oslib.h>
 #include "appdrawer.h"
+#include "home.h"
 
 OSL_COLOR black = RGB(0,0,0),red = RGB(255,0,0), white = RGB(255,255,255);
 
@@ -31,7 +32,10 @@ OSL_SOUND *tone;
  
 int appdrawer()
 {
-
+	SetupCallbacks();
+	
+	oslIntraFontInit(INTRAFONT_CACHE_MED);
+	
 	//loads our images into memory
 	background = oslLoadImageFilePNG("System/Home/Wallpapers/1.png", OSL_IN_RAM, OSL_PF_8888);
 	cursor = oslLoadImageFilePNG("System/Cursor/cursor.png", OSL_IN_RAM, OSL_PF_8888);
@@ -52,9 +56,10 @@ int appdrawer()
 	calendar = oslLoadImageFilePNG("System/Home/Icons/calendar.png", OSL_IN_RAM, OSL_PF_8888);
 	people = oslLoadImageFilePNG("System/Home/Icons/people.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	//Disables the transpaent color (blue)
-	oslDisableTransparentColor();
-	
+	//Load fonts:
+	OSL_FONT *pgfFont = oslLoadFontFile("System/Fonts/DroidSans.pgf");
+	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
+
 	//Debugger
 	if (!background || !cursor)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
@@ -70,7 +75,7 @@ int appdrawer()
 	{
 		//Draws images onto the screen
 		oslStartDrawing();
-		
+				
 		//calls the functions
 		controls();	
 		android_notif();
@@ -85,48 +90,53 @@ int appdrawer()
 		//Print the images onto the screen
 		oslDrawImage(background);
 		
+		//Set fonts
+		oslSetFont(pgfFont);
+		
 		oslDrawImageXY(navbar, 103, 241);
 		oslDrawImageXY(wificon, 387, 1);
 		oslDrawImageXY(apollo, 40, 35);
-		oslPrintf_xy (38,85,"Apollo");
+		oslDrawString(60,85,"Apollo");
 		oslDrawImageXY(browser, 105, 35);
-		oslPrintf_xy (103,85,"Browser");
+		oslDrawString(123,85,"Browser");
 		oslDrawImageXY(calc, 165, 35);
-		oslPrintf_xy (163,85,"Calculator");
+		oslDrawString(188,85,"Calculator");
 		oslDrawImageXY(calendar, 225, 35);
-		oslPrintf_xy (223,85,"Calendar");
+		oslDrawString(253,85,"Calendar");
 		oslDrawImageXY(clockx, 285, 35);
-		oslPrintf_xy (283,85,"Clock");
+		oslDrawString(307,85,"Clock");
 		oslDrawImageXY(dsp, 345, 35);
-		oslPrintf_xy (343,85,"DSP");
+		oslDrawString(365,85,"DSP");
 		oslDrawImageXY(email, 405, 35);
-		oslPrintf_xy (403,85,"Email");
-		oslDrawImageXY(gallery, 40, 105);
-		oslPrintf_xy (38,155,"Gallery");
-		oslDrawImageXY(gmail, 105, 105);
-		oslPrintf_xy (103,155,"Gmail");
-		oslDrawImageXY(message, 165, 105);
-		oslPrintf_xy (163,155,"Messages");
-		oslDrawImageXY(people, 225, 105);
-		oslPrintf_xy (223,155,"People");
-		oslDrawImageXY(phone, 285, 105);
-		oslPrintf_xy (283,155,"Phone");
-		oslDrawImageXY(settings, 345, 105);
-		oslPrintf_xy (343,155,"Settings");
+		oslDrawString(427,85,"Email");
+		oslDrawImageXY(gallery, 40, 110);
+		oslDrawString(61,165,"Gallery");
+		oslDrawImageXY(gmail, 105, 110);
+		oslDrawString(125,165,"Gmail");
+		oslDrawImageXY(message, 165, 110);
+		oslDrawString(185,165,"Messages");
+		oslDrawImageXY(people, 225, 110);
+		oslDrawString(246,165,"People");
+		oslDrawImageXY(phone, 285, 110);
+		oslDrawString(307,165,"Phone");
+		oslDrawImageXY(settings, 345, 110);
+		oslDrawString(369,165,"Settings");
 		battery();
 		android_notif();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.circle)
-		main();
+			home();
 
-		//Synchronizes the screen 
-		oslSyncFrame();	
+        oslEndDrawing();
+        
+        oslEndFrame();
+        oslSyncFrame();
 
 	    //For sleep
         oslAudioVSync();
-	}
-
+		}
+	oslQuit();
 	return 1;
 }
 
