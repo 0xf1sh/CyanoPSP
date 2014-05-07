@@ -37,27 +37,27 @@ int appdrawer()
 	oslIntraFontInit(INTRAFONT_CACHE_MED);
 	
 	//loads our images into memory
-	background = oslLoadImageFilePNG("System/Home/Wallpapers/1.png", OSL_IN_RAM, OSL_PF_8888);
-	cursor = oslLoadImageFilePNG("System/Cursor/cursor.png", OSL_IN_RAM, OSL_PF_8888);
-	navbar = oslLoadImageFile("System/Home/Icons/nav.png", OSL_IN_RAM, OSL_PF_8888);
-	wificon = oslLoadImageFile("System/Home/Icons/wificon.png", OSL_IN_RAM, OSL_PF_8888);
-	apollo = oslLoadImageFilePNG("System/Home/Icons/apollo.png", OSL_IN_RAM, OSL_PF_8888);
-	gmail = oslLoadImageFilePNG("System/Home/Icons/gmail.png", OSL_IN_RAM, OSL_PF_8888);
-	message = oslLoadImageFilePNG("System/Home/Icons/message.png", OSL_IN_RAM, OSL_PF_8888);
-	browser = oslLoadImageFile("System/Home/Icons/browser.png", OSL_IN_RAM, OSL_PF_8888);
-	notif = oslLoadImageFile("System/Home/Menu/notif.png", OSL_IN_RAM, OSL_PF_8888);
-	clockx = oslLoadImageFilePNG("System/Home/Icons/clock.png", OSL_IN_RAM, OSL_PF_8888);
-	email = oslLoadImageFilePNG("System/Home/Icons/email.png", OSL_IN_RAM, OSL_PF_8888);
-	settings = oslLoadImageFilePNG("System/Home/Icons/settings.png", OSL_IN_RAM, OSL_PF_8888);
-	dsp = oslLoadImageFilePNG("System/Home/Icons/dsp.png", OSL_IN_RAM, OSL_PF_8888);
-	gallery = oslLoadImageFilePNG("System/Home/Icons/gallery.png", OSL_IN_RAM, OSL_PF_8888);
-	phone = oslLoadImageFilePNG("System/Home/Icons/phone.png", OSL_IN_RAM, OSL_PF_8888);
-	calc = oslLoadImageFilePNG("System/Home/Icons/calc.png", OSL_IN_RAM, OSL_PF_8888);
-	calendar = oslLoadImageFilePNG("System/Home/Icons/calendar.png", OSL_IN_RAM, OSL_PF_8888);
-	people = oslLoadImageFilePNG("System/Home/Icons/people.png", OSL_IN_RAM, OSL_PF_8888);
+	background = oslLoadImageFilePNG("system/framework/framework-res/res/background.png", OSL_IN_RAM, OSL_PF_8888);
+	cursor = oslLoadImageFilePNG("system/Cursor/cursor.png", OSL_IN_RAM, OSL_PF_8888);
+	navbar = oslLoadImageFile("system/home/icons/nav.png", OSL_IN_RAM, OSL_PF_8888);
+	wificon = oslLoadImageFile("system/home/icons/wificon.png", OSL_IN_RAM, OSL_PF_8888);
+	apollo = oslLoadImageFilePNG("system/home/icons/apollo.png", OSL_IN_RAM, OSL_PF_8888);
+	gmail = oslLoadImageFilePNG("system/home/icons/gmail.png", OSL_IN_RAM, OSL_PF_8888);
+	message = oslLoadImageFilePNG("system/home/icons/message.png", OSL_IN_RAM, OSL_PF_8888);
+	browser = oslLoadImageFile("system/home/icons/browser.png", OSL_IN_RAM, OSL_PF_8888);
+	notif = oslLoadImageFile("system/home/menu/notif.png", OSL_IN_RAM, OSL_PF_8888);
+	clockx = oslLoadImageFilePNG("system/home/icons/clock.png", OSL_IN_RAM, OSL_PF_8888);
+	email = oslLoadImageFilePNG("system/home/icons/email.png", OSL_IN_RAM, OSL_PF_8888);
+	settings = oslLoadImageFilePNG("system/home/icons/settings.png", OSL_IN_RAM, OSL_PF_8888);
+	dsp = oslLoadImageFilePNG("system/home/icons/dsp.png", OSL_IN_RAM, OSL_PF_8888);
+	gallery = oslLoadImageFilePNG("system/home/icons/gallery.png", OSL_IN_RAM, OSL_PF_8888);
+	phone = oslLoadImageFilePNG("system/home/icons/phone.png", OSL_IN_RAM, OSL_PF_8888);
+	calc = oslLoadImageFilePNG("system/home/icons/calc.png", OSL_IN_RAM, OSL_PF_8888);
+	calendar = oslLoadImageFilePNG("system/home/icons/calendar.png", OSL_IN_RAM, OSL_PF_8888);
+	people = oslLoadImageFilePNG("system/home/icons/people.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	//Load fonts:
-	OSL_FONT *pgfFont = oslLoadFontFile("System/Fonts/DroidSans.pgf");
+	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
 
 	//Debugger

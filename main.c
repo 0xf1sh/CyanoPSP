@@ -241,29 +241,31 @@ int main()
     oslInitAudio();
 	
 	//loads our sound
-	tone = oslLoadSoundFile("System/Media/Audio/Ui/KeypressStandard.wav", OSL_FMT_NONE);
+	tone = oslLoadSoundFile("system/media/audio/ui/KeypressStandard.wav", OSL_FMT_NONE);
+
+	int defaultimg = 1;
 
 	//loads our images into memory
-	background = oslLoadImageFilePNG("System/Home/Wallpapers/1.png", OSL_IN_RAM, OSL_PF_8888);
-	cursor = oslLoadImageFilePNG("System/Cursor/cursor.png", OSL_IN_RAM, OSL_PF_8888);
-	appicon = oslLoadImageFilePNG("System/Home/Icons/appicon1.png", OSL_IN_RAM, OSL_PF_8888);
-	appicon2 = oslLoadImageFile("System/Home/Icons/appicon2.png", OSL_IN_RAM, OSL_PF_8888);
-	navbar = oslLoadImageFile("System/Home/Icons/nav.png", OSL_IN_RAM, OSL_PF_8888);
-	wificon = oslLoadImageFile("System/Home/Icons/wificon.png", OSL_IN_RAM, OSL_PF_8888);
-	apollo = oslLoadImageFilePNG("System/Home/Icons/apollo.png", OSL_IN_RAM, OSL_PF_5551);
-	gmail = oslLoadImageFilePNG("System/Home/Icons/gmail.png", OSL_IN_RAM, OSL_PF_5551);
-	message = oslLoadImageFilePNG("System/Home/Icons/message.png", OSL_IN_RAM, OSL_PF_5551);
-	browser = oslLoadImageFile("System/Home/Icons/browser.png", OSL_IN_RAM, OSL_PF_8888);
-	google = oslLoadImageFile("System/Home/Icons/google.png", OSL_IN_RAM, OSL_PF_5551);
-	notif = oslLoadImageFile("System/Home/Menu/notif.png", OSL_IN_RAM, OSL_PF_8888);
-	batt100 = oslLoadImageFile("System/Home/Icons/100.png", OSL_IN_RAM, OSL_PF_5551);
-	batt80 = oslLoadImageFile("System/Home/Icons/80.png", OSL_IN_RAM, OSL_PF_5551);
-	batt60 = oslLoadImageFile("System/Home/Icons/60.png", OSL_IN_RAM, OSL_PF_5551);
-	batt40 = oslLoadImageFile("System/Home/Icons/40.png", OSL_IN_RAM, OSL_PF_5551);
-	batt20 = oslLoadImageFile("System/Home/Icons/20.png", OSL_IN_RAM, OSL_PF_5551);
-	batt10 = oslLoadImageFile("System/Home/Icons/10.png", OSL_IN_RAM, OSL_PF_5551);
-	batt0 = oslLoadImageFile("System/Home/Icons/0.png", OSL_IN_RAM, OSL_PF_5551);
-	battcharge = oslLoadImageFile("System/Home/Icons/charge.png", OSL_IN_RAM, OSL_PF_5551);
+	background = oslLoadImageFilePNG("system/framework/framework-res/res/background.png", OSL_IN_RAM, OSL_PF_8888);
+	cursor = oslLoadImageFilePNG("system/cursor/cursor.png", OSL_IN_RAM, OSL_PF_8888);
+	appicon = oslLoadImageFilePNG("system/home/icons/appicon1.png", OSL_IN_RAM, OSL_PF_8888);
+	appicon2 = oslLoadImageFile("system/home/icons/appicon2.png", OSL_IN_RAM, OSL_PF_8888);
+	navbar = oslLoadImageFile("system/home/icons/nav.png", OSL_IN_RAM, OSL_PF_8888);
+	wificon = oslLoadImageFile("system/home/icons/wificon.png", OSL_IN_RAM, OSL_PF_8888);
+	apollo = oslLoadImageFilePNG("system/home/icons/apollo.png", OSL_IN_RAM, OSL_PF_5551);
+	gmail = oslLoadImageFilePNG("system/home/icons/gmail.png", OSL_IN_RAM, OSL_PF_5551);
+	message = oslLoadImageFilePNG("system/home/icons/message.png", OSL_IN_RAM, OSL_PF_5551);
+	browser = oslLoadImageFile("system/home/icons/browser.png", OSL_IN_RAM, OSL_PF_8888);
+	google = oslLoadImageFile("system/home/icons/google.png", OSL_IN_RAM, OSL_PF_5551);
+	notif = oslLoadImageFile("system/home/menu/notif.png", OSL_IN_RAM, OSL_PF_8888);
+	batt100 = oslLoadImageFile("system/home/icons/100.png", OSL_IN_RAM, OSL_PF_5551);
+	batt80 = oslLoadImageFile("system/home/icons/80.png", OSL_IN_RAM, OSL_PF_5551);
+	batt60 = oslLoadImageFile("system/home/icons/60.png", OSL_IN_RAM, OSL_PF_5551);
+	batt40 = oslLoadImageFile("system/home/icons/40.png", OSL_IN_RAM, OSL_PF_5551);
+	batt20 = oslLoadImageFile("system/home/icons/20.png", OSL_IN_RAM, OSL_PF_5551);
+	batt10 = oslLoadImageFile("system/home/icons/10.png", OSL_IN_RAM, OSL_PF_5551);
+	batt0 = oslLoadImageFile("system/home/icons/0.png", OSL_IN_RAM, OSL_PF_5551);
+	battcharge = oslLoadImageFile("system/home/icons/charge.png", OSL_IN_RAM, OSL_PF_5551);
 	
 	//Disables the transpaent color (blue)
 	oslDisableTransparentColor();
