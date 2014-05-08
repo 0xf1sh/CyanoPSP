@@ -15,7 +15,7 @@ int app_drawer_open(int value)
 };
 
 //declaration
-OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *dsp, *settings;
+OSL_IMAGE *background, *cursor, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *dsp, *settings;
 
 //variables
 int cursor_position;
@@ -26,6 +26,7 @@ void controls();
 void internet();
 void android_notif();
 void battery();
+void powermenu();
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -37,15 +38,6 @@ int appdrawer()
 	oslIntraFontInit(INTRAFONT_CACHE_MED);
 	
 	//loads our images into memory
-	background = oslLoadImageFilePNG("system/framework/framework-res/res/background.png", OSL_IN_RAM, OSL_PF_8888);
-	cursor = oslLoadImageFilePNG("system/Cursor/cursor.png", OSL_IN_RAM, OSL_PF_8888);
-	navbar = oslLoadImageFile("system/home/icons/nav.png", OSL_IN_RAM, OSL_PF_8888);
-	wificon = oslLoadImageFile("system/home/icons/wificon.png", OSL_IN_RAM, OSL_PF_8888);
-	apollo = oslLoadImageFilePNG("system/home/icons/apollo.png", OSL_IN_RAM, OSL_PF_8888);
-	gmail = oslLoadImageFilePNG("system/home/icons/gmail.png", OSL_IN_RAM, OSL_PF_8888);
-	message = oslLoadImageFilePNG("system/home/icons/message.png", OSL_IN_RAM, OSL_PF_8888);
-	browser = oslLoadImageFile("system/home/icons/browser.png", OSL_IN_RAM, OSL_PF_8888);
-	notif = oslLoadImageFile("system/home/menu/notif.png", OSL_IN_RAM, OSL_PF_8888);
 	clockx = oslLoadImageFilePNG("system/home/icons/clock.png", OSL_IN_RAM, OSL_PF_8888);
 	email = oslLoadImageFilePNG("system/home/icons/email.png", OSL_IN_RAM, OSL_PF_8888);
 	settings = oslLoadImageFilePNG("system/home/icons/settings.png", OSL_IN_RAM, OSL_PF_8888);
@@ -123,6 +115,7 @@ int appdrawer()
 		oslDrawString(369,165,"Settings");
 		battery();
 		android_notif();
+		powermenu();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.circle)

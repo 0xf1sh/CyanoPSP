@@ -7,7 +7,7 @@
 #include "home.h"
 
 //declaration
-OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge;
+OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google;
 
 //variables
 int cursor_position;
@@ -19,6 +19,7 @@ void internet();
 void android_notif();
 void battery();
 void appdrawericon();
+void powermenu();
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -59,6 +60,7 @@ int home()
 		appdrawericon();
 		battery();
 		android_notif();
+		powermenu();
 		oslDrawImage(cursor);
 		
 		//Launching the browser

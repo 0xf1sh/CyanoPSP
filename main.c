@@ -41,7 +41,7 @@ int SetupCallbacks(void) {
 }
 
 //declaration
-OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge;
+OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *power;
 
 //variables
 int cursor_position;
@@ -61,6 +61,7 @@ void internet();
 void android_notif();
 void battery();
 void appdrawericon();
+void powermenu();
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -134,12 +135,21 @@ void appdrawericon()
 		oslDrawImageXY(appicon,223,205);
 }
 
+void powermenu()
+{
+		if (osl_pad.held.circle)
+		oslDrawImageXY(power,125,36);
+		if (osl_pad.held.triangle)
+		return 0;
+		
+}
+
 void android_notif()
 {
 		notif_y = -246;
 		oslDrawImageXY(notif,0,notif_y);
 		
-		if ((osl_keys->pressed.cross && notif_y == 26 && cursor->y <= 26) || (osl_keys->pressed.cross && notif_y == 26 && cursor->y >= 246))
+		if ((osl_pad.held.cross && notif_y == 26 && cursor->y <= 26) || (osl_pad.held.cross && notif_y == 26 && cursor->y >= 246))
 			notif_up = 1;
 			notif_down = 0;
 
@@ -154,7 +164,7 @@ void android_notif()
 		if (notif_y < -246)
 			notif_y = -246;
 
-		if (osl_keys->pressed.cross && cursor->y <= 26 && notif_y == -246) 
+		if (osl_pad.held.cross && cursor->y <= 26 && notif_y == -246) 
 			notif_down = 1;
 			notif_up = 0;
 			notif_enable = 1;
@@ -266,6 +276,7 @@ int main()
 	batt10 = oslLoadImageFile("system/home/icons/10.png", OSL_IN_RAM, OSL_PF_5551);
 	batt0 = oslLoadImageFile("system/home/icons/0.png", OSL_IN_RAM, OSL_PF_5551);
 	battcharge = oslLoadImageFile("system/home/icons/charge.png", OSL_IN_RAM, OSL_PF_5551);
+	power = oslLoadImageFile("system/home/menu/power.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	//Disables the transpaent color (blue)
 	oslDisableTransparentColor();
@@ -304,6 +315,8 @@ int main()
 		appdrawericon();
 		battery();
 		android_notif();
+		powermenu();
+		
 		oslDrawImage(cursor);
 		
 		//Launching the browser

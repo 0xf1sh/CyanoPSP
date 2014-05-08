@@ -16,6 +16,7 @@ LIBS=$(STDLIBS)$(YOURLIBS)
 
 EXTRA_TARGETS = EBOOT.PBP
 PSP_EBOOT_TITLE = CyanogenMod
+PSP_EBOOT_ICON = ICON0.png
 
 
 PSPSDK=$(shell psp-config --pspsdk-path)
