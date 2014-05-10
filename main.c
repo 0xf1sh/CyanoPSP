@@ -41,7 +41,7 @@ int SetupCallbacks(void) {
 }
 
 //declaration
-OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *power;
+OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *power, *pointer, *pointer1;
 
 //variables
 int cursor_position;
@@ -137,7 +137,7 @@ void appdrawericon()
 
 void powermenu()
 {
-		if (osl_pad.held.circle)
+		if (osl_pad.held.square)
 		oslDrawImageXY(power,125,36);
 		if (osl_pad.held.triangle)
 		return 0;
@@ -277,6 +277,8 @@ int main()
 	batt0 = oslLoadImageFile("system/home/icons/0.png", OSL_IN_RAM, OSL_PF_5551);
 	battcharge = oslLoadImageFile("system/home/icons/charge.png", OSL_IN_RAM, OSL_PF_5551);
 	power = oslLoadImageFile("system/home/menu/power.png", OSL_IN_RAM, OSL_PF_8888);
+	pointer = oslLoadImageFilePNG("system/home/icons/pointer.png", OSL_IN_RAM, OSL_PF_8888);
+	pointer1 = oslLoadImageFilePNG("system/home/icons/pointer1.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	//Disables the transpaent color (blue)
 	oslDisableTransparentColor();
@@ -288,8 +290,6 @@ int main()
 	//Sets the cursor's original position on the screen
 	cursor->x = 240;
 	cursor->y = 136;
-	
-	app_drawer = 1;
 	
 	//Main loop to run the program
 	while (!osl_quit)
@@ -312,11 +312,11 @@ int main()
 		oslDrawImageXY(browser, 276, 195);
 		oslDrawImageXY(gmail, 331, 195);
 		oslDrawImageXY(message, 160, 195);
+		oslDrawImageXY(pointer, 231, 180);
 		appdrawericon();
 		battery();
 		android_notif();
 		powermenu();
-		
 		oslDrawImage(cursor);
 		
 		//Launching the browser

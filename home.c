@@ -7,11 +7,9 @@
 #include "home.h"
 
 //declaration
-OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google;
+OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *pointer, *pointer1;
 
 //variables
-int cursor_position;
-int app_drawer;
 
 //function declarations
 void controls();
@@ -26,15 +24,14 @@ OSL_SOUND *tone;
 
 int home()
 {
+	
 	//Debugger
 	if (!background || !cursor)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
 	//Sets the cursor's original position on the screen
 	cursor->x = 240;
-	cursor->y = 136;
-	
-	app_drawer = 1;
+	cursor->y = 136;	
 	
 	//Main loop to run the program
 	while (!osl_quit)
@@ -57,6 +54,7 @@ int home()
 		oslDrawImageXY(browser, 276, 195);
 		oslDrawImageXY(gmail, 331, 195);
 		oslDrawImageXY(message, 160, 195);
+		oslDrawImageXY(pointer, 231, 180);
 		appdrawericon();
 		battery();
 		android_notif();

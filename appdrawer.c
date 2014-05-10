@@ -8,18 +8,10 @@
 
 OSL_COLOR black = RGB(0,0,0),red = RGB(255,0,0), white = RGB(255,255,255);
 
-int app_drawer_open(int value)
-{
-
-    return value + 3;
-};
-
 //declaration
-OSL_IMAGE *background, *cursor, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *dsp, *settings;
+OSL_IMAGE *background, *cursor, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *dsp, *settings,*pointer, *pointer1;
 
 //variables
-int cursor_position;
-int app_drawer;
 
 //function declarations
 void controls();
@@ -36,7 +28,7 @@ int appdrawer()
 	SetupCallbacks();
 	
 	oslIntraFontInit(INTRAFONT_CACHE_MED);
-	
+		
 	//loads our images into memory
 	clockx = oslLoadImageFilePNG("system/home/icons/clock.png", OSL_IN_RAM, OSL_PF_8888);
 	email = oslLoadImageFilePNG("system/home/icons/email.png", OSL_IN_RAM, OSL_PF_8888);
@@ -47,7 +39,7 @@ int appdrawer()
 	calc = oslLoadImageFilePNG("system/home/icons/calc.png", OSL_IN_RAM, OSL_PF_8888);
 	calendar = oslLoadImageFilePNG("system/home/icons/calendar.png", OSL_IN_RAM, OSL_PF_8888);
 	people = oslLoadImageFilePNG("system/home/icons/people.png", OSL_IN_RAM, OSL_PF_8888);
-	
+		
 	//Load fonts:
 	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
@@ -59,8 +51,6 @@ int appdrawer()
 	//Sets the cursor's original position on the screen
 	cursor->x = 240;
 	cursor->y = 136;
-	
-	app_drawer = 1;
 	
 	//Main loop to run the program
 	while (!osl_quit)
@@ -113,6 +103,9 @@ int appdrawer()
 		oslDrawString(307,165,"Phone");
 		oslDrawImageXY(settings, 345, 110);
 		oslDrawString(369,165,"Settings");
+		oslDrawImageXY(pointer, 220, 231);
+		oslDrawImageXY(pointer1, 234, 232);
+		oslDrawImageXY(pointer1, 244, 232);
 		battery();
 		android_notif();
 		powermenu();
