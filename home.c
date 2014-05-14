@@ -5,6 +5,7 @@
 #include <oslib/oslib.h>
 #include "appdrawer.h"
 #include "home.h"
+#include "lock.h"
 
 //declaration
 OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *pointer, *pointer1;
@@ -67,6 +68,9 @@ int home()
 			
 		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
 			appdrawer();
+			
+		if (osl_pad.held.circle)
+			lockscreen();
 			
 		//Ends printing
 		oslEndDrawing();

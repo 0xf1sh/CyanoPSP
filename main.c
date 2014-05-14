@@ -4,6 +4,8 @@
 #include <pspnet_apctl.h>
 #include <oslib/oslib.h>
 #include "appdrawer.h"
+#include "lock.h"
+
  
 PSP_MODULE_INFO("CyanogenMod PSP", 0, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
@@ -182,7 +184,7 @@ void android_notif()
 
 void internet()
 {
-    int skip = 0;
+int skip = 0;
     char message[100] = "";
     int browser = 0;
     SetupCallbacks();
@@ -231,7 +233,7 @@ void internet()
 	oslNetTerm();
 	oslEndGfx();
     oslQuit();
-}	
+}
 
 int main()
 {
@@ -325,6 +327,9 @@ int main()
 			
 		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
 			appdrawer();
+		
+		if (osl_pad.held.circle)
+			lockscreen();
 			
 		//Ends printing
 		oslEndDrawing();
