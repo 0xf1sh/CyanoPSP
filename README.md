@@ -14,11 +14,13 @@ What's working
 - App drawer highlighting effect. 
 - Battery functions. (Displays the battery percentage, by using icons.)
 - App drawer
+- Recovery Menu (will merge, once completed) https://github.com/joel16/PSP-CM-Recovery
+
 
 What's yet to work
 =================
 - Internet
-- App drawer
+- App drawer (More functional)
 - Notification slider
 - Apollo music player
 - Fully functional calculator app
