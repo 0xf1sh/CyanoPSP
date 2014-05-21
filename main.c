@@ -5,7 +5,6 @@
 #include <oslib/oslib.h>
 #include "appdrawer.h"
 #include "lock.h"
-
  
 PSP_MODULE_INFO("CyanogenMod PSP", 0, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
@@ -328,8 +327,10 @@ int main()
 		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
 			appdrawer();
 		
-		if (osl_pad.held.circle)
+		if (osl_pad.pressed.L)
+		{
 			lockscreen();
+        }
 			
 		//Ends printing
 		oslEndDrawing();

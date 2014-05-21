@@ -69,8 +69,10 @@ int home()
 		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
 			appdrawer();
 			
-		if (osl_pad.held.circle)
+		if (osl_pad.pressed.L)
+		{
 			lockscreen();
+        }
 			
 		//Ends printing
 		oslEndDrawing();

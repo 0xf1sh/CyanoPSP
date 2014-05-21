@@ -5,10 +5,11 @@
 #include <oslib/oslib.h>
 #include "appdrawer.h"
 #include "home.h"
-#include "calc.h"
+#include "calculator.h"
+#include "lock.h"
 
 //declaration
-OSL_IMAGE *calcbg, *cursor, *navbar, *wificon, *backdrop;
+OSL_IMAGE *background, *cursor, *calcbackground, *navbar, *wificon, *backdrop;
 
 //variables
 int result;
@@ -24,30 +25,29 @@ void controls();
 void internet();
 void android_notif();
 void battery();
-void appdrawericon();
 void powermenu();
 
 //definition of our sounds
 OSL_SOUND *tone;
-
+ 
 int calculator()
 {
 	SetupCallbacks();
 	
 	oslIntraFontInit(INTRAFONT_CACHE_MED);
-	
+		
 	//loads our images into memory
 	backdrop = oslLoadImageFile("system/home/icons/backdrop.png", OSL_IN_RAM, OSL_PF_8888);
-	calcbg = oslLoadImageFile("system/app/calculator/calcbg.png", OSL_IN_RAM, OSL_PF_8888);
-	
+	calcbackground = oslLoadImageFile("system/app/calculator/calcbg.png", OSL_IN_RAM, OSL_PF_8888);
+		
 	//Load fonts:
 	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
 
 	//Debugger
-	if (!calcbg)
+	if (!calcbackground)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-
+	
 	//Sets the cursor's original position on the screen
 	cursor->x = 240;
 	cursor->y = 136;
@@ -57,23 +57,23 @@ int calculator()
 	{
 		//Draws images onto the screen
 		oslStartDrawing();
-		
+				
 		//calls the functions
 		controls();	
-											
+		android_notif();
+		
 		//Initiate the PSP's controls
 		oslReadKeys();
 
 		//Print the images onto the screen
 		oslDrawImage(backdrop);	
-		oslDrawImageXY(calcbg, 0, 17);		
+		oslDrawImageXY(calcbackground, 0, 15);		
 		
 		//Set fonts
 		oslSetFont(pgfFont);
 		
 		oslDrawImageXY(navbar, 103, 241);
 		oslDrawImageXY(wificon, 387, 1);
-		battery();
 		
 		oslDrawString(40,75,"sin");
 		oslDrawString(94,75,"cos");
@@ -108,8 +108,9 @@ int calculator()
 		oslDrawString(433,208,"=");
 
 		oslDrawString(35,25,"0");
-		
-		
+		battery();
+		android_notif();
+		powermenu();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.pressed.left)
@@ -134,19 +135,21 @@ int calculator()
 		
 		if (osl_pad.held.circle)
 			appdrawer();
+			
+		if (osl_pad.pressed.L)
+		{
+			lockscreen();
+        }
+		
+        oslEndDrawing();
+        
+        oslEndFrame();
+        oslSyncFrame();
 
-		//Ends printing
-		oslEndDrawing();
-
-		//Synchronizes the screen 
-		oslSyncFrame();	
-					   
 	    //For sleep
         oslAudioVSync();
-	}
-	
-	//Terminates/Ends the program
+		}
 	oslQuit();
-	return 0;
+	return 1;
 }
 

@@ -5,8 +5,9 @@
 #include <oslib/oslib.h>
 #include "appdrawer.h"
 #include "home.h"
-#include "calc.h"
+#include "calculator.h"
 #include "lock.h"
+#include "settingsmenu.h"
 
 OSL_COLOR black = RGB(0,0,0),red = RGB(255,0,0), white = RGB(255,255,255);
 
@@ -68,12 +69,6 @@ int appdrawer()
 		if (cursor->x >= 105 && cursor->x <= 150 && cursor->y >= 35 && cursor->y <= 80 && osl_pad.held.cross)
 			internet();
 			
-		if (cursor->x >= 162 && cursor->x <= 219 && cursor->y >= 35 && cursor->y <= 80 && osl_pad.held.cross)
-			calculator();
-		
-		if (osl_pad.held.circle)
-			lockscreen();
-			
 		//Initiate the PSP's controls
 		oslReadKeys();
 
@@ -119,9 +114,26 @@ int appdrawer()
 		powermenu();
 		oslDrawImage(cursor);
 		
+		if (osl_pad.pressed.L)
+		{
+			lockscreen();
+        }
+		
 		if (osl_pad.held.circle)
+		{
 			home();
-
+		}
+		
+		if (cursor->x >= 162 && cursor->x <= 219 && cursor->y >= 35 && cursor->y <= 80 && osl_pad.held.cross)
+		{
+			calculator();
+		}
+		
+		if (cursor->x >= 344 && cursor->x <= 393 && cursor->y >= 102 && cursor->y <= 166 && osl_pad.held.cross)
+		{
+			settingsmenu();
+		}
+		
         oslEndDrawing();
         
         oslEndFrame();

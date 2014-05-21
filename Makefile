@@ -1,5 +1,5 @@
 TARGET = CyanogenMod
-OBJS = main.o appdrawer.o home.o calc.o lock.o
+OBJS = main.o appdrawer.o home.o calculator.o lock.o settingsmenu.o
 
 INCDIR = 
 CFLAGS = -G4 -Wall -O2 -g -G0
