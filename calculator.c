@@ -133,6 +133,127 @@ int calculator()
 		if (y == 5)
 		y = 1;
 		
+				oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
+		
+		if (y == 1 && x == 1)
+		{
+		oslDrawString(40,75,"sin");
+		}
+		else if (x == 2)
+		{
+		oslDrawString(94,75,"cos");
+		}
+		else if (x  == 3) 
+		{
+		oslDrawString(148,75,"tan");
+		}
+		else if (x == 4)
+		{
+		oslDrawString(218,80,"7");
+		}
+		else if (x == 5)
+		{
+		oslDrawString(272,80,"8");
+		}
+		else if (x  == 6) 
+		{
+		oslDrawString(326,80,"9");
+		}
+		else if (x  == 7)
+		{
+		oslDrawString(380,80,"/");
+		}
+
+		else if (y == 2)
+		{
+		if (x == 1)
+		oslDrawString(40,118,"1/x");
+		}
+		else if (x == 2) 
+		{
+		oslDrawString(94,118,"sqr");
+		}
+		else if (x == 3)
+		{
+		oslDrawString(150,118,"^");
+		}
+		else if (x == 4) 
+		{
+		oslDrawString(218,131,"4");
+		}
+		else if (x == 5)
+		{
+		oslDrawString(272,131,"5");
+		}
+		else if (x  == 6) 
+		{
+		oslDrawString(326,131,"6");
+		}
+		else if (x  == 7)
+		{
+		oslDrawString(380,131,"x");
+		}
+		
+		else if (y == 3) 
+		{
+		if (x == 1)
+		oslDrawString(298,238,"");
+		}
+		else if (x == 2)
+		{
+		oslDrawString(298,238,"");
+		}
+		else if (x == 3)
+		{
+		oslDrawString(298,238,"");
+		}
+		else if (x == 4)
+		{
+		oslDrawString(218,182,"1");
+		}
+		else if (x == 5)
+		{
+		oslDrawString(272,182,"2");
+		}
+		else if (x  == 6)
+		{
+		oslDrawString(326,182,"3");
+		}
+		else if (x  == 7)
+		{
+		oslDrawString(380,182,"-");
+		}
+		
+		else if (y == 4)
+		{
+		if (x == 1)
+		oslDrawString(298,238,"");
+		}
+		else if (x == 2)
+		{
+		oslDrawString(95,240,"C");
+		}
+		else if (x == 3)
+		{
+		oslDrawString(298,238,"");
+		}
+		else if (x == 4)
+		{
+		oslDrawString(246,230,"0");
+		}
+		else if (x == 5)
+		{
+		oslDrawString(328,230,".");
+		}
+		else if (x  == 6) 
+		{
+		oslDrawString(375,235,"+");
+		}
+		else if (x  == 7)
+		{
+		oslDrawString(433,208,"=");
+		}
+		
 		if (osl_pad.held.circle)
 			appdrawer();
 			

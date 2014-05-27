@@ -5,6 +5,7 @@
 #include <oslib/oslib.h>
 #include "appdrawer.h"
 #include "lock.h"
+#include "clock.h"
  
 PSP_MODULE_INFO("CyanogenMod PSP", 0, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
@@ -256,6 +257,8 @@ int main()
 
 	int defaultimg = 1;
 
+	oslIntraFontInit(INTRAFONT_CACHE_MED);
+	
 	//loads our images into memory
 	background = oslLoadImageFilePNG("system/framework/framework-res/res/background.png", OSL_IN_RAM, OSL_PF_8888);
 	cursor = oslLoadImageFilePNG("system/cursor/cursor.png", OSL_IN_RAM, OSL_PF_8888);
@@ -281,6 +284,10 @@ int main()
 	pointer = oslLoadImageFilePNG("system/home/icons/pointer.png", OSL_IN_RAM, OSL_PF_8888);
 	pointer1 = oslLoadImageFilePNG("system/home/icons/pointer1.png", OSL_IN_RAM, OSL_PF_8888);
 	
+	//Load fonts:
+	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
+	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
+	
 	//Disables the transpaent color (blue)
 	oslDisableTransparentColor();
 	
@@ -295,6 +302,8 @@ int main()
 	//Main loop to run the program
 	while (!osl_quit)
 	{
+		sceRtcGetCurrentClockLocalTime(&time);
+
 		//Draws images onto the screen
 		oslStartDrawing();
 		
@@ -304,6 +313,9 @@ int main()
 		//Initiate the PSP's controls
 		oslReadKeys();
 
+		//Set fonts
+		oslSetFont(pgfFont);
+		
 		//Print the images onto the screen
 		oslDrawImage(background);		
 		oslDrawImageXY(navbar, 103, 241);
@@ -319,7 +331,7 @@ int main()
 		android_notif();
 		powermenu();
 		oslDrawImage(cursor);
-		
+			
 		//Launching the browser
 		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
 			internet();
