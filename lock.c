@@ -65,31 +65,51 @@ int lockscreen()
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.cross && cursor->x >= 190 && cursor->x <= 290 && cursor->y >= 120 && cursor->y <= 220)
-			click = 1;
-		else
+		{
+				click = 1;
+		}
+		
+		if (! (osl_pad.held.cross))
 			click = 0;
 		if (ending == 1)
 		if (style == 0)
+		{
 		home();
-
+		}
+		
 		if (click == 1) {
 			oslDrawImageXY(camera, 80,130);
 			oslDrawImageXY(music, 216,76);
+			oslDrawImageXY(circle, cursor->x - 50, cursor->y - 50);
 			}
+			
 		if (ending == 1) {
 			oslDrawImageXY(unlock, 300,130);
 			oslDrawImageXY(circle, 300,130);
 			}
+			
 		else
 			{
 			oslDrawImageXY(lock, 300,130);
-			oslDrawImageXY(circle, cursor->x - 50, cursor->y - 50);
+			
 			}
 			
 		if (cursor->x-50 >= 270 && cursor->x - 50 <= 330 && cursor->y - 50 >= 100 && cursor->y - 50 <= 160)
+		{
 			ending = 1;
+		}
 		else 
+		{
 			ending = 0;
+		}
+		if (click == 0)
+		{
+		oslDrawImageXY(circle, 190,120);
+		oslDrawImageXY(lock, 190,120);
+		}
+		
+		oslDrawImage(cursor);
+		
 		//Ends printing
 		oslEndDrawing();
 
