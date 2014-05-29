@@ -49,7 +49,7 @@ OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo,
 int cursor_position;
 int app_drawer;
 int result;
-int notif_y = -246;
+int notif_y = -272;
 int notif_up;
 int notif_down;
 int notif_enable;
@@ -150,7 +150,7 @@ void android_notif()
 {
 		oslDrawImageXY(notif,0,notif_y);
 		
-		if ((osl_pad.held.cross && notif_y == 26 && cursor->y <= 26) || (osl_pad.held.cross && notif_y == 26 && cursor->y >= 246))
+		if ((osl_pad.held.cross && notif_y == 1 && cursor->y <= 1) || (osl_pad.held.cross && notif_y == 1 && cursor->y >= 246))
 		{
 			notif_up = 1;
 			notif_down = 0;
@@ -161,19 +161,19 @@ void android_notif()
 			notif_y=notif_y-10;
 		}
 		
-		if (notif_y <= -246) 
+		if (notif_y <= -272) 
 		{
-			notif_y = -246;
+			notif_y = -272;
 			notif_enable = 0;
 			notif_up = 0;
 		}
 
-		if (notif_y < -246)
+		if (notif_y < -272)
 		{
-			notif_y = -246;
+			notif_y = -272;
 		}
 		
-		if (osl_pad.held.cross && cursor->y <= 26 && notif_y == -246) 
+		if (osl_pad.held.cross && cursor->y <= 1 && notif_y == -272) 
 		{
 			notif_down = 1;
 			notif_up = 0;
@@ -185,15 +185,15 @@ void android_notif()
 			notif_y = notif_y+10;
 		}
 		
-		if (notif_y == 26)
+		if (notif_y == 1)
 		{
 			notif_down = 0;
 			notif_enable = 1;
 		}
 		
-		if (notif_y > 26) 
+		if (notif_y > 1) 
 		{
-			notif_y = 26;	
+			notif_y = 1;	
 		}
 }
 
