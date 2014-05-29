@@ -13,15 +13,16 @@ What's working
 - Touch tones, when pressing the cross button on an app/widget.
 - App drawer highlighting effect. 
 - Battery functions. (Displays the battery percentage, by using icons.)
-- App drawer
+- App Drawer
 - Recovery Menu (will merge, once completed) https://github.com/joel16/PSP-CM-Recovery
+- Lockscreen
+- Notification Slider
 
 
 What's yet to work
 =================
 - Internet
 - App drawer (More functional)
-- Notification slider
 - Apollo music player
 - Fully functional calculator app
 - A little settings tweaker (possibly to change battery icons and such)
