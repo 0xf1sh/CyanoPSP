@@ -1,8 +1,10 @@
 #include <pspkernel.h>
+#include <pspdebug.h>
 #include <pspnet.h>
 #include <pspnet_inet.h>
 #include <pspnet_apctl.h>
 #include <oslib/oslib.h>
+#include <psprtc.h>
 #include "appdrawer.h"
 #include "lock.h"
 #include "clock.h"
@@ -10,6 +12,8 @@
 PSP_MODULE_INFO("CyanogenMod PSP", 0, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(4*1024);
+
+#define printf pspDebugScreenPrintf
 
 // Globals:
 
@@ -43,7 +47,7 @@ int SetupCallbacks(void) {
 }
 
 //declaration
-OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *power, *pointer, *pointer1;
+OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *power, *pointer, *pointer1, *backicon, *homeicon, *multicon;
 
 //variables
 int cursor_position;
@@ -64,6 +68,9 @@ void android_notif();
 void battery();
 void appdrawericon();
 void powermenu();
+void home_icon();
+void back();
+void multi();
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -96,6 +103,12 @@ void controls()
         {cursor->x -= 4;}
 		if (osl_pad.held.right)
         {cursor->x += 4;}
+		
+		if (cursor->y >= 272)
+		{cursor->y -= 4;}
+		
+		if (cursor->x >= 480)
+		{cursor->x -= 4;}
 		
 		//Touch tones
         if (osl_keys->pressed.cross) oslPlaySound(tone, 1);         
@@ -135,6 +148,33 @@ void appdrawericon()
 	
 		else
 		oslDrawImageXY(appicon,223,205);
+}
+
+void back()
+{
+		if (cursor->x  >= 144 && cursor->x  <= 204 && cursor->y >= 226 && cursor->y <= 271)
+		oslDrawImageXY(backicon,110, 237);
+	
+		else
+		oslDrawImageXY(navbar,110, 237);
+}
+
+void home_icon()
+{
+		if (cursor->x  >= 205 && cursor->x  <= 271 && cursor->y >= 226 && cursor->y <= 271)
+		oslDrawImageXY(homeicon,110, 237);
+	
+		else
+		oslDrawImageXY(navbar,110, 237);
+}
+
+void multi()
+{
+		if (cursor->x  >= 272 && cursor->x  <= 332 && cursor->y >= 226 && cursor->y <= 271)
+		oslDrawImageXY(multicon,110, 237);
+	
+		else
+		oslDrawImageXY(navbar,110, 237);
 }
 
 void powermenu()
@@ -256,16 +296,15 @@ int main()
 	oslInit(0);
 
 	//Initialization of Oslib's graphics mode
-	oslInitGfx(OSL_PF_8888, 1);
-	
-	//Sets the transparency color (blue)
-	oslSetTransparentColor(RGB(0,0,255));
+	oslInitGfx(OSL_PF_8888, 1);	
 	
 	//Initialization of Oslib's text console
     oslInitConsole();
 
     //Initialization of Oslib's audio console
     oslInitAudio();
+	
+	pspDebugScreenInit();
 	
 	//loads our sound
 	tone = oslLoadSoundFile("system/media/audio/ui/KeypressStandard.wav", OSL_FMT_NONE);
@@ -298,13 +337,13 @@ int main()
 	power = oslLoadImageFile("system/home/menu/power.png", OSL_IN_RAM, OSL_PF_8888);
 	pointer = oslLoadImageFilePNG("system/home/icons/pointer.png", OSL_IN_RAM, OSL_PF_8888);
 	pointer1 = oslLoadImageFilePNG("system/home/icons/pointer1.png", OSL_IN_RAM, OSL_PF_8888);
+	backicon = oslLoadImageFilePNG("system/home/icons/backicon.png", OSL_IN_RAM, OSL_PF_8888);
+	homeicon = oslLoadImageFilePNG("system/home/icons/homeicon.png", OSL_IN_RAM, OSL_PF_8888);
+	multicon = oslLoadImageFilePNG("system/home/icons/multicon.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	//Load fonts:
 	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
-	
-	//Disables the transpaent color (blue)
-	oslDisableTransparentColor();
 	
 	//Debugger
 	if (!background || !cursor)
@@ -317,7 +356,6 @@ int main()
 	//Main loop to run the program
 	while (!osl_quit)
 	{
-		sceRtcGetCurrentClockLocalTime(&time);
 
 		//Draws images onto the screen
 		oslStartDrawing();
@@ -330,10 +368,12 @@ int main()
 
 		//Set fonts
 		oslSetFont(pgfFont);
-		
+			
+		pspDebugScreenClear();	
+			
 		//Print the images onto the screen
 		oslDrawImage(background);		
-		oslDrawImageXY(navbar, 103, 241);
+		oslDrawImageXY(navbar, 110, 237);
 		oslDrawImageXY(wificon, 387, 1);
 		oslDrawImageXY(google, 22, 26);
 		oslDrawImageXY(apollo, 105, 195);
@@ -343,9 +383,23 @@ int main()
 		oslDrawImageXY(pointer, 231, 180);
 		appdrawericon();
 		battery();
-		android_notif();
 		powermenu();
+		back();
+		home_icon();
+		multi();
+		android_notif();
 		oslDrawImage(cursor);
+		
+		pspTime time;
+
+		// Get psp time
+		sceRtcGetCurrentClockLocalTime(&time);
+
+		char timeBuffer[20];
+		
+		pspDebugScreenSetXY(0,0);
+
+		printf("%2.2d:%2.2d\n", time.hour, time.minutes);
 			
 		//Launching the browser
 		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
@@ -354,7 +408,7 @@ int main()
 		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
 			appdrawer();
 		
-		if (osl_pad.pressed.L)
+		if (osl_pad.held.L)
 		{
 			lockscreen();
         }

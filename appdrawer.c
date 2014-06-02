@@ -78,7 +78,7 @@ int appdrawer()
 		//Set fonts
 		oslSetFont(pgfFont);
 		
-		oslDrawImageXY(navbar, 103, 241);
+		oslDrawImageXY(navbar, 110, 237);
 		oslDrawImageXY(wificon, 387, 1);
 		oslDrawImageXY(apollo, 40, 35);
 		oslDrawString(60,85,"Apollo");
@@ -110,8 +110,11 @@ int appdrawer()
 		oslDrawImageXY(pointer1, 234, 232);
 		oslDrawImageXY(pointer1, 244, 232);
 		battery();
-		android_notif();
 		powermenu();
+		back();
+		home_icon();
+		multi();
+		android_notif();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.pressed.L)

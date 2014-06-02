@@ -109,8 +109,11 @@ int calculator()
 
 		oslDrawString(35,25,"0");
 		battery();
-		android_notif();
 		powermenu();
+		back();
+		home_icon();
+		multi();
+		android_notif();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.pressed.left)
@@ -133,7 +136,7 @@ int calculator()
 		if (y == 5)
 		y = 1;
 		
-				oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
+		oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
 		
 		if (y == 1 && x == 1)
 		{

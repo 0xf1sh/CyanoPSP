@@ -94,13 +94,16 @@ int lockscreen()
 			
 			}
 			
-		if (cursor->x-50 >= 270 && cursor->x - 50 <= 330 && cursor->y - 50 >= 100 && cursor->y - 50 <= 160)
+		if (cursor->x-50 >= 270 && cursor->x - 50 <= 330 && cursor->y - 50 >= 100 && cursor->y - 50 <= 160) 
 		{
 			ending = 1;
+
+			oslDrawImageXY(unlock, 300,130);
 		}
 		else 
 		{
 			ending = 0;
+			oslDrawImageXY(lock, 300,130);
 		}
 		if (click == 0)
 		{

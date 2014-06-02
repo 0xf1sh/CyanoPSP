@@ -71,8 +71,11 @@ int settingsmenu()
 		oslDrawString(37,183,"Undefined-pspsdk_oslib");
 		oslDrawString(37,196,"joelluvsanna@psp #1");
 		battery();
-		android_notif();
 		powermenu();
+		back();
+		home_icon();
+		multi();
+		android_notif();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.pressed.L)

@@ -48,7 +48,7 @@ int home()
 
 		//Print the images onto the screen
 		oslDrawImage(background);		
-		oslDrawImageXY(navbar, 103, 241);
+		oslDrawImageXY(navbar, 110, 237);
 		oslDrawImageXY(wificon, 387, 1);
 		oslDrawImageXY(google, 22, 26);
 		oslDrawImageXY(apollo, 105, 195);
@@ -58,8 +58,11 @@ int home()
 		oslDrawImageXY(pointer, 231, 180);
 		appdrawericon();
 		battery();
-		android_notif();
 		powermenu();
+		back();
+		home_icon();
+		multi();
+		android_notif();
 		oslDrawImage(cursor);
 		
 		//Launching the browser
