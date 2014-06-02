@@ -50,7 +50,6 @@ int SetupCallbacks(void) {
 OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *power, *pointer, *pointer1, *backicon, *homeicon, *multicon;
 
 //variables
-int cursor_position;
 int app_drawer;
 int result;
 int notif_y = -272;
@@ -60,6 +59,10 @@ int notif_enable;
 int batx = 415;
 int baty = 2;
 int batteryLife;
+int llimit = -4;
+int rlimit = 452;
+int ulimit = -4;
+int dlimit = 248;
 
 //function declarations
 void controls();
@@ -104,11 +107,18 @@ void controls()
 		if (osl_pad.held.right)
         {cursor->x += 4;}
 		
-		if (cursor->y >= 272)
-		{cursor->y -= 4;}
+		if (cursor->x <= llimit)
+		{cursor->x = llimit;}
 		
-		if (cursor->x >= 480)
-		{cursor->x -= 4;}
+		else if (cursor->x >= rlimit)
+		{cursor->x = rlimit;}
+		
+		if (cursor->y <= ulimit)
+		{cursor->y = ulimit;}
+		
+		else if (cursor->y >= dlimit)
+		{cursor->y = dlimit;}
+		
 		
 		//Touch tones
         if (osl_keys->pressed.cross) oslPlaySound(tone, 1);         
