@@ -10,7 +10,7 @@
 #include "settingsmenu.h"
 
 //declaration
-OSL_IMAGE *settings_bg, *backdrop, *cursor, *navbar, *wificon;
+OSL_IMAGE *settings_bg, *cursor, *navbar, *wificon;
 
 //function declarations
 void controls();
@@ -29,8 +29,7 @@ int settingsmenu()
 		
 	//loads our images into memory
 	settings_bg = oslLoadImageFilePNG("system/home/menu/settings_bg.png", OSL_IN_RAM, OSL_PF_8888);
-	backdrop = oslLoadImageFile("system/home/icons/backdrop.png", OSL_IN_RAM, OSL_PF_8888);
-		
+	
 	//Load fonts:
 	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
@@ -57,9 +56,8 @@ int settingsmenu()
 		oslReadKeys();
 
 		//Print the images onto the screen
-		oslDrawImageXY(backdrop, 0, 0 );
 		oslDrawImageXY(settings_bg, 0, 17);
-		oslDrawImageXY(navbar, 103, 241);
+		oslDrawImageXY(navbar, 110, 237);
 		oslDrawImageXY(wificon, 387, 1);
 		
 		//Set fonts
@@ -78,14 +76,31 @@ int settingsmenu()
 		android_notif();
 		oslDrawImage(cursor);
 		
-		if (osl_pad.pressed.L)
+		if (osl_pad.held.L)
 		{
 			lockscreen();
         }
 		
 		if (osl_pad.held.circle)
+		{
 			appdrawer();
+		}
 
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			home();
+		}
+		
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			appdrawer();
+		}
+		
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			multitask();
+		}
+		
         oslEndDrawing();
         
         oslEndFrame();
@@ -94,7 +109,5 @@ int settingsmenu()
 	    //For sleep
         oslAudioVSync();
 		}
-	oslQuit();
-	return 1;
 }
 

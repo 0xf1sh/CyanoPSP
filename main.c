@@ -8,8 +8,10 @@
 #include "appdrawer.h"
 #include "lock.h"
 #include "clock.h"
- 
-PSP_MODULE_INFO("CyanogenMod PSP", 0, 1, 0);
+#include "browser.h" 
+#include "recoverymenu.h"
+
+PSP_MODULE_INFO("CyanogenMod PSP", 0x200, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(4*1024);
 
@@ -47,7 +49,7 @@ int SetupCallbacks(void) {
 }
 
 //declaration
-OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *power, *pointer, *pointer1, *backicon, *homeicon, *multicon;
+OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *power, *pointer, *pointer1, *backicon, *homeicon, *multicon, *multi_task;
 
 //variables
 int app_drawer;
@@ -74,6 +76,8 @@ void powermenu();
 void home_icon();
 void back();
 void multi();
+void multitask();
+void clean1();
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -154,10 +158,10 @@ void battery()
 void appdrawericon()
 {
 		if (cursor->x  >= 215 && cursor->x  <= 243 && cursor->y >= 195 && cursor->y <= 230)
-		oslDrawImageXY(appicon2,223,205);
+		oslDrawImageXY(appicon2,223,200);
 	
 		else
-		oslDrawImageXY(appicon,223,205);
+		oslDrawImageXY(appicon,223,200);
 }
 
 void back()
@@ -185,6 +189,19 @@ void multi()
 	
 		else
 		oslDrawImageXY(navbar,110, 237);
+}
+
+void multitask()
+{
+oslClearScreen(RGB(0,0,0));
+
+oslDrawImageXY(background, 0,0);
+oslDrawImageXY(multi_task, 0,0);
+
+if (osl_pad.held.circle)
+		{
+			home();
+		}
 }
 
 void powermenu()
@@ -246,6 +263,13 @@ void android_notif()
 			notif_y = 1;	
 		}
 }
+
+void clean1()
+{
+oslDeleteImage(appicon);
+oslDeleteImage(appicon2);
+oslDeleteImage(google);
+} 
 
 void internet()
 {
@@ -314,8 +338,6 @@ int main()
     //Initialization of Oslib's audio console
     oslInitAudio();
 	
-	pspDebugScreenInit();
-	
 	//loads our sound
 	tone = oslLoadSoundFile("system/media/audio/ui/KeypressStandard.wav", OSL_FMT_NONE);
 
@@ -350,6 +372,7 @@ int main()
 	backicon = oslLoadImageFilePNG("system/home/icons/backicon.png", OSL_IN_RAM, OSL_PF_8888);
 	homeicon = oslLoadImageFilePNG("system/home/icons/homeicon.png", OSL_IN_RAM, OSL_PF_8888);
 	multicon = oslLoadImageFilePNG("system/home/icons/multicon.png", OSL_IN_RAM, OSL_PF_8888);
+	multi_task = oslLoadImageFilePNG("system/home/menu/multi_task.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	//Load fonts:
 	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
@@ -386,10 +409,10 @@ int main()
 		oslDrawImageXY(navbar, 110, 237);
 		oslDrawImageXY(wificon, 387, 1);
 		oslDrawImageXY(google, 22, 26);
-		oslDrawImageXY(apollo, 105, 195);
-		oslDrawImageXY(browser, 276, 195);
-		oslDrawImageXY(gmail, 331, 195);
-		oslDrawImageXY(message, 160, 195);
+		oslDrawImageXY(apollo, 105, 190);
+		oslDrawImageXY(browser, 276, 190);
+		oslDrawImageXY(gmail, 331, 190);
+		oslDrawImageXY(message, 160, 190);
 		oslDrawImageXY(pointer, 231, 180);
 		appdrawericon();
 		battery();
@@ -399,29 +422,33 @@ int main()
 		multi();
 		android_notif();
 		oslDrawImage(cursor);
-		
-		pspTime time;
-
-		// Get psp time
-		sceRtcGetCurrentClockLocalTime(&time);
-
-		char timeBuffer[20];
-		
-		pspDebugScreenSetXY(0,0);
-
-		printf("%2.2d:%2.2d\n", time.hour, time.minutes);
 			
 		//Launching the browser
 		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
-			internet();
+		{
+			startbrowser();
+		}
 			
 		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
+		{
 			appdrawer();
+		}
 		
 		if (osl_pad.held.L)
 		{
 			lockscreen();
         }
+		
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			multitask();
+		}
+		
+		if (osl_pad.held.R && osl_pad.held.cross)
+		{
+			recoverymain();
+        }
+		
 			
 		//Ends printing
 		oslEndDrawing();

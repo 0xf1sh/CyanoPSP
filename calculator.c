@@ -9,7 +9,7 @@
 #include "lock.h"
 
 //declaration
-OSL_IMAGE *background, *cursor, *calcbackground, *navbar, *wificon, *backdrop;
+OSL_IMAGE *cursor, *calcbackground, *navbar, *wificon;
 
 //variables
 int result;
@@ -21,11 +21,6 @@ int suppression = 1;
 int Number = 0;
 
 //function declarations
-void controls();
-void internet();
-void android_notif();
-void battery();
-void powermenu();
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -37,7 +32,6 @@ int calculator()
 	oslIntraFontInit(INTRAFONT_CACHE_MED);
 		
 	//loads our images into memory
-	backdrop = oslLoadImageFile("system/home/icons/backdrop.png", OSL_IN_RAM, OSL_PF_8888);
 	calcbackground = oslLoadImageFile("system/app/calculator/calcbg.png", OSL_IN_RAM, OSL_PF_8888);
 		
 	//Load fonts:
@@ -66,7 +60,6 @@ int calculator()
 		oslReadKeys();
 
 		//Print the images onto the screen
-		oslDrawImage(backdrop);	
 		oslDrawImageXY(calcbackground, 0, 15);		
 		
 		//Set fonts
@@ -258,12 +251,29 @@ int calculator()
 		}
 		
 		if (osl_pad.held.circle)
+		{
 			appdrawer();
-			
-		if (osl_pad.pressed.L)
+		}
+		
+		if (osl_pad.held.L)
 		{
 			lockscreen();
         }
+		
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			home();
+		}
+		
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			appdrawer();
+		}
+		
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			multitask();
+		}
 		
         oslEndDrawing();
         
@@ -273,7 +283,5 @@ int calculator()
 	    //For sleep
         oslAudioVSync();
 		}
-	oslQuit();
-	return 1;
 }
 

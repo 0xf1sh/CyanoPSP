@@ -8,6 +8,7 @@
 #include "calculator.h"
 #include "lock.h"
 #include "settingsmenu.h"
+#include "browser.h" 
 
 OSL_COLOR black = RGB(0,0,0),red = RGB(255,0,0), white = RGB(255,255,255);
 
@@ -22,10 +23,30 @@ void internet();
 void android_notif();
 void battery();
 void powermenu();
+void clean1();
+void clean2();
 
 //definition of our sounds
 OSL_SOUND *tone;
- 
+
+void clean2()
+{
+oslDeleteImage(apollo);
+oslDeleteImage(browser);
+oslDeleteImage(clockx);
+oslDeleteImage(email);
+oslDeleteImage(gmail);
+oslDeleteImage(message);
+oslDeleteImage(people);
+oslDeleteImage(settings);
+oslDeleteImage(dsp);
+oslDeleteImage(gallery);
+oslDeleteImage(phone);
+oslDeleteImage(calc);
+oslDeleteImage(calendar);
+oslDeleteImage(people);
+} 
+
 int appdrawer()
 {
 	SetupCallbacks();
@@ -60,14 +81,10 @@ int appdrawer()
 	{
 		//Draws images onto the screen
 		oslStartDrawing();
-				
+		
 		//calls the functions
 		controls();	
 		android_notif();
-		
-		//Launching the browser
-		if (cursor->x >= 105 && cursor->x <= 150 && cursor->y >= 35 && cursor->y <= 80 && osl_pad.held.cross)
-			internet();
 			
 		//Initiate the PSP's controls
 		oslReadKeys();
@@ -106,9 +123,9 @@ int appdrawer()
 		oslDrawString(307,165,"Phone");
 		oslDrawImageXY(settings, 345, 110);
 		oslDrawString(369,165,"Settings");
-		oslDrawImageXY(pointer, 220, 231);
-		oslDrawImageXY(pointer1, 234, 232);
-		oslDrawImageXY(pointer1, 244, 232);
+		oslDrawImageXY(pointer, 220, 221);
+		oslDrawImageXY(pointer1, 234, 222);
+		oslDrawImageXY(pointer1, 244, 222);
 		battery();
 		powermenu();
 		back();
@@ -117,7 +134,11 @@ int appdrawer()
 		android_notif();
 		oslDrawImage(cursor);
 		
-		if (osl_pad.pressed.L)
+		//Launching the browser
+		if (cursor->x >= 105 && cursor->x <= 150 && cursor->y >= 35 && cursor->y <= 80 && osl_pad.held.cross)
+			startbrowser();
+		
+		if (osl_pad.held.L)
 		{
 			lockscreen();
         }
@@ -135,6 +156,21 @@ int appdrawer()
 		if (cursor->x >= 344 && cursor->x <= 393 && cursor->y >= 102 && cursor->y <= 166 && osl_pad.held.cross)
 		{
 			settingsmenu();
+		}
+		
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			home();
+		}
+		
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			home();
+		}
+		
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			multitask();
 		}
 		
         oslEndDrawing();

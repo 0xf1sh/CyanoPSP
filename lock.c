@@ -123,8 +123,5 @@ int lockscreen()
         oslAudioVSync();
 	}
 	
-	//Terminates/Ends the program
-	oslQuit();
-	return 0;
 }
 

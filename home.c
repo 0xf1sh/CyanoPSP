@@ -6,6 +6,7 @@
 #include "appdrawer.h"
 #include "home.h"
 #include "lock.h"
+#include "browser.h" 
 
 //declaration
 OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *pointer, *pointer1;
@@ -67,14 +68,23 @@ int home()
 		
 		//Launching the browser
 		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
-			internet();
+		{
+			startbrowser();
+		}
 			
 		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
+		{
 			appdrawer();
-			
-		if (osl_pad.pressed.L)
+		}
+		
+		if (osl_pad.held.L)
 		{
 			lockscreen();
+        }
+		
+		if (osl_pad.held.R && osl_pad.held.cross)
+		{
+			recoverymain();
         }
 			
 		//Ends printing
