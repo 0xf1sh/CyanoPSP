@@ -12,9 +12,10 @@ What's working
 - Home Menu
 - Touch tones, when pressing the cross button on an app/widget.
 - App drawer highlighting effect. 
+- Menu buttons Highlighting effects.
 - Battery functions. (Displays the battery percentage, by using icons.)
 - App Drawer
-- Recovery Menu (will merge, once completed) https://github.com/joel16/PSP-CM-Recovery
+- Recovery Menu (Merged) - Use R + X to launch Recovery menu, once you're in home.
 - Lockscreen
 - Notification Slider
 
@@ -45,6 +46,7 @@ This method only allows you to compile on Windows. I'm not sure how you'd go abo
    
 3. Install OsLib Mod v2 from here https://github.com/dogo/oslibmodv2 - Instructions included.
 4. Run compile.bat
+5. Hit 1 on your keyboard, and press enter to start compiling.
 
 
 License can be found here https://github.com/joel16/CyanogenMod-PSP-C/blob/master/License
