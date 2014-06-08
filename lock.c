@@ -15,10 +15,6 @@ int ending = 0;
 int batteryLife;
 int style = 0;
 
-//function declarations
-void controls();
-void battery();
-
 //definition of our sounds
 OSL_SOUND *tone;
 

@@ -12,21 +12,11 @@
 //declaration
 OSL_IMAGE *settings_bg, *cursor, *navbar, *wificon;
 
-//function declarations
-void controls();
-void android_notif();
-void battery();
-void powermenu();
-
 //definition of our sounds
 OSL_SOUND *tone;
  
 int settingsmenu()
 {
-	SetupCallbacks();
-	
-	oslIntraFontInit(INTRAFONT_CACHE_MED);
-		
 	//loads our images into memory
 	settings_bg = oslLoadImageFilePNG("system/home/menu/settings_bg.png", OSL_IN_RAM, OSL_PF_8888);
 	
@@ -47,10 +37,6 @@ int settingsmenu()
 	{
 		//Draws images onto the screen
 		oslStartDrawing();
-				
-		//calls the functions
-		controls();	
-		android_notif();
 			
 		//Initiate the PSP's controls
 		oslReadKeys();
@@ -68,6 +54,9 @@ int settingsmenu()
 		oslDrawString(37,170,"Kernel Version");
 		oslDrawString(37,183,"Undefined-pspsdk_oslib");
 		oslDrawString(37,196,"joelluvsanna@psp #1");
+			
+		//calls the functions
+		controls();	
 		battery();
 		powermenu();
 		back();

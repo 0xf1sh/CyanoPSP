@@ -20,23 +20,19 @@ int numberuse = 0;
 int suppression = 1;
 int Number = 0;
 
-//function declarations
-
 //definition of our sounds
 OSL_SOUND *tone;
  
 int calculator()
 {
-	SetupCallbacks();
-	
-	oslIntraFontInit(INTRAFONT_CACHE_MED);
-		
 	//loads our images into memory
 	calcbackground = oslLoadImageFile("system/app/calculator/calcbg.png", OSL_IN_RAM, OSL_PF_8888);
 		
 	//Load fonts:
 	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
+	//Set fonts
+	oslSetFont(pgfFont);
 
 	//Debugger
 	if (!calcbackground)
@@ -51,19 +47,12 @@ int calculator()
 	{
 		//Draws images onto the screen
 		oslStartDrawing();
-				
-		//calls the functions
-		controls();	
-		android_notif();
 		
 		//Initiate the PSP's controls
 		oslReadKeys();
 
 		//Print the images onto the screen
 		oslDrawImageXY(calcbackground, 0, 15);		
-		
-		//Set fonts
-		oslSetFont(pgfFont);
 		
 		oslDrawImageXY(navbar, 103, 241);
 		oslDrawImageXY(wificon, 387, 1);
@@ -101,6 +90,9 @@ int calculator()
 		oslDrawString(433,208,"=");
 
 		oslDrawString(35,25,"0");
+		
+		//calls the functions
+		controls();	
 		battery();
 		powermenu();
 		back();

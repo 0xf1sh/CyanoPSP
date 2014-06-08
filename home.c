@@ -9,35 +9,25 @@
 #include "browser.h" 
 
 //declaration
-OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *pointer, *pointer1;
-
-//variables
-
-//function declarations
-void controls();
-void internet();
-void android_notif();
-void battery();
-void appdrawericon();
-void powermenu();
+OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *power, *pointer, *pointer1, *backicon, *homeicon, *multicon, *multi_task;
 
 //definition of our sounds
 OSL_SOUND *tone;
 
 int home()
 {
-	
 	//Debugger
-	if (!background || !cursor)
+	if (!background || !cursor || !appicon || !appicon2 || !navbar || !wificon || !apollo || !gmail || !message || !browser || !google || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !power || !pointer || !pointer1 || !backicon || !multicon || !homeicon || !multi_task)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-
+	
 	//Sets the cursor's original position on the screen
 	cursor->x = 240;
-	cursor->y = 136;	
+	cursor->y = 136;
 	
 	//Main loop to run the program
 	while (!osl_quit)
 	{
+
 		//Draws images onto the screen
 		oslStartDrawing();
 		
@@ -46,16 +36,16 @@ int home()
 											
 		//Initiate the PSP's controls
 		oslReadKeys();
-
+			
 		//Print the images onto the screen
 		oslDrawImage(background);		
 		oslDrawImageXY(navbar, 110, 237);
 		oslDrawImageXY(wificon, 387, 1);
 		oslDrawImageXY(google, 22, 26);
-		oslDrawImageXY(apollo, 105, 195);
-		oslDrawImageXY(browser, 276, 195);
-		oslDrawImageXY(gmail, 331, 195);
-		oslDrawImageXY(message, 160, 195);
+		oslDrawImageXY(apollo, 105, 190);
+		oslDrawImageXY(browser, 276, 190);
+		oslDrawImageXY(gmail, 331, 190);
+		oslDrawImageXY(message, 160, 190);
 		oslDrawImageXY(pointer, 231, 180);
 		appdrawericon();
 		battery();
@@ -65,7 +55,7 @@ int home()
 		multi();
 		android_notif();
 		oslDrawImage(cursor);
-		
+			
 		//Launching the browser
 		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
 		{
@@ -82,10 +72,16 @@ int home()
 			lockscreen();
         }
 		
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			multitask();
+		}
+		
 		if (osl_pad.held.R && osl_pad.held.cross)
 		{
 			recoverymain();
         }
+		
 			
 		//Ends printing
 		oslEndDrawing();
@@ -96,10 +92,5 @@ int home()
 	    //For sleep
         oslAudioVSync();
 	}
-	
-	//Terminates/Ends the program
-	sceKernelExitGame();
-	oslQuit();
-	return 1;
 }
 

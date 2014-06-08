@@ -5,6 +5,7 @@
 #include <pspnet_apctl.h>
 #include <oslib/oslib.h>
 #include <psprtc.h>
+#include "main.h"
 #include "appdrawer.h"
 #include "lock.h"
 #include "clock.h"
@@ -14,8 +15,6 @@
 PSP_MODULE_INFO("CyanogenMod PSP", 0x200, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(4*1024);
-
-#define printf pspDebugScreenPrintf
 
 // Globals:
 
@@ -50,34 +49,6 @@ int SetupCallbacks(void) {
 
 //declaration
 OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *power, *pointer, *pointer1, *backicon, *homeicon, *multicon, *multi_task;
-
-//variables
-int app_drawer;
-int result;
-int notif_y = -272;
-int notif_up;
-int notif_down;
-int notif_enable;
-int batx = 415;
-int baty = 2;
-int batteryLife;
-int llimit = -4;
-int rlimit = 452;
-int ulimit = -4;
-int dlimit = 248;
-
-//function declarations
-void controls();
-void internet();
-void android_notif();
-void battery();
-void appdrawericon();
-void powermenu();
-void home_icon();
-void back();
-void multi();
-void multitask();
-void clean1();
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -122,7 +93,6 @@ void controls()
 		
 		else if (cursor->y >= dlimit)
 		{cursor->y = dlimit;}
-		
 		
 		//Touch tones
         if (osl_keys->pressed.cross) oslPlaySound(tone, 1);         
@@ -204,6 +174,24 @@ if (osl_pad.held.circle)
 		}
 }
 
+void navbar_buttons()
+{
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			home();
+		}
+		
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			home();
+		}
+		
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			multitask();
+		}
+}
+
 void powermenu()
 {
 		if (osl_pad.held.square)
@@ -264,13 +252,6 @@ void android_notif()
 		}
 }
 
-void clean1()
-{
-oslDeleteImage(appicon);
-oslDeleteImage(appicon2);
-oslDeleteImage(google);
-} 
-
 void internet()
 {
 int skip = 0;
@@ -326,24 +307,10 @@ int skip = 0;
 
 int main()
 {
-	//Initialization of the Oslib's library
-	oslInit(0);
-
-	//Initialization of Oslib's graphics mode
-	oslInitGfx(OSL_PF_8888, 1);	
-	
-	//Initialization of Oslib's text console
-    oslInitConsole();
-
-    //Initialization of Oslib's audio console
-    oslInitAudio();
+	initOSLib();
 	
 	//loads our sound
 	tone = oslLoadSoundFile("system/media/audio/ui/KeypressStandard.wav", OSL_FMT_NONE);
-
-	int defaultimg = 1;
-
-	oslIntraFontInit(INTRAFONT_CACHE_MED);
 	
 	//loads our images into memory
 	background = oslLoadImageFilePNG("system/framework/framework-res/res/background.png", OSL_IN_RAM, OSL_PF_8888);
@@ -373,15 +340,11 @@ int main()
 	homeicon = oslLoadImageFilePNG("system/home/icons/homeicon.png", OSL_IN_RAM, OSL_PF_8888);
 	multicon = oslLoadImageFilePNG("system/home/icons/multicon.png", OSL_IN_RAM, OSL_PF_8888);
 	multi_task = oslLoadImageFilePNG("system/home/menu/multi_task.png", OSL_IN_RAM, OSL_PF_8888);
-	
-	//Load fonts:
-	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
-	
-	//Debugger
-	if (!background || !cursor)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
+	//Debugger
+	if (!background || !cursor || !appicon || !appicon2 || !navbar || !wificon || !apollo || !gmail || !message || !browser || !google || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !power || !pointer || !pointer1 || !backicon || !multicon || !homeicon || !multi_task)
+		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	
 	//Sets the cursor's original position on the screen
 	cursor->x = 240;
 	cursor->y = 136;
@@ -392,17 +355,9 @@ int main()
 
 		//Draws images onto the screen
 		oslStartDrawing();
-		
-		//calls the functions
-		controls();	
-											
+													
 		//Initiate the PSP's controls
 		oslReadKeys();
-
-		//Set fonts
-		oslSetFont(pgfFont);
-			
-		pspDebugScreenClear();	
 			
 		//Print the images onto the screen
 		oslDrawImage(background);		
@@ -414,6 +369,9 @@ int main()
 		oslDrawImageXY(gmail, 331, 190);
 		oslDrawImageXY(message, 160, 190);
 		oslDrawImageXY(pointer, 231, 180);
+		
+		//calls the functions
+		controls();	
 		appdrawericon();
 		battery();
 		powermenu();
