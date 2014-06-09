@@ -18,7 +18,7 @@ What's working
 - Recovery Menu (Merged) - Use R + X to launch Recovery menu, once you're in home.
 - Lockscreen
 - Notification Slider
-
+- Navbar functions, for returning home or back to the previous menu.
 
 What's yet to work
 =================
