@@ -9,7 +9,7 @@
 #include "lock.h"
 
 //declaration
-OSL_IMAGE *cursor, *calcbackground, *navbar, *wificon;
+OSL_IMAGE *cursor, *calcbackground, *navbar, *wificon, *backdrop;
 
 //variables
 int result;
@@ -37,11 +37,7 @@ int calculator()
 	//Debugger
 	if (!calcbackground)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-	
-	//Sets the cursor's original position on the screen
-	cursor->x = 240;
-	cursor->y = 136;
-	
+		
 	//Main loop to run the program
 	while (!osl_quit)
 	{
@@ -52,9 +48,10 @@ int calculator()
 		oslReadKeys();
 
 		//Print the images onto the screen
+		oslDrawImageXY(backdrop, 0, 0);	
 		oslDrawImageXY(calcbackground, 0, 15);		
 		
-		oslDrawImageXY(navbar, 103, 241);
+		oslDrawImageXY(navbar, 110, 237);
 		oslDrawImageXY(wificon, 387, 1);
 		
 		oslDrawString(40,75,"sin");
@@ -252,16 +249,16 @@ int calculator()
 			lockscreen();
         }
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			home();
-		}
-		
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			appdrawer();
 		}
 		
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			home();
+		}
+
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			multitask();

@@ -10,7 +10,7 @@
 #include "settingsmenu.h"
 
 //declaration
-OSL_IMAGE *settings_bg, *cursor, *navbar, *wificon;
+OSL_IMAGE *settings_bg, *cursor, *navbar, *wificon, *backdrop;
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -42,6 +42,7 @@ int settingsmenu()
 		oslReadKeys();
 
 		//Print the images onto the screen
+		oslDrawImageXY(backdrop, 0, 0);
 		oslDrawImageXY(settings_bg, 0, 17);
 		oslDrawImageXY(navbar, 110, 237);
 		oslDrawImageXY(wificon, 387, 1);
@@ -75,16 +76,16 @@ int settingsmenu()
 			appdrawer();
 		}
 
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			home();
-		}
-		
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			appdrawer();
 		}
 		
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			home();
+		}
+
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			multitask();
