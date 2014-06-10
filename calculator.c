@@ -35,7 +35,7 @@ int calculator()
 	oslSetFont(pgfFont);
 
 	//Debugger
-	if (!calcbackground)
+	if (!calcbackground || !backdrop || !cursor || !wificon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 		
 	//Main loop to run the program

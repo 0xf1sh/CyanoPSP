@@ -14,7 +14,39 @@ OSL_IMAGE *settings_bg, *cursor, *navbar, *wificon, *backdrop;
 
 //definition of our sounds
 OSL_SOUND *tone;
- 
+
+char pspmodel;
+
+void pspgetmodel()
+{
+		pspmodel = kuKernelGetModel();
+	
+		if(pspmodel == 0)
+		{
+			oslDrawString(37,73,"Model: PSP 1000");
+		}
+   
+		else if(pspmodel == 1)
+		{
+			oslDrawString(37,73,"Model: PSP 2000");
+		}
+   
+		else if (pspmodel == 2)
+		{
+			oslDrawString(37,73,"Model: PSP 3000");
+		}
+   
+		else if (pspmodel == 4)
+		{
+			oslDrawString(37,73,"Model: PSP Go N1000");
+		}
+   
+		else
+		{
+			oslDrawString(37,73,"Model: PS Vita");
+		}
+}
+
 int settingsmenu()
 {
 	//loads our images into memory
@@ -23,35 +55,31 @@ int settingsmenu()
 	//Load fonts:
 	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
-
-	//Debugger
-	if (!settings_bg || !cursor)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-
-	//Sets the cursor's original position on the screen
-	cursor->x = 240;
-	cursor->y = 136;
+	//Set fonts
+	oslSetFont(pgfFont);
 	
+	//Debugger
+	if (!settings_bg || !cursor || !backdrop || !wificon)
+		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+		
 	//Main loop to run the program
 	while (!osl_quit)
 	{
+		
 		//Draws images onto the screen
 		oslStartDrawing();
 			
 		//Initiate the PSP's controls
 		oslReadKeys();
-
+		
 		//Print the images onto the screen
 		oslDrawImageXY(backdrop, 0, 0);
 		oslDrawImageXY(settings_bg, 0, 17);
 		oslDrawImageXY(navbar, 110, 237);
 		oslDrawImageXY(wificon, 387, 1);
 		
-		//Set fonts
-		oslSetFont(pgfFont);
-		
-		oslDrawString(37,73,"Model - PSP GO! N1004");
-		oslDrawString(37,134,"Android Version 4.4.2 (Unofficial)");
+		pspgetmodel();
+		oslDrawString(37,121,"CyanogenMod PSP - C Alpha build 1");
 		oslDrawString(37,170,"Kernel Version");
 		oslDrawString(37,183,"Undefined-pspsdk_oslib");
 		oslDrawString(37,196,"joelluvsanna@psp #1");

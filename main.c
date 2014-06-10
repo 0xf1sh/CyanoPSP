@@ -12,7 +12,7 @@
 #include "browser.h" 
 #include "recoverymenu.h"
 
-PSP_MODULE_INFO("CyanogenMod PSP", 0x200, 1, 0);
+PSP_MODULE_INFO("CyanogenMod PSP - C", 0x200, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(20*1024);
 
