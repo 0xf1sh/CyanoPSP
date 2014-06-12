@@ -45,8 +45,9 @@ This method only allows you to compile on Windows. I'm not sure how you'd go abo
    ;C:\pspsdk\bin
    
 3. Install OsLib Mod v2 from here https://github.com/dogo/oslibmodv2 - Instructions included.
-4. Run compile.bat
-5. Hit 1 on your keyboard, and press enter to start compiling.
+4. Dowwnload and install the headers and libs from the M33 SDK - Required for compiling the recovery menu.
+5. Run compile.bat
+6. Hit 1 on your keyboard, and press enter to start compiling.
 
 
 License can be found here https://github.com/joel16/CyanogenMod-PSP-C/blob/master/License
