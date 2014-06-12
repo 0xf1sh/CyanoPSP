@@ -3,10 +3,6 @@
 #include <pspnet_inet.h>
 #include <pspnet_apctl.h>
 #include <oslib/oslib.h>
-#include "appdrawer.h"
-#include "home.h"
-#include "calculator.h"
-#include "lock.h"
 
 //declaration
 OSL_IMAGE *cursor, *calcbackground, *navbar, *wificon, *backdrop;
@@ -43,6 +39,8 @@ int calculator()
 	{
 		//Draws images onto the screen
 		oslStartDrawing();
+		
+		controls();	
 		
 		//Initiate the PSP's controls
 		oslReadKeys();
@@ -89,9 +87,7 @@ int calculator()
 		oslDrawString(35,25,"0");
 		
 		//calls the functions
-		controls();	
 		battery();
-		powermenu();
 		back();
 		home_icon();
 		multi();
@@ -237,6 +233,11 @@ int calculator()
 		else if (x  == 7)
 		{
 		oslDrawString(433,208,"=");
+		}
+		
+		if (osl_pad.held.square)
+		{
+			powermenu();
 		}
 		
 		if (osl_pad.held.circle)

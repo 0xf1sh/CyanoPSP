@@ -1,5 +1,5 @@
 TARGET = CyanogenMod
-OBJS = main.o appdrawer.o home.o calculator.o lock.o settingsmenu.o glib2d.o clock.o browser.o recoverymenu.o imports.o menu.o common.o
+OBJS = main.o appdrawer.o home.o calculator.o lock.o settingsmenu.o glib2d.o clock.o browser.o recoverymenu.o imports.o menu.o common.o multi.o power_menu.o
 
 INCDIR = 
 CFLAGS = -G4 -Wall -O2 -g -G0
@@ -16,7 +16,7 @@ LIBS=$(STDLIBS)$(YOURLIBS)
 
 BUILD_PRX = 1
 EXTRA_TARGETS = EBOOT.PBP
-PSP_EBOOT_TITLE = CyanogenMod
+PSP_EBOOT_TITLE = CyanogenMod PSP C
 PSP_EBOOT_ICON = ICON0.png
 
 

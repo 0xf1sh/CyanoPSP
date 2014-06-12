@@ -3,11 +3,9 @@
 #include <pspnet_inet.h>
 #include <pspnet_apctl.h>
 #include <oslib/oslib.h>
-#include "home.h"
- 
 
 //declaration
-OSL_IMAGE *background, *cursor, *wificon, *lock, *unlock, *circle, *camera, *music, *circles;
+OSL_IMAGE *background, *cursor, *wificon, *lock, *unlock, *circle, *messenger, *music, *circles, *music2, *messenger2;
 
 //variables
 int click = 0;
@@ -24,25 +22,23 @@ int lockscreen()
 	lock = oslLoadImageFilePNG("System/Lockscreen/lock.png", OSL_IN_RAM, OSL_PF_8888);
 	unlock = oslLoadImageFilePNG("System/Lockscreen/unlock.png", OSL_IN_RAM, OSL_PF_8888);
 	circle = oslLoadImageFilePNG("System/Lockscreen/circle.png", OSL_IN_RAM, OSL_PF_8888);
-	camera = oslLoadImageFilePNG("System/Lockscreen/camera.png", OSL_IN_RAM, OSL_PF_8888);
+	messenger = oslLoadImageFilePNG("System/Lockscreen/messenger.png", OSL_IN_RAM, OSL_PF_8888);
+	messenger2 = oslLoadImageFilePNG("System/Lockscreen/messenger2.png", OSL_IN_RAM, OSL_PF_8888);
 	music = oslLoadImageFilePNG("System/Lockscreen/music.png", OSL_IN_RAM, OSL_PF_8888);
 	circles = oslLoadImageFilePNG("System/Lockscreen/circles.png", OSL_IN_RAM, OSL_PF_8888);
+	music2 = oslLoadImageFilePNG("System/Lockscreen/music2.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	//Debugger
-	if (!background || !cursor)
+	if (!background || !cursor || !lock || !unlock || !circle || !messenger || !music || !circles)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-
-	//Sets the cursor's original position on the screen
-	cursor->x = 240;
-	cursor->y = 136;
-	
+		
 	style = 0;
 	click = 0;
 	ending = 0;
 	
 	//Main loop to run the program
 	while (!osl_quit)
-	{
+	{		
 		//Draws images onto the screen
 		oslStartDrawing();
 		
@@ -74,7 +70,7 @@ int lockscreen()
 		}
 		
 		if (click == 1) {
-			oslDrawImageXY(camera, 80,130);
+			oslDrawImageXY(messenger, 115,160);
 			oslDrawImageXY(music, 216,76);
 			oslDrawImageXY(circle, cursor->x - 50, cursor->y - 50);
 			}
@@ -90,10 +86,9 @@ int lockscreen()
 			
 			}
 			
-		if (cursor->x-50 >= 270 && cursor->x - 50 <= 330 && cursor->y - 50 >= 100 && cursor->y - 50 <= 160) 
+		if (cursor->x-50 >= 270 && cursor->x - 50 <= 330 && cursor->y - 50 >= 90 && cursor->y - 50 <= 160 && click == 1) 
 		{
 			ending = 1;
-
 			oslDrawImageXY(unlock, 300,130);
 		}
 		else 
@@ -101,12 +96,24 @@ int lockscreen()
 			ending = 0;
 			oslDrawImageXY(lock, 300,130);
 		}
+		
+		if (cursor->x >= 216 && cursor->x <= 276 && cursor->y >= 66 && cursor->y <= 116 && click == 1) 
+		{
+			ending = 0;
+			oslDrawImageXY(music2, 193,57);
+		}
+		
+		if (cursor->x >= 90 && cursor->x <= 150 && cursor->y >= 125 && cursor->y <= 195 && click == 1) 
+		{
+			ending = 0;
+			oslDrawImageXY(messenger2, 85,130);
+		}
+
 		if (click == 0)
 		{
 		oslDrawImageXY(circle, 190,120);
 		oslDrawImageXY(lock, 190,120);
 		}
-		
 		oslDrawImage(cursor);
 		
 		//Ends printing

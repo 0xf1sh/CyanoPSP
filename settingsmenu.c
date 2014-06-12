@@ -3,10 +3,6 @@
 #include <pspnet_inet.h>
 #include <pspnet_apctl.h>
 #include <oslib/oslib.h>
-#include "appdrawer.h"
-#include "home.h"
-#include "calculator.h"
-#include "lock.h"
 #include "settingsmenu.h"
 
 //declaration
@@ -68,6 +64,8 @@ int settingsmenu()
 		
 		//Draws images onto the screen
 		oslStartDrawing();
+		
+		controls();	
 			
 		//Initiate the PSP's controls
 		oslReadKeys();
@@ -85,14 +83,17 @@ int settingsmenu()
 		oslDrawString(37,196,"joelluvsanna@psp #1");
 			
 		//calls the functions
-		controls();	
 		battery();
-		powermenu();
 		back();
 		home_icon();
 		multi();
 		android_notif();
 		oslDrawImage(cursor);
+		
+		if (osl_pad.held.square)
+		{
+			powermenu();
+		}
 		
 		if (osl_pad.held.L)
 		{

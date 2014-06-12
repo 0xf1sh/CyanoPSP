@@ -3,13 +3,9 @@
 #include <pspnet_inet.h>
 #include <pspnet_apctl.h>
 #include <oslib/oslib.h>
-#include "appdrawer.h"
-#include "home.h"
-#include "lock.h"
-#include "browser.h" 
 
 //declaration
-OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *power, *pointer, *pointer1, *backicon, *homeicon, *multicon, *multi_task;
+OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon;
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -17,7 +13,7 @@ OSL_SOUND *tone;
 int home()
 {
 	//Debugger
-	if (!background || !cursor || !appicon || !appicon2 || !navbar || !wificon || !apollo || !gmail || !message || !browser || !google || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !power || !pointer || !pointer1 || !backicon || !multicon || !homeicon || !multi_task)
+	if (!background || !cursor || !appicon || !appicon2 || !navbar || !wificon || !apollo || !gmail || !message || !browser || !google || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	//Sets the cursor's original position on the screen
@@ -27,7 +23,6 @@ int home()
 	//Main loop to run the program
 	while (!osl_quit)
 	{
-
 		//Draws images onto the screen
 		oslStartDrawing();
 		
@@ -49,17 +44,21 @@ int home()
 		oslDrawImageXY(pointer, 231, 180);
 		appdrawericon();
 		battery();
-		powermenu();
 		back();
 		home_icon();
 		multi();
 		android_notif();
 		oslDrawImage(cursor);
 			
+		if (osl_pad.held.square)
+		{
+			powermenu();
+		}
+		
 		//Launching the browser
 		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
 		{
-			startbrowser();
+			internet();
 		}
 			
 		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)

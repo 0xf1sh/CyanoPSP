@@ -3,14 +3,6 @@
 #include <pspnet_inet.h>
 #include <pspnet_apctl.h>
 #include <oslib/oslib.h>
-#include "appdrawer.h"
-#include "home.h"
-#include "calculator.h"
-#include "lock.h"
-#include "settingsmenu.h"
-#include "browser.h" 
-
-OSL_COLOR black = RGB(0,0,0),red = RGB(255,0,0), white = RGB(255,255,255);
 
 //declaration
 OSL_IMAGE *background, *cursor, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *dsp, *settings,*pointer, *pointer1;
@@ -50,8 +42,7 @@ int appdrawer()
 		
 		//calls the functions
 		controls();	
-		android_notif();
-			
+
 		//Initiate the PSP's controls
 		oslReadKeys();
 
@@ -90,16 +81,22 @@ int appdrawer()
 		oslDrawImageXY(pointer1, 234, 222);
 		oslDrawImageXY(pointer1, 244, 222);
 		battery();
-		powermenu();
 		back();
 		home_icon();
 		multi();
 		android_notif();
 		oslDrawImage(cursor);
 		
+		if (osl_pad.held.square)
+		{
+			powermenu();
+		}
+		
 		//Launching the browser
 		if (cursor->x >= 105 && cursor->x <= 150 && cursor->y >= 35 && cursor->y <= 80 && osl_pad.held.cross)
-			startbrowser();
+		{
+			internet();
+		}
 		
 		if (osl_pad.held.L)
 		{
