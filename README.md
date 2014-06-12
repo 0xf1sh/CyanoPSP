@@ -19,6 +19,9 @@ What's working
 - Lockscreen
 - Notification Slider
 - Navbar functions, for returning home or back to the previous menu.
+- Revamped Power menu. (Allows access to exit to XMB, and launch recovery)
+- Added more lock screen functions.
+- Added Multitasking (W.I.P)
 
 What's yet to work
 =================
