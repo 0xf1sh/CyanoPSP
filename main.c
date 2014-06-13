@@ -17,7 +17,7 @@
 #include "power_menu.h"
 #include "recoverymenu.h"
 
-PSP_MODULE_INFO("CyanogenMod PSP - C", 0x200, 1, 0);
+PSP_MODULE_INFO("CyanogenMod PSP - C", 0x200, 2, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(-1024);
 
@@ -248,16 +248,17 @@ int skip = 0;
 	oslNetInit();
 
     //Load font:
-    OSL_FONT *font = oslLoadFontFile("flash0:/font/ltn0.pgf");
-    oslSetFont(font);
+    OSL_FONT *font = oslLoadFontFile("system/fonts/DroidSans.pgf");
+	oslIntraFontSetStyle(font, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
+	oslSetFont(font);	//Set fonts
 
     while(runningFlag && !osl_quit){
 		browser = oslBrowserIsActive();
 		if (!skip){
             oslStartDrawing();
             oslDrawImageXY(background, 0, 0);
-            oslDrawString(30, 50, "Press X to open the internet browser");
-            oslDrawString(30, 150, "Press /\\ to quit.");
+            oslDrawString(148, 50, "Press X to open the internet browser");
+            oslDrawString(80, 150, "Press /\\ to quit.");
 
             oslDrawString(30, 200, message);
 
