@@ -6,12 +6,100 @@
 #include "settingsmenu.h"
 
 //declaration
-OSL_IMAGE *settings_bg, *cursor, *navbar, *wificon, *backdrop;
+OSL_IMAGE *settings_bg, *cursor, *navbar, *wificon, *backdrop, *usbdebug;
 
 //definition of our sounds
 OSL_SOUND *tone;
 
+int usb_debug = 0;
 char pspmodel;
+char usbStatus = 0;
+char usbModuleStatus = 0;
+
+int disableUsb(void)
+{
+   if(usbStatus)
+   {
+      sceUsbDeactivate(0);
+      pspUsbDeviceFinishDevice();
+      sceUsbStop(PSP_USBSTOR_DRIVERNAME, 0, 0);
+      sceUsbStop(PSP_USBBUS_DRIVERNAME, 0, 0);
+      usbStatus = 0;
+      sceKernelDelayThread(300000);
+   }
+   return 0;
+}
+
+int enableUsb()
+{
+   if (usbStatus == 1)
+   {
+      disableUsb();
+      return 0;
+   }
+
+   if(!usbModuleStatus)
+   {
+      pspSdkLoadStartModule("flash0:/kd/semawm.prx", PSP_MEMORY_PARTITION_KERNEL);
+      pspSdkLoadStartModule("flash0:/kd/usbstor.prx", PSP_MEMORY_PARTITION_KERNEL);
+      pspSdkLoadStartModule("flash0:/kd/usbstormgr.prx", PSP_MEMORY_PARTITION_KERNEL);
+      pspSdkLoadStartModule("flash0:/kd/usbstorms.prx", PSP_MEMORY_PARTITION_KERNEL);
+      pspSdkLoadStartModule("flash0:/kd/usbstorboot.prx", PSP_MEMORY_PARTITION_KERNEL);
+      pspSdkLoadStartModule("flash0:/kd/usbdevice.prx", PSP_MEMORY_PARTITION_KERNEL);
+      usbModuleStatus = 1;
+   }
+
+   if (!usbStatus)
+   {
+   sceUsbStart(PSP_USBBUS_DRIVERNAME, 0, 0);
+   sceUsbStart(PSP_USBSTOR_DRIVERNAME, 0, 0);
+   sceUsbstorBootSetCapacity(0x800000);
+   sceUsbActivate(0x1c8);
+   usbStatus = 1;
+   sceKernelDelayThread(300000);
+   }
+   return 1;
+}
+
+int enableUsbEx(u32 device)
+{
+
+   if (usbStatus == 1)
+   {
+      disableUsb();
+      return 0;
+   }
+
+   if(!usbModuleStatus)
+   {
+      pspSdkLoadStartModule("flash0:/kd/usbdevice.prx", PSP_MEMORY_PARTITION_KERNEL);
+      pspSdkLoadStartModule("flash0:/kd/semawm.prx", PSP_MEMORY_PARTITION_KERNEL);
+      pspSdkLoadStartModule("flash0:/kd/usbstor.prx", PSP_MEMORY_PARTITION_KERNEL);
+      pspSdkLoadStartModule("flash0:/kd/usbstormgr.prx", PSP_MEMORY_PARTITION_KERNEL);
+      pspSdkLoadStartModule("flash0:/kd/usbstorms.prx", PSP_MEMORY_PARTITION_KERNEL);
+      pspSdkLoadStartModule("flash0:/kd/usbstorboot.prx", PSP_MEMORY_PARTITION_KERNEL);
+      pspSdkLoadStartModule("flash0:/kd/usbdevice.prx", PSP_MEMORY_PARTITION_KERNEL);
+      usbModuleStatus = 1;
+   }
+   if (!usbStatus)
+   {
+   pspUsbDeviceSetDevice(device, 0, 0);
+   sceUsbStart(PSP_USBBUS_DRIVERNAME, 0, 0);
+   sceUsbStart(PSP_USBSTOR_DRIVERNAME, 0, 0);
+   sceUsbActivate(0x1c8);
+   usbStatus = 1;
+   sceKernelDelayThread(300000);
+   }
+   return 1;
+}
+
+void usb_icon()
+{
+	if (usb_debug == 1)
+	{
+		oslDrawImageXY(usbdebug, 10, 1);
+	}
+}
 
 void pspgetmodel()
 {
@@ -72,15 +160,15 @@ int settingsmenu()
 		
 		//Print the images onto the screen
 		oslDrawImageXY(backdrop, 0, 0);
-		oslDrawImageXY(settings_bg, 0, 17);
+		oslDrawImageXY(settings_bg, 0, 19);
 		oslDrawImageXY(navbar, 110, 237);
 		oslDrawImageXY(wificon, 387, 1);
 		
 		pspgetmodel();
-		oslDrawString(37,121,"CyanogenMod PSP - C Alpha build 1");
-		oslDrawString(37,170,"Kernel Version");
-		oslDrawString(37,183,"Undefined-pspsdk_oslib");
-		oslDrawString(37,196,"joelluvsanna@psp #1");
+		oslDrawString(37,123,"CyanogenMod PSP - C Alpha build 2");
+		oslDrawString(37,172,"Kernel Version");
+		oslDrawString(37,185,"Undefined-pspsdk_oslib");
+		oslDrawString(37,198,"joellovesanna@psp #1");
 			
 		//calls the functions
 		battery();
@@ -88,6 +176,7 @@ int settingsmenu()
 		home_icon();
 		multi();
 		android_notif();
+		usb_icon();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)
@@ -120,6 +209,18 @@ int settingsmenu()
 			multitask();
 		}
 		
+		if(osl_pad.held.select)
+		{
+			enableUsb();
+			usb_debug = 1;
+		}
+		
+		else if(osl_pad.held.select)
+		{
+			disableUsb();
+			usb_debug = 0;
+		}
+				
         oslEndDrawing();
         
         oslEndFrame();

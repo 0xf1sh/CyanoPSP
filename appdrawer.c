@@ -10,6 +10,30 @@ OSL_IMAGE *background, *cursor, *navbar, *wificon, *apollo, *gmail, *message, *b
 //definition of our sounds
 OSL_SOUND *tone;
 
+void pointerfunc()
+{	
+	if (osl_pad.pressed.right)
+	{
+	oslDrawImageXY(pointer1, 220, 221);
+	oslDrawImageXY(pointer, 234, 222);
+	oslDrawImageXY(pointer1, 244, 222);
+	}
+	
+	else if (osl_pad.pressed.right)
+	{
+	oslDrawImageXY(pointer1, 220, 221);
+	oslDrawImageXY(pointer1, 234, 222);
+	oslDrawImageXY(pointer, 244, 222);
+	}
+	
+	else 
+	{
+	oslDrawImageXY(pointer, 220, 221);
+	oslDrawImageXY(pointer1, 234, 222);
+	oslDrawImageXY(pointer1, 244, 222);
+	}
+}
+
 int appdrawer()
 {
 	oslIntraFontInit(INTRAFONT_CACHE_MED);
@@ -80,14 +104,13 @@ int appdrawer()
 		oslDrawString(361,175,"Phone");
 		oslDrawImageXY(settings, 396, 120);
 		oslDrawString(422,175,"Settings");
-		oslDrawImageXY(pointer, 220, 221);
-		oslDrawImageXY(pointer1, 234, 222);
-		oslDrawImageXY(pointer1, 244, 222);
+		
 		battery();
 		back();
 		home_icon();
 		multi();
 		android_notif();
+		usb_icon();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)

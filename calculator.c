@@ -47,44 +47,44 @@ int calculator()
 
 		//Print the images onto the screen
 		oslDrawImageXY(backdrop, 0, 0);	
-		oslDrawImageXY(calcbackground, 0, 15);		
+		oslDrawImageXY(calcbackground, 0, 19);		
 		
 		oslDrawImageXY(navbar, 110, 237);
 		oslDrawImageXY(wificon, 387, 1);
 		
-		oslDrawString(40,75,"sin");
-		oslDrawString(94,75,"cos");
-		oslDrawString(148,75,"tan");
-		oslDrawString(218,80,"7");
-		oslDrawString(272,80,"8");
-		oslDrawString(326,80,"9");
-		oslDrawString(380,80,"/");
+		oslDrawString(40,77,"sin");
+		oslDrawString(94,77,"cos");
+		oslDrawString(148,77,"tan");
+		oslDrawString(218,82,"7");
+		oslDrawString(272,82,"8");
+		oslDrawString(326,82,"9");
+		oslDrawString(380,82,"/");
 
-		oslDrawString(40,118,"1/x");
-		oslDrawString(94,118,"sqr");
-		oslDrawString(150,118,"^");
-		oslDrawString(218,131,"4");
-		oslDrawString(272,131,"5");
-		oslDrawString(326,131,"6");
-		oslDrawString(380,131,"x");
+		oslDrawString(40,120,"1/x");
+		oslDrawString(94,120,"sqr");
+		oslDrawString(150,120,"^");
+		oslDrawString(218,133,"4");
+		oslDrawString(272,133,"5");
+		oslDrawString(326,133,"6");
+		oslDrawString(380,133,"x");
 
-		oslDrawString(298,238,"");
-		oslDrawString(298,238,"");
-		oslDrawString(298,238,"");
-		oslDrawString(218,182,"1");
-		oslDrawString(272,182,"2");
-		oslDrawString(326,182,"3");
-		oslDrawString(380,182,"-");
+		oslDrawString(298,240,"");
+		oslDrawString(298,240,"");
+		oslDrawString(298,240,"");
+		oslDrawString(218,184,"1");
+		oslDrawString(272,184,"2");
+		oslDrawString(326,184,"3");
+		oslDrawString(380,184,"-");
 
-		oslDrawString(298,238,"");
-		oslDrawString(95,240,"C");
-		oslDrawString(298,238,"");
-		oslDrawString(246,230,"0");
-		oslDrawString(328,230,".");
-		oslDrawString(375,235,"+");
-		oslDrawString(433,208,"=");
+		oslDrawString(298,240,"");
+		oslDrawString(95,242,"C");
+		oslDrawString(298,240,"");
+		oslDrawString(246,232,"0");
+		oslDrawString(328,232,".");
+		oslDrawString(380,237,"+");
+		oslDrawString(433,210,"=");
 
-		oslDrawString(35,25,"0");
+		oslDrawString(35,27,"0");
 		
 		//calls the functions
 		battery();
@@ -92,6 +92,7 @@ int calculator()
 		home_icon();
 		multi();
 		android_notif();
+		usb_icon();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.pressed.left)
@@ -118,121 +119,121 @@ int calculator()
 		
 		if (y == 1 && x == 1)
 		{
-		oslDrawString(40,75,"sin");
+		oslDrawString(40,77,"sin");
 		}
 		else if (x == 2)
 		{
-		oslDrawString(94,75,"cos");
+		oslDrawString(94,77,"cos");
 		}
 		else if (x  == 3) 
 		{
-		oslDrawString(148,75,"tan");
+		oslDrawString(148,77,"tan");
 		}
 		else if (x == 4)
 		{
-		oslDrawString(218,80,"7");
+		oslDrawString(218,82,"7");
 		}
 		else if (x == 5)
 		{
-		oslDrawString(272,80,"8");
+		oslDrawString(272,82,"8");
 		}
 		else if (x  == 6) 
 		{
-		oslDrawString(326,80,"9");
+		oslDrawString(326,82,"9");
 		}
 		else if (x  == 7)
 		{
-		oslDrawString(380,80,"/");
+		oslDrawString(380,82,"/");
 		}
 
 		else if (y == 2)
 		{
 		if (x == 1)
-		oslDrawString(40,118,"1/x");
+		oslDrawString(40,120,"1/x");
 		}
 		else if (x == 2) 
 		{
-		oslDrawString(94,118,"sqr");
+		oslDrawString(94,120,"sqr");
 		}
 		else if (x == 3)
 		{
-		oslDrawString(150,118,"^");
+		oslDrawString(150,120,"^");
 		}
 		else if (x == 4) 
 		{
-		oslDrawString(218,131,"4");
+		oslDrawString(218,133,"4");
 		}
 		else if (x == 5)
 		{
-		oslDrawString(272,131,"5");
+		oslDrawString(272,133,"5");
 		}
 		else if (x  == 6) 
 		{
-		oslDrawString(326,131,"6");
+		oslDrawString(326,133,"6");
 		}
 		else if (x  == 7)
 		{
-		oslDrawString(380,131,"x");
+		oslDrawString(380,133,"x");
 		}
 		
 		else if (y == 3) 
 		{
 		if (x == 1)
-		oslDrawString(298,238,"");
+		oslDrawString(298,240,"");
 		}
 		else if (x == 2)
 		{
-		oslDrawString(298,238,"");
+		oslDrawString(298,240,"");
 		}
 		else if (x == 3)
 		{
-		oslDrawString(298,238,"");
+		oslDrawString(298,240,"");
 		}
 		else if (x == 4)
 		{
-		oslDrawString(218,182,"1");
+		oslDrawString(218,184,"1");
 		}
 		else if (x == 5)
 		{
-		oslDrawString(272,182,"2");
+		oslDrawString(272,184,"2");
 		}
 		else if (x  == 6)
 		{
-		oslDrawString(326,182,"3");
+		oslDrawString(326,184,"3");
 		}
 		else if (x  == 7)
 		{
-		oslDrawString(380,182,"-");
+		oslDrawString(380,184,"-");
 		}
 		
 		else if (y == 4)
 		{
 		if (x == 1)
-		oslDrawString(298,238,"");
+		oslDrawString(298,240,"");
 		}
 		else if (x == 2)
 		{
-		oslDrawString(95,240,"C");
+		oslDrawString(95,242,"C");
 		}
 		else if (x == 3)
 		{
-		oslDrawString(298,238,"");
+		oslDrawString(298,240,"");
 		}
 		else if (x == 4)
 		{
-		oslDrawString(246,230,"0");
+		oslDrawString(246,232,"0");
 		}
 		else if (x == 5)
 		{
-		oslDrawString(328,230,".");
+		oslDrawString(328,232,".");
 		}
 		else if (x  == 6) 
 		{
-		oslDrawString(375,235,"+");
+		oslDrawString(380,237,"+");
 		}
 		else if (x  == 7)
 		{
-		oslDrawString(433,208,"=");
+		oslDrawString(433,210,"=");
 		}
 		
 		if (osl_pad.held.square)

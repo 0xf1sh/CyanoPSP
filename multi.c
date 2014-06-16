@@ -45,7 +45,7 @@ int multitask()
 		
 		//calls the functions
 		battery();
-		
+		usb_icon();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.L)

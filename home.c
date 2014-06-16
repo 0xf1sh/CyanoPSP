@@ -48,6 +48,7 @@ int home()
 		home_icon();
 		multi();
 		android_notif();
+		usb_icon();
 		oslDrawImage(cursor);
 			
 		if (osl_pad.held.square)

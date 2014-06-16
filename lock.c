@@ -54,6 +54,7 @@ int lockscreen()
 		oslDrawImageXY(wificon, 387, 1);
 		oslDrawImageXY(circles, 223, 240);
 		battery();
+		usb_icon();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.cross && cursor->x >= 190 && cursor->x <= 290 && cursor->y >= 120 && cursor->y <= 220)

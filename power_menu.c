@@ -48,6 +48,7 @@ int powermenu()
 		oslDrawImageXY(power, 114, 10);	
 
 		battery();
+		usb_icon();
 		oslDrawImage(cursor);
 					
 		if (osl_pad.held.circle)
