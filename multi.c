@@ -45,6 +45,10 @@ int multitask()
 		
 		//calls the functions
 		battery();
+		back();
+		home_icon();
+		multi();
+		android_notif();
 		usb_icon();
 		oslDrawImage(cursor);
 		
@@ -56,6 +60,21 @@ int multitask()
 		if (osl_pad.held.circle)
 		{
 			home();
+		}
+		
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			home();
+		}
+		
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			home();
+		}
+
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			multitask();
 		}
 				
 		//Ends printing

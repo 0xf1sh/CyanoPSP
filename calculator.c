@@ -1,11 +1,8 @@
 #include <pspkernel.h>
-#include <pspnet.h>
-#include <pspnet_inet.h>
-#include <pspnet_apctl.h>
 #include <oslib/oslib.h>
 
 //declaration
-OSL_IMAGE *cursor, *calcbackground, *navbar, *wificon, *backdrop;
+OSL_IMAGE *cursor, *calcbackground, *navbar, *wificon;
 
 //variables
 int result;
@@ -31,7 +28,7 @@ int calculator()
 	oslSetFont(pgfFont);
 
 	//Debugger
-	if (!calcbackground || !backdrop || !cursor || !wificon)
+	if (!calcbackground || !cursor || !wificon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 		
 	//Main loop to run the program
@@ -40,13 +37,14 @@ int calculator()
 		//Draws images onto the screen
 		oslStartDrawing();
 		
+		oslClearScreen(RGB(0,0,0));
+		
 		controls();	
 		
 		//Initiate the PSP's controls
 		oslReadKeys();
 
 		//Print the images onto the screen
-		oslDrawImageXY(backdrop, 0, 0);	
 		oslDrawImageXY(calcbackground, 0, 19);		
 		
 		oslDrawImageXY(navbar, 110, 237);

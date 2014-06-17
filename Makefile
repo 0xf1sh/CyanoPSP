@@ -1,5 +1,6 @@
 TARGET = CyanogenMod
-OBJS = main.o appdrawer.o home.o calculator.o lock.o settingsmenu.o glib2d.o clock.o browser.o recoverymenu.o imports.o menu.o common.o multi.o power_menu.o
+OBJS = main.o appdrawer.o home.o calculator.o lock.o settingsmenu.o glib2d.o clock.o browser.o recoverymenu.o imports.o menu.o common.o multi.o power_menu.o \
+	   apollo.o fm.o
 
 INCDIR = 
 CFLAGS = -G4 -Wall -O2 -g -G0
@@ -11,6 +12,7 @@ LDFLAGS =
 STDLIBS= -losl -lpng -lz \
          -lpsphprm -lpspsdk -lpspctrl -lpspumd -lpsprtc -lpsppower -lpspgu -lpspgum  -lpspaudiolib -lpspaudio -lpsphttp -lpspssl -lpspwlan \
          -lpspnet_adhocmatching -lpspnet_adhoc -lpspnet_adhocctl -lm -ljpeg -lpspvram -lpsputility -lpspkubridge -lpspsystemctrl_user  -lpspreg \
+		 -lpspusb -lpspusbstor -lpspusbdevice -lpspmp3
 		 
 LIBS=$(STDLIBS)$(YOURLIBS)
 

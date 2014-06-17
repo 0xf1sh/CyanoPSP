@@ -1,12 +1,8 @@
 #include <pspkernel.h>
-#include <pspnet.h>
-#include <pspnet_inet.h>
-#include <pspnet_apctl.h>
 #include <oslib/oslib.h>
-#include "settingsmenu.h"
 
 //declaration
-OSL_IMAGE *settings_bg, *cursor, *navbar, *wificon, *backdrop, *usbdebug;
+OSL_IMAGE *settings_bg, *cursor, *navbar, *wificon, *usbdebug;
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -143,7 +139,7 @@ int settingsmenu()
 	oslSetFont(pgfFont);
 	
 	//Debugger
-	if (!settings_bg || !cursor || !backdrop || !wificon)
+	if (!settings_bg || !cursor || !wificon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 		
 	//Main loop to run the program
@@ -153,13 +149,14 @@ int settingsmenu()
 		//Draws images onto the screen
 		oslStartDrawing();
 		
+		oslClearScreen(RGB(0,0,0));
+		
 		controls();	
 			
 		//Initiate the PSP's controls
 		oslReadKeys();
 		
 		//Print the images onto the screen
-		oslDrawImageXY(backdrop, 0, 0);
 		oslDrawImageXY(settings_bg, 0, 19);
 		oslDrawImageXY(navbar, 110, 237);
 		oslDrawImageXY(wificon, 387, 1);

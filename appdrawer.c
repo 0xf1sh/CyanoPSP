@@ -1,7 +1,4 @@
 #include <pspkernel.h>
-#include <pspnet.h>
-#include <pspnet_inet.h>
-#include <pspnet_apctl.h>
 #include <oslib/oslib.h>
 
 //declaration
@@ -142,6 +139,21 @@ int appdrawer()
 		if (cursor->x >= 385 && cursor->x <= 430 && cursor->y >= 103 && cursor->y <= 151 && osl_pad.held.cross)
 		{
 			settingsmenu();
+		}
+		
+		if (cursor->x >= 266 && cursor->x <= 311 && cursor->y >= 25 && cursor->y <= 70 && osl_pad.held.cross)
+		{
+			pspclock();
+		}
+		
+		if (cursor->x >= 18 && cursor->x <= 65 && cursor->y >= 25 && cursor->y <= 70 && osl_pad.held.cross)
+		{
+			mp3player();
+		}
+		
+		if (cursor->x >= 387 && cursor->x <= 432 && cursor->y >= 25 && cursor->y <= 70 && osl_pad.held.cross)
+		{
+			filemanage();
 		}
 		
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)

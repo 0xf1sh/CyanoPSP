@@ -1,12 +1,12 @@
 #include <oslib/oslib.h>
 
 //declaration
-OSL_IMAGE *clockbg, *cursor, *wificon, *navbar;
+OSL_IMAGE *filemanagerbg, *cursor, *wificon, *navbar;
 
-int pspclock()
+int filemanage()
 {
 	//loads our images into memory
-	clockbg = oslLoadImageFilePNG("system/home/menu/clockbg.png", OSL_IN_RAM, OSL_PF_8888);
+	filemanagerbg = oslLoadImageFilePNG("system/home/menu/filemanagerbg.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	//Load fonts:
 	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
@@ -15,13 +15,11 @@ int pspclock()
 	oslSetFont(pgfFont);
 	
 	//Debugger
-	if (!clockbg || !cursor || !wificon || !navbar)
+	if (!filemanagerbg || !cursor || !wificon || !navbar)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
 	while (!osl_quit)
-  {		
-		sceRtcGetCurrentClockLocalTime(&time);
-	
+  {
 		//Draws images onto the screen
 		oslStartDrawing();
 		
@@ -33,7 +31,7 @@ int pspclock()
 		oslReadKeys();
 		
 		//Print the images onto the screen
-		oslDrawImageXY(clockbg, 0, 19);
+		oslDrawImageXY(filemanagerbg, 0, 19);
 		oslDrawImageXY(navbar, 110, 237);
 		oslDrawImageXY(wificon, 387, 1);
 		

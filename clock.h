@@ -1,1 +1,1 @@
-int analogclock();
+int pspclock();

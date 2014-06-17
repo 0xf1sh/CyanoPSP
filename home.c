@@ -1,7 +1,4 @@
 #include <pspkernel.h>
-#include <pspnet.h>
-#include <pspnet_inet.h>
-#include <pspnet_apctl.h>
 #include <oslib/oslib.h>
 
 //declaration
