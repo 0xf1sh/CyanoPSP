@@ -10,7 +10,7 @@ int filemanage()
 	
 	//Load fonts:
 	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
+	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(0,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
 	//Set fonts
 	oslSetFont(pgfFont);
 	
@@ -34,6 +34,8 @@ int filemanage()
 		oslDrawImageXY(filemanagerbg, 0, 19);
 		oslDrawImageXY(navbar, 110, 237);
 		oslDrawImageXY(wificon, 387, 1);
+		
+		oslDrawString(240,136,"Work in Progress");
 		
 		//calls the functions
 		battery();

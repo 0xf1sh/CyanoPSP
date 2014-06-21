@@ -7,30 +7,6 @@ OSL_IMAGE *background, *cursor, *navbar, *wificon, *apollo, *gmail, *message, *b
 //definition of our sounds
 OSL_SOUND *tone;
 
-void pointerfunc()
-{	
-	if (osl_pad.pressed.right)
-	{
-	oslDrawImageXY(pointer1, 220, 221);
-	oslDrawImageXY(pointer, 234, 222);
-	oslDrawImageXY(pointer1, 244, 222);
-	}
-	
-	else if (osl_pad.pressed.right)
-	{
-	oslDrawImageXY(pointer1, 220, 221);
-	oslDrawImageXY(pointer1, 234, 222);
-	oslDrawImageXY(pointer, 244, 222);
-	}
-	
-	else 
-	{
-	oslDrawImageXY(pointer, 220, 221);
-	oslDrawImageXY(pointer1, 234, 222);
-	oslDrawImageXY(pointer1, 244, 222);
-	}
-}
-
 int appdrawer()
 {
 	oslIntraFontInit(INTRAFONT_CACHE_MED);
@@ -101,6 +77,9 @@ int appdrawer()
 		oslDrawString(361,175,"Phone");
 		oslDrawImageXY(settings, 396, 120);
 		oslDrawString(422,175,"Settings");
+		oslDrawImageXY(pointer, 220, 221);
+		oslDrawImageXY(pointer1, 234, 222);
+		oslDrawImageXY(pointer1, 244, 222);
 		
 		battery();
 		back();
@@ -149,6 +128,11 @@ int appdrawer()
 		if (cursor->x >= 18 && cursor->x <= 65 && cursor->y >= 25 && cursor->y <= 70 && osl_pad.held.cross)
 		{
 			mp3player();
+		}
+		
+		if (cursor->x >= 147 && cursor->x <= 191 && cursor->y >= 112 && cursor->y <= 154 && osl_pad.held.cross)
+		{
+			gamemenu();
 		}
 		
 		if (cursor->x >= 387 && cursor->x <= 432 && cursor->y >= 25 && cursor->y <= 70 && osl_pad.held.cross)

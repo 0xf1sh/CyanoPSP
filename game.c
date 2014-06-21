@@ -1,55 +1,42 @@
 #include <pspkernel.h>
-#include <pspdebug.h>
 #include <oslib/oslib.h>
-#include <psprtc.h>
 
 //declaration
-OSL_IMAGE *clockbg, *cursor, *wificon, *navbar;
+OSL_IMAGE *gamebg, *cursor, *navbar;
 
-int pspclock()
-{
-	//loads our images into memory
-	clockbg = oslLoadImageFilePNG("system/home/menu/clockbg.png", OSL_IN_RAM, OSL_PF_8888);
+//definition of our sounds
+OSL_SOUND *tone;
+
+int gamemenu()
+{	
+	gamebg = oslLoadImageFilePNG("system/home/menu/gamebg.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	//Load fonts:
 	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
+	oslIntraFontSetStyle(pgfFont, 0.6, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
 	//Set fonts
 	oslSetFont(pgfFont);
 	
-	pspTime time;
-	sceRtcGetCurrentClockLocalTime(&time);
-	
 	//Debugger
-	if (!clockbg || !cursor || !wificon || !navbar)
+	if (!gamebg || !cursor)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
+	//Main loop to run the program
 	while (!osl_quit)
-  {		
+	{
 		//Draws images onto the screen
 		oslStartDrawing();
 		
-		oslClearScreen(RGB(0,0,0));
-		
-		controls();	
-			
+		controls();
+											
 		//Initiate the PSP's controls
 		oslReadKeys();
-		
+
 		//Print the images onto the screen
-		oslDrawImageXY(clockbg, 0, 19);
+		oslDrawImageXY(gamebg, 0,0);
 		oslDrawImageXY(navbar, 110, 237);
-		oslDrawImageXY(wificon, 387, 1);
-			
-		oslPrintf_xy(435,6,"%02d:%02d", time.hour, time.minutes);	
 		
-		if (time.hour > 12)
-		time.hour -= 12;
-		
-		if(time.hour/12 == 1) 
-		oslDrawString(445,6,"PM"); 
-		else 
-		oslDrawString(445,6,"AM");
+		oslDrawString(240,136,"Work in Progress");
 		
 		//calls the functions
 		battery();
@@ -59,11 +46,6 @@ int pspclock()
 		android_notif();
 		usb_icon();
 		oslDrawImage(cursor);
-
-		if (osl_pad.held.square)
-		{
-			powermenu();
-		}
 		
 		if (osl_pad.held.L)
 		{
@@ -72,12 +54,12 @@ int pspclock()
 		
 		if (osl_pad.held.circle)
 		{
-			appdrawer();
+			home();
 		}
-
+		
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			appdrawer();
+			home();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
@@ -89,16 +71,16 @@ int pspclock()
 		{
 			multitask();
 		}
-		
+				
+		//Ends printing
 		oslEndDrawing();
-        
-        oslEndFrame();
-        oslSyncFrame();
-
+		
+		//Synchronizes the screen 
+		oslSyncFrame();	
+					   
 	    //For sleep
         oslAudioVSync();
 	}
+	
 }
-
-
 

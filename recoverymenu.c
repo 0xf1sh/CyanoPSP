@@ -41,7 +41,7 @@ void ShowPage5()
 {
     int type, size, psp, pan, cfw;
 	
-	CheckerInitMainScreen("Advanced Configuration, CFW & PSP Utils Info");
+	CheckerInitMainScreen("Advanced Configuration, CFW & PSP Utility Info");
 	
 	psp = chGetPSPHackable();
 	pan = chGetPSPCreatePandora();
@@ -60,7 +60,7 @@ void ShowPage5()
 	CheckerPrintf("PSP Hackable:       %s\n", PSPUtils[psp]);
 	CheckerPrintf("PSP Create Pandora: %s\n\n\n", PSPUtils[pan]);
 	
-	CheckerPrintf("Press L/R to switch sections, X to Edit, Triangle to return and O   to exit.\n");
+	CheckerPrintf("Press L/R to switch sections, X to edit and Circle to return.\n");
 	
 	sceKernelDelayThread(200000);
 	
@@ -82,13 +82,9 @@ void ShowPage5()
 		{
 			ShowAdvancedCnfMenu();
         }
-		if (pad.Buttons & PSP_CTRL_TRIANGLE)
-		{
-		    ShowMainMenu();
-		}
 		if (pad.Buttons & PSP_CTRL_CIRCLE)
 		{
-			CheckerExit();
+			ShowMainMenu();
         }
 		
 		sceKernelDelayThread(10000);
@@ -115,7 +111,7 @@ void ShowPage4()
     CheckerPrintf("Use Slim colors on Classic PSP (currently: %s)\n", config.slimcolors ? "Enabled" : "Disabled");
     CheckerPrintf("Hide MAC address               (currently: %s)\n\n\n", config.hidemac ? "Enabled" : "Disabled");
 	
-	CheckerPrintf("Press L/R to switch sections, X to Edit, Triangle to return and O   to exit.\n");
+	CheckerPrintf("Press L/R to switch sections, X to edit and Circle to return.\n");
 	
 	sceKernelDelayThread(200000);
 	
@@ -137,13 +133,9 @@ void ShowPage4()
 		{
 			ShowCnfMenu();
         }
-		if (pad.Buttons & PSP_CTRL_TRIANGLE)
-		{
-		    ShowMainMenu();
-		}
 		if (pad.Buttons & PSP_CTRL_CIRCLE)
 		{
-			CheckerExit();
+			ShowMainMenu();
         }
 		
 		sceKernelDelayThread(10000);
@@ -221,7 +213,7 @@ void ShowPage3()
 	CheckerPrintf(wma);
 	CheckerPrintf(flash);
 	
-	CheckerPrintf("Press L/R to switch sections, X to Edit, Triangle to return and O   to exit.\n");
+	CheckerPrintf("Press L/R to switch sections, X to edit and Circle to return.\n");
 	
 	sceKernelDelayThread(200000);
 	
@@ -243,13 +235,9 @@ void ShowPage3()
 		{
 			ShowSystemMenu();
         }
-		if (pad.Buttons & PSP_CTRL_TRIANGLE)
-		{
-		    ShowMainMenu();
-		}
 		if (pad.Buttons & PSP_CTRL_CIRCLE)
 		{
-			CheckerExit();
+			ShowMainMenu();
         }
 		
 		sceKernelDelayThread(10000);
@@ -284,7 +272,7 @@ void ShowPage2()
 	    CheckerPrintf("Battery Serial:  -\n\n\n");
 	}
 	
-	CheckerPrintf("Press L/R to switch sections, X to Edit, Triangle to return and O   to exit.\n");
+	CheckerPrintf("Press L/R to switch sections, X to edit and Circle to return.\n");
 	
 	sceKernelDelayThread(200000);
 	
@@ -306,13 +294,9 @@ void ShowPage2()
 		{
 			ShowBatteryMenu();
         }
-		if (pad.Buttons & PSP_CTRL_TRIANGLE)
-		{
-		    ShowMainMenu();
-		}
 		if (pad.Buttons & PSP_CTRL_CIRCLE)
 		{
-			CheckerExit();
+			ShowMainMenu();
         }
 		
 		sceKernelDelayThread(10000);
@@ -351,7 +335,7 @@ void ShowPage1()
 	CheckerPrintf("Fuse CFG:       0x%08X\n\n", fusecfg);
 	CheckerPrintf("Region:         %s\n\n\n", Regions[region]);
 	
-	CheckerPrintf("Press L/R to switch sections, Triangle to return and O to exit.\n");
+	CheckerPrintf("Press L/R to switch sections and Circle to return.\n");
 	
 	sceKernelDelayThread(200000);
 	
@@ -369,13 +353,9 @@ void ShowPage1()
 			sceKernelDelayThread(250000);
 			ShowPage2();
         }
-		if (pad.Buttons & PSP_CTRL_TRIANGLE)
-		{
-		    ShowMainMenu();
-		}
 		if (pad.Buttons & PSP_CTRL_CIRCLE)
 		{
-			CheckerExit();
+			ShowMainMenu();
         }
 		
 		sceKernelDelayThread(10000);
@@ -397,19 +377,15 @@ void ShowVersionTxt()
 	CheckerPrintf("Version.txt:\n");
     CheckerPrintf(" \n%s\n\n", GetVersion());	
 	
-	CheckerPrintf("Press Triangle to return to Main Menu or O to exit\n\n");
+	CheckerPrintf("Press Circle to return to Main Menu.\n\n");
 	
 	while(1)
 	{
 	    sceCtrlReadBufferPositive(&pad, 1);
 
-		if (pad.Buttons & PSP_CTRL_TRIANGLE)
-		{
-		    ShowMainMenu();
-		}
 		if (pad.Buttons & PSP_CTRL_CIRCLE)
 		{
-		    CheckerExit();
+		    ShowMainMenu();
 		}
 	}
 }
@@ -478,7 +454,7 @@ void ShowAdvancedCnfMenu(void)
         {
 		    ShowPage5();
         }	
-		if (pad.Buttons & PSP_CTRL_TRIANGLE)
+		if (pad.Buttons & PSP_CTRL_CIRCLE)
 		{
 		    ShowPage5();
 		}		
@@ -661,7 +637,7 @@ void ShowCnfMenu(void)
         {
 		    ShowPage4();
         }	
-		if (pad.Buttons & PSP_CTRL_TRIANGLE)
+		if (pad.Buttons & PSP_CTRL_CIRCLE)
 		{
 		    ShowPage4();
 		}		
@@ -724,7 +700,7 @@ void ShowSystemMenu(void)
         {
 		    ShowPage3();
         } 
-		if (pad.Buttons & PSP_CTRL_TRIANGLE)
+		if (pad.Buttons & PSP_CTRL_CIRCLE)
 		{
 		    ShowPage3();
 		}		
@@ -800,7 +776,7 @@ void ShowBatteryMenu(void)
         {
 		    ShowPage2();
         } 
-		if (pad.Buttons & PSP_CTRL_TRIANGLE)
+		if (pad.Buttons & PSP_CTRL_CIRCLE)
 		{
 		    ShowPage2();
 		}		

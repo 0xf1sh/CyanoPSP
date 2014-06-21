@@ -61,7 +61,7 @@ void CheckerInitMainScreen(char *menu_txt)
 {
     pspDebugScreenSetTextColor(MainScreenColor);
     pspDebugScreenClear();
-    CheckerPrintf("CyanogenMod PSP - C Recovery Menu\n");
+    CheckerPrintf("CyanoPSP - C Recovery Menu\n");
 	CheckerPrintf("%s\n\n", menu_txt);
     CheckerPrintf("\n\n\n");
 	pspDebugScreenSetTextColor(0x00FFFFFF);

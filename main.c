@@ -3,6 +3,7 @@
 #include <pspnet.h>
 #include <pspnet_inet.h>
 #include <pspnet_apctl.h>
+#include <pspsdk.h>
 #include <pspusb.h>
 #include <pspusbstor.h>
 #include <pspusbdevice.h>
@@ -22,8 +23,10 @@
 #include "apollo.h"
 #include "fm.h"
 #include "recoverymenu.h"
+#include "mp3player.h"
+#include "game.h"
 
-PSP_MODULE_INFO("CyanogenMod PSP - C", 0x200, 2, 0);
+PSP_MODULE_INFO("CyanoPSP - C", 0x200, 2, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(-1024);
 
@@ -379,7 +382,7 @@ int main()
 		
 		if (osl_pad.held.square)
 		{
-			powermenu();
+			 powermenu();
 		}
 		
 		//Launching the browser

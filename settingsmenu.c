@@ -162,7 +162,7 @@ int settingsmenu()
 		oslDrawImageXY(wificon, 387, 1);
 		
 		pspgetmodel();
-		oslDrawString(37,123,"CyanogenMod PSP - C Alpha build 2");
+		oslDrawString(37,123,"CyanoPSP - Alpha build 2");
 		oslDrawString(37,172,"Kernel Version");
 		oslDrawString(37,185,"Undefined-pspsdk_oslib");
 		oslDrawString(37,198,"joellovesanna@psp #1");

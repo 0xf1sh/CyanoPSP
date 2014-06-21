@@ -1,3 +1,5 @@
+#include <pspkernel.h>
+#include <pspdebug.h>
 #include <pspctrl.h>
 #include <pspdisplay.h>
 #include <stdio.h>
@@ -6,9 +8,6 @@
 #include <psputility.h>
 #include <oslib/oslib.h>
 
-static int isrunning = 1;
- SceCtrlData pad;
-
 //declaration
 OSL_IMAGE *mp3bg, *cursor, *wificon, *navbar;
 
@@ -16,6 +15,8 @@ OSL_IMAGE *mp3bg, *cursor, *wificon, *navbar;
 
 /* Define printf, just to make typing easier */
 #define printf  pspDebugScreenPrintf
+
+static int isrunning = 1;
 
 // Input and Output buffers
 char	mp3Buf[16*1024]  __attribute__((aligned(64)));
@@ -27,14 +28,16 @@ short	pcmBuf[16*(1152/2)]  __attribute__((aligned(64)));
 
 // Print out an error message and quit after user input
 void error( char* msg )
-{
+{	
+	SceCtrlData pad;
 	pspDebugScreenClear();
 	pspDebugScreenSetXY(0, 0);
 	printf(msg);
 	printf("Press X to quit.\n");
 	while (isrunning)
 	{
-		if (osl_pad.held.cross)
+		sceCtrlReadBufferPositive(&pad, 1);
+		if (pad.Buttons & PSP_CTRL_CROSS)
 			break;
 		sceDisplayWaitVblankStart();
 	}
@@ -83,11 +86,27 @@ int fillStreamBuffer( int fd, int handle )
 	return (pos>0);
 }
 
-int apollo(int argc, char *argv[])
-{
-    SetupCallbacks();
+int mp3player()
+{	
+	SceCtrlData pad;
+	 
+	//loads our images into memory
+	mp3bg = oslLoadImageFilePNG("system/home/menu/mp3bg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-    // Setup Pad
+	//Load fonts:
+	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
+	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
+	//Set fonts
+	oslSetFont(pgfFont);
+	
+	//Debugger
+	if (!mp3bg || !cursor || !wificon || !navbar)
+		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+
+	//init screen and callbacks
+    pspDebugScreenInit();
+	
+	// Setup Pad
     sceCtrlSetSamplingCycle(0);
     sceCtrlSetSamplingMode(0);
 
@@ -153,11 +172,27 @@ int apollo(int argc, char *argv[])
 	int paused = 0;
 	int lastButtons = 0;
 	int loop = 0;
-	while (isrunning)
-	{
+		
+	while (isrunning && !osl_quit)
+  {
+		//Draws images onto the screen
+		oslStartDrawing();		
+		
+		oslClearScreen(RGB(0,0,0));
+		
+		controls();	
+			
+		//Initiate the PSP's controls
+		oslReadKeys();
+		
+		//Print the images onto the screen
+		oslDrawImageXY(mp3bg, 0, 19);
+		oslDrawImageXY(navbar, 110, 237);
+		oslDrawImageXY(wificon, 387, 1);
+		
 		sceDisplayWaitVblankStart();
 		pspDebugScreenSetXY(0, 0);
-		printf("PSP Mp3 Sample v1.0 by Raphael\n\n");
+		printf("Apollo Music Player\n\n");
 		printf("Playing '%s'...\n", MP3FILE);
 		printf(" %i Hz\n", samplingRate);
 		printf(" %i kbit/s\n", sceMp3GetBitRate( handle ));
@@ -166,6 +201,15 @@ int apollo(int argc, char *argv[])
 		int playTime = samplingRate>0?numPlayed / samplingRate:0;
 		printf(" Playtime: %02i:%02i\n", playTime/60, playTime%60 );
 		printf("\n\n\nPress CIRCLE to Pause/Resume playback\nPress TRIANGLE to reset playback\nPress CROSS to switch loop mode\nPress SQUARE to stop playback and quit\n");
+		
+		//calls the functions
+		battery();
+		back();
+		home_icon();
+		multi();
+		android_notif();
+		usb_icon();
+		oslDrawImage(cursor);
 		
 		if (!paused)
 		{
@@ -221,21 +265,23 @@ int apollo(int argc, char *argv[])
 			}
 		}
 		
+		sceCtrlPeekBufferPositive(&pad, 1);
+		
 		if (pad.Buttons!=lastButtons)
 		{
-			if (osl_pad.held.circle)
+			if (pad.Buttons & PSP_CTRL_CIRCLE)
 			{
 				paused ^= 1;
 			}
 			
-			if (osl_pad.held.triangle)
+			if (pad.Buttons & PSP_CTRL_TRIANGLE)
 			{
 				// Reset the stream and playback status
 				sceMp3ResetPlayPosition( handle );
 				numPlayed = 0;
 			}
 			
-			if (osl_pad.held.cross)
+			if (pad.Buttons & PSP_CTRL_CROSS)
 			{
 				loop = (loop==0?-1:0);
 				status = sceMp3SetLoopNum( handle, loop );
@@ -245,7 +291,7 @@ int apollo(int argc, char *argv[])
 				}
 			}
 			
-			if (osl_pad.held.square)
+			if (pad.Buttons & PSP_CTRL_SQUARE)
 			{
 				break;
 			}
@@ -275,52 +321,6 @@ int apollo(int argc, char *argv[])
 	{
 		ERRORMSG("ERROR: sceIoClose returned 0x%08X\n", status);
 	}
-	
-    sceKernelExitGame();
-
-    return 0;
-}
-
-int mp3player()
-{
-	//loads our images into memory
-	mp3bg = oslLoadImageFilePNG("system/home/menu/mp3bg.png", OSL_IN_RAM, OSL_PF_8888);
-	
-	//Load fonts:
-	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
-	//Set fonts
-	oslSetFont(pgfFont);
-	
-	//Debugger
-	if (!mp3bg || !cursor || !wificon || !navbar)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-
-	while (!osl_quit)
-  {
-		//Draws images onto the screen
-		oslStartDrawing();		
-		
-		oslClearScreen(RGB(0,0,0));
-		
-		controls();	
-			
-		//Initiate the PSP's controls
-		oslReadKeys();
-		
-		//Print the images onto the screen
-		oslDrawImageXY(mp3bg, 0, 19);
-		oslDrawImageXY(navbar, 110, 237);
-		oslDrawImageXY(wificon, 387, 1);
-		
-		//calls the functions
-		battery();
-		back();
-		home_icon();
-		multi();
-		android_notif();
-		usb_icon();
-		oslDrawImage(cursor);
 
 		if (osl_pad.held.square)
 		{
@@ -359,8 +359,10 @@ int mp3player()
 
 	    //For sleep
         oslAudioVSync();
-	}
-}
+		
+		sceKernelExitGame();
 
+    return 0;
+}
 
 
