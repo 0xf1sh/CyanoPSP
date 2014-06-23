@@ -1,6 +1,26 @@
 TARGET = CyanogenMod
 OBJS = main.o appdrawer.o home.o calculator.o lock.o settingsmenu.o glib2d.o clock.o browser.o recoverymenu.o imports.o menu.o common.o multi.o power_menu.o \
 	   apollo.o fm.o game.o
+	   
+ifeq ($(CONFIG_620), 1)
+CFLAGS += -DCONFIG_620=1
+PSP_FW_VERSION = 620
+endif
+
+ifeq ($(CONFIG_635), 1)
+CFLAGS += -DCONFIG_635=1
+PSP_FW_VERSION = 635
+endif
+
+ifeq ($(CONFIG_639), 1)
+CFLAGS += -DCONFIG_639=1
+PSP_FW_VERSION = 639
+endif
+
+ifeq ($(CONFIG_660), 1)
+CFLAGS += -DCONFIG_660=1
+PSP_FW_VERSION = 660
+endif
 
 INCDIR = 
 CFLAGS = -G4 -Wall -O2 -g -G0

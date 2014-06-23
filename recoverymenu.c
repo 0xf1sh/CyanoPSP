@@ -26,6 +26,8 @@
 
 extern void CheckerPrintf(char *fmt, ...);
 
+OSL_IMAGE *recoverybg;
+
 int color = 0;
 u32 value;
 
@@ -49,7 +51,7 @@ void ShowPage5()
 	
 	chGetIplAttribute(&type, &size);
 	sctrlSEGetConfig(&config);
-	
+
 	CheckerPrintf("Plain modules in UMD/ISO     (currently: %s)\n", config.umdactivatedplaincheck ? "Enabled" : "Disabled");
     CheckerPrintf("Execute PBOOT.BIN in UMD/ISO (currently: %s)\n", config.executebootbin ? "Enabled" : "Disabled");
     CheckerPrintf("XMB Plugins                  (currently: %s)\n", config.xmbplugins ? "Disabled" : "Enabled");
@@ -96,7 +98,7 @@ void ShowPage4()
     CheckerInitMainScreen("Miscellaneous");
 
 	sctrlSEGetConfig(&config);
-	
+
 	CheckerPrintf("Skip Sony logo                 (currently: %s)\n", config.skiplogo ? "Enabled" : "Disabled");
     CheckerPrintf("Hide corrupt icons             (currently: %s)\n", config.hidecorrupt ? "Enabled" : "Disabled");
     CheckerPrintf("Game folder homebrew           (currently: %s)\n", config.gamekernel150 ? "1.50 Kernel" : "6.XX Kernel");
@@ -785,14 +787,14 @@ void ShowBatteryMenu(void)
 
 void ShowMainMenu(void)
 {
-    int btn;
-	
+    int btn;		
 	CheckerInitMainScreen("Main Menu");
 	hcMenuClear();
     hcMenuAddEntry("Configuration", 1);
 	hcMenuAddEntry("Show Version.txt", 2);
-    hcMenuAddEntry("Exit", 3);
-	hcMenuAddEntry("Exit to XMB", 4);
+	hcMenuAddEntry("Plugins", 3);
+    hcMenuAddEntry("Exit", 4);
+	hcMenuAddEntry("Exit to XMB", 5);
 	
 	while(1 == 1)
     {
@@ -806,11 +808,11 @@ void ShowMainMenu(void)
         {
 		    ShowVersionTxt();
         } 
-		if(btn == 3)
+		if(btn == 4)
         {
 			Exittoshell();
         }  
-		if(btn == 4)
+		if(btn == 5)
         {
 			CheckerExit();
         } 

@@ -4,6 +4,11 @@
 //declaration
 OSL_IMAGE *background, *cursor, *wificon, *power, *apollo, *gmail, *message, *browser, *google, *pointer;
 
+void power_off()
+{
+	scePowerRequestStandby();
+}
+
 //definition of our sounds
 OSL_SOUND *tone;
 

@@ -59,9 +59,9 @@ void CheckerSetColor(int color)
 
 void CheckerInitMainScreen(char *menu_txt)
 {
-    pspDebugScreenSetTextColor(MainScreenColor);
+	pspDebugScreenSetTextColor(MainScreenColor);
     pspDebugScreenClear();
-    CheckerPrintf("CyanoPSP - C Recovery Menu\n");
+    CheckerPrintf("CyanoPSP Recovery Menu\n");
 	CheckerPrintf("%s\n\n", menu_txt);
     CheckerPrintf("\n\n\n");
 	pspDebugScreenSetTextColor(0x00FFFFFF);

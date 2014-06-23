@@ -39,7 +39,6 @@ int gamemenu()
 		oslDrawString(240,136,"Work in Progress");
 		
 		//calls the functions
-		battery();
 		back();
 		home_icon();
 		multi();
