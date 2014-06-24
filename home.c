@@ -13,10 +13,6 @@ int home()
 	if (!background || !cursor || !appicon || !appicon2 || !navbar || !wificon || !apollo || !gmail || !message || !browser || !google || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
-	//Sets the cursor's original position on the screen
-	cursor->x = 240;
-	cursor->y = 136;
-	
 	//Main loop to run the program
 	while (!osl_quit)
 	{

@@ -790,31 +790,47 @@ void ShowMainMenu(void)
     int btn;		
 	CheckerInitMainScreen("Main Menu");
 	hcMenuClear();
-    hcMenuAddEntry("Configuration", 1);
-	hcMenuAddEntry("Show Version.txt", 2);
-	hcMenuAddEntry("Plugins", 3);
-    hcMenuAddEntry("Exit", 4);
-	hcMenuAddEntry("Exit to XMB", 5);
+	hcMenuAddEntry("Toggle USB", 1);
+    hcMenuAddEntry("Configuration", 2);
+	hcMenuAddEntry("Show Version.txt", 3);
+	hcMenuAddEntry("Plugins", 4);
+    hcMenuAddEntry("Exit", 5);
+	hcMenuAddEntry("Exit to XMB", 6);
+	hcMenuAddEntry("Standby", 7);
+	hcMenuAddEntry("Shutdown Device", 8);
 	
 	while(1 == 1)
     {
-        btn = hcMenuShowMenu(0, 4);
-
+        btn = hcMenuShowMenu(0, 3);
+		
 		if(btn == 1)
+        {
+		    USB_Toggle();
+        }
+
+		if(btn == 2)
         {
 		    ShowPage1();
         }
-		if(btn == 2)
+		if(btn == 3)
         {
 		    ShowVersionTxt();
         } 
-		if(btn == 4)
+		if(btn == 5)
         {
 			Exittoshell();
         }  
-		if(btn == 5)
+		if(btn == 6)
         {
 			CheckerExit();
+        } 
+		if(btn == 7)
+        {
+			standby_device();
+        } 
+		if(btn == 8)
+        {
+			shutdown_device();
         } 
 	}
 }
@@ -842,7 +858,7 @@ int recoverymain(void)
 	LoadStartModule("kuman.prx");
 	sceKernelDelayThread(1000000);
 	
-	CheckerPrintf("PRXs loaded successfully.\n\n\n");
+	CheckerPrintf("PRXs loaded successfully.\n\n");
 	sceKernelDelayThread(2000000);
 		
     ShowMainMenu();

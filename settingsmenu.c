@@ -31,7 +31,7 @@
 #define FW_302 0x03000210
 
 //declaration
-OSL_IMAGE *settingsbg, *cursor, *navbar, *wificon, *usbdebug, *aboutbg, *offswitch, *onswitch, *themebg, *performancebg, *wifibg, *developerbg, *about, *performance, *developeroptions, *themes, *wifi;
+OSL_IMAGE *settingsbg, *cursor, *navbar, *wificon, *usbdebug, *aboutbg, *offswitch, *onswitch, *themebg, *performancebg, *wifibg, *developerbg, *about, *performance, *developeroptions, *themes, *wifi, *processorbg, *processor;
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -59,6 +59,67 @@ void wlanstatus1()
 	else
 	oslDrawImageXY(onswitch, 222, 14);
 	
+}
+
+int getCpuClock(){
+    return scePowerGetCpuClockFrequency();
+}
+
+int getBusClock(){
+    return scePowerGetBusClockFrequency();
+}
+
+void pspgetcpu_bus()
+{	
+		if(getCpuClock() == 20 && getBusClock() == 10)
+		{
+			oslDrawString(35,87,"20/10");
+		}
+   
+		else if(getCpuClock() == 75 && getBusClock() == 37)
+		{
+			oslDrawString(35,87,"75/37");
+		}
+		
+		else if(getCpuClock() == 100 && getBusClock() == 50)
+		{
+			oslDrawString(35,87,"100/50");
+		}
+		
+		else if(getCpuClock() == 133 && getBusClock() == 66)
+		{
+			oslDrawString(35,87,"133/66");
+		}
+		
+		else if(getCpuClock() == 166 && getBusClock() == 83)
+		{
+			oslDrawString(35,87,"166/83");
+		}
+		
+		else if(getCpuClock() == 200 && getBusClock() == 100)
+		{
+			oslDrawString(35,87,"200/100");
+		}
+		
+		else if(getCpuClock() == 222 && getBusClock() == 111)
+		{
+			oslDrawString(35,87,"222/111");
+		}
+		
+		else if(getCpuClock() == 266 && getBusClock() == 133)
+		{
+			oslDrawString(35,87,"266/133");
+		}
+		
+		else if(getCpuClock() == 300 && getBusClock() == 150)
+		{
+			oslDrawString(35,87,"300/150");
+		}
+		
+		else if(getCpuClock() == 333 && getBusClock() == 166)
+		{
+			oslDrawString(35,87,"333/166");
+		}
 }
 
 int disableUsb(void)
@@ -285,6 +346,7 @@ void performance_menu()
 {
 //loads our images into memory
 	performancebg = oslLoadImageFilePNG("system/settings/performancebg.png", OSL_IN_RAM, OSL_PF_8888);
+	processor = oslLoadImageFilePNG("system/settings/processor.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	//Load fonts:
 	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
@@ -293,7 +355,7 @@ void performance_menu()
 	oslSetFont(pgfFont);
 	
 	//Debugger
-	if (!performancebg || !cursor || !wificon)
+	if (!performancebg || !cursor || !wificon || !processor)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 		
 	//Main loop to run the program
@@ -318,6 +380,109 @@ void performance_menu()
 		oslDrawString(40,98,"Processor");
 		oslDrawString(40,161,"Ram Management");
 		oslDrawString(40,215,"Memory Management");
+			
+		//calls the functions
+		battery();
+		back();
+		home_icon();
+		multi();
+		android_notif();
+		usb_icon();
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 80 && cursor->y <= 138)
+		{
+			oslDrawImageXY(processor, 16, 83);
+			oslDrawString(40,98,"Processor");
+		}
+		
+		oslDrawImage(cursor);
+		
+		if (osl_pad.held.square)
+		{
+			powermenu();
+		}
+		
+		if (osl_pad.held.L)
+		{
+			lockscreen();
+        }
+		
+		if (osl_pad.held.circle)
+		{
+			settingsmenu();
+		}
+
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			settingsmenu();
+		}
+		
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			home();
+		}
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 80 && cursor->y <= 138 && osl_pad.held.cross)
+		{
+			processor_menu();
+		}
+
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			multitask();
+		}
+	
+		oslEndDrawing();
+        
+        oslEndFrame();
+        oslSyncFrame();
+
+	    //For sleep
+        oslAudioVSync();
+}
+}
+
+void processor_menu()
+{
+//loads our images into memory
+	processorbg = oslLoadImageFilePNG("system/settings/processorbg.png", OSL_IN_RAM, OSL_PF_8888);
+	
+	//Load fonts:
+	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
+	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
+	//Set fonts
+	oslSetFont(pgfFont);
+	
+	//Debugger
+	if (!processorbg || !cursor || !wificon)
+		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+		
+	//Main loop to run the program
+	while (!osl_quit)
+	{
+		
+		//Draws images onto the screen
+		oslStartDrawing();
+		
+		oslClearScreen(RGB(0,0,0));
+		
+		controls();	
+			
+		//Initiate the PSP's controls
+		oslReadKeys();
+		
+		//Print the images onto the screen
+		oslDrawImageXY(processorbg, 0, 19);
+		oslDrawImageXY(navbar, 110, 237);
+		oslDrawImageXY(wificon, 387, 1);
+
+		oslDrawString(35,74,"Current CPU Frequency");
+		pspgetcpu_bus();
+		oslDrawString(35,128,"MIPS R4000");
+		oslDrawString(35,184,"Minimum CPU Frequency");
+		oslDrawString(35,197,"20 MHz");
+		oslDrawString(35,236,"Maximum CPU Frequency");
+		oslDrawString(35,249,"333 MHz");
 			
 		//calls the functions
 		battery();
@@ -736,27 +901,27 @@ int settingsmenu()
 			appdrawer();
 		}
 		
-		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 63 && cursor->y <= 103 && osl_pad.held.cross)
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 53 && cursor->y <= 98 && osl_pad.held.cross)
 		{
 			wifi_menu();
 		}
 		
-		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 104 && cursor->y <= 146 && osl_pad.held.cross)
+		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 99 && cursor->y <= 141 && osl_pad.held.cross)
 		{
 			developer_menu();
 		}
 		
-		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 147 && cursor->y <= 188 && osl_pad.held.cross)
+		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 142 && cursor->y <= 183 && osl_pad.held.cross)
 		{
 			theme_menu();
 		}
 		
-		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 189 && cursor->y <= 232 && osl_pad.held.cross)
+		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 184 && cursor->y <= 227 && osl_pad.held.cross)
 		{
 			performance_menu();
 		}
 				
-		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 233 && cursor->y <= 255 && osl_pad.held.cross)
+		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 228 && cursor->y <= 250 && osl_pad.held.cross)
 		{
 			about_menu();
 		}

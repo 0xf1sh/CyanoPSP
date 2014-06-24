@@ -1,290 +1,144 @@
-#include <pspsdk.h>
-#include <pspuser.h>
-#include <pspdisplay.h>
-#include <pspctrl.h>
-#include <pspgu.h>
-#include <psputility.h>
-#include <psputility_netmodules.h>
-#include <psputility_htmlviewer.h>
-#include <pspnet.h>
-#include <pspnet_inet.h>
-#include <pspnet_apctl.h>
-#include <pspnet_resolver.h>
-#include <psphttp.h>
-#include <pspssl.h>
+#include <pspkernel.h>
+#include <oslib/oslib.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
-#include <sys/unistd.h>
+#define ADDRESS "www.google.it"
 
-void throwError(int milisecs, char *fmt, ...)
-{
-	va_list list;
-	char msg[256];	
+static int runningFlag = 1;
+static OSL_IMAGE *bkg = NULL;
+static char message[100] = "";
+static char buffer[100] = "";
 
-	va_start(list, fmt);
-	vsprintf(msg, fmt, list);
-	va_end(list);
+int connectAPCallback(int state){
+    oslStartDrawing();
+    oslDrawImageXY(bkg, 0, 0);
+    oslDrawString(30, 200, "Connecting to AP...");
+    sprintf(buffer, "State: %i", state);
+    oslDrawString(30, 230, buffer);
+    oslEndDrawing();
+    oslEndFrame();
+    oslSyncFrame();
 
-	pspDebugScreenInit();
-	pspDebugScreenClear();
-	pspDebugScreenPrintf(msg);
-
-	sceKernelDelayThread(milisecs * 1000);
-	sceKernelExitGame();
+    return 0;
 }
 
-#define BUF_WIDTH (512)
-#define SCR_WIDTH (480)
-#define SCR_HEIGHT (272)
 
-static char list[0x10000] __attribute__((aligned(64)));
+int connectToAP(int config){
+    oslStartDrawing();
+    oslDrawImageXY(bkg, 0, 0);
+    oslDrawString(30, 200, "Connecting to AP...");
+    oslEndDrawing();
+    oslEndFrame();
+    oslSyncFrame();
 
-void setupGu(void)
-{
-	sceGuInit();
+    int result = oslConnectToAP(config, 30, connectAPCallback);
+    if (!result){
+        char ip[30] = "";
+        char resolvedIP[30] = "";
 
-	sceGuStart(GU_DIRECT, list);
-	sceGuDrawBuffer(GU_PSM_8888, 0, BUF_WIDTH);
-	sceGuDispBuffer(SCR_WIDTH, SCR_HEIGHT, (void*)0x88000, BUF_WIDTH);
-	sceGuDepthBuffer((void*)0x110000, BUF_WIDTH);
+        oslStartDrawing();
+        oslDrawImageXY(bkg, 0, 0);
+        oslGetIPaddress(ip);
+        sprintf(buffer, "IP address: %s", ip);
+        oslDrawString(30, 170, buffer);
 
-	sceGuOffset(0, 0);
+        sprintf(buffer, "Resolving %s", ADDRESS);
+        oslDrawString(30, 200, buffer);
+        oslEndDrawing();
+        oslEndFrame();
+        oslSyncFrame();
 
-	sceGuScissor(0, 0, SCR_WIDTH, SCR_HEIGHT);
-	sceGuEnable(GU_SCISSOR_TEST);
+        result = oslResolveAddress(ADDRESS, resolvedIP);
 
-	sceGuBlendFunc(GU_ADD, GU_SRC_ALPHA, GU_ONE_MINUS_SRC_ALPHA, 0, 0);
-	sceGuEnable(GU_BLEND);
-
-	//sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);
-	//sceGuTexFilter(GU_LINEAR_MIPMAP_LINEAR, GU_NEAREST);
-	//sceGuTexWrap(GU_REPEAT, GU_REPEAT);
-
-	sceGuClearColor(0);
-	sceGuClearDepth(0);
-	sceGuClearStencil(0);
-
-	sceGuFinish();
-	sceGuSync(0, 0);
-	
-	sceDisplayWaitVblankStart();
-	sceGuDisplay(GU_TRUE);
+        oslStartDrawing();
+        oslDrawImageXY(bkg, 0, 0);
+        oslGetIPaddress(ip);
+        if (!result)
+            sprintf(buffer, "Resolved IP address: %s", ip);
+        else
+            sprintf(buffer, "Error resolving address!");
+        oslDrawString(30, 230, buffer);
+        oslEndDrawing();
+        oslEndFrame();
+        oslSyncFrame();
+		sceKernelDelayThread(3*1000000);
+    }else{
+        oslStartDrawing();
+        oslDrawImageXY(bkg, 0, 0);
+        sprintf(buffer, "Error connecting to AP!");
+        oslDrawString(30, 200, buffer);
+        oslEndDrawing();
+        oslEndFrame();
+        oslSyncFrame();
+		sceKernelDelayThread(3*1000000);
+    }
+    oslDisconnectFromAP();
+    return 0;
 }
 
-void draw()
-{
-	sceGuStart(GU_DIRECT, list);
-	sceGuClear(GU_COLOR_BUFFER_BIT|GU_STENCIL_BUFFER_BIT|GU_DEPTH_BUFFER_BIT);
-	sceGuFinish();
-	sceGuSync(0, 0);	
-}
-
-void loadNetModules()
-{
-	sceUtilityLoadNetModule(PSP_NET_MODULE_COMMON);
-	sceUtilityLoadNetModule(PSP_NET_MODULE_INET);
-	sceUtilityLoadNetModule(PSP_NET_MODULE_PARSEURI);
-	sceUtilityLoadNetModule(PSP_NET_MODULE_PARSEHTTP);
-	sceUtilityLoadNetModule(PSP_NET_MODULE_HTTP);
-	sceUtilityLoadNetModule(PSP_NET_MODULE_SSL);
-}
-
-void unloadNetModules()
-{
-	sceUtilityUnloadNetModule(PSP_NET_MODULE_SSL);
-	sceUtilityUnloadNetModule(PSP_NET_MODULE_HTTP);
-	sceUtilityUnloadNetModule(PSP_NET_MODULE_PARSEHTTP);
-	sceUtilityUnloadNetModule(PSP_NET_MODULE_PARSEURI);
-	sceUtilityUnloadNetModule(PSP_NET_MODULE_INET);
-	sceUtilityUnloadNetModule(PSP_NET_MODULE_COMMON);
-}
-
-void netTerm()
-{
-	sceHttpSaveSystemCookie();
-	sceHttpsEnd();
-	sceHttpEnd();
-	sceSslEnd();
-	sceNetApctlTerm();
-	sceNetInetTerm();
-	sceNetTerm();
-	
-	unloadNetModules();	
-}
-
-void netInit()
-{
-	int res;
-
-	loadNetModules();
-
-	res = sceNetInit(0x20000, 0x2A, 0, 0x2A, 0);
-	
-	if (res < 0) 
-	{
-		throwError(6000, "Error 0x%08X in sceNetInit\n", res);		
-	}
-
-	res = sceNetInetInit();
-	
-	if (res < 0) 
-	{
-		netTerm();
-		throwError(6000, "Error 0x%08X in sceNetInetInit\n", res);				
-	}
-
-	res = sceNetResolverInit();
-	
-	if (res < 0) 
-	{
-		netTerm();
-		throwError(6000, "Error 0x%08X in sceNetResolverInit\n", res);		
-	}
-
-	res = sceNetApctlInit(0x1800, 0x30);
-	
-	if (res < 0) 
-	{
-		netTerm();
-		throwError(6000, "Error 0x%08X in sceNetApctlInit\n", res);		
-	}
-
-	res = sceSslInit(0x28000);
-	
-	if (res < 0) 
-	{
-		netTerm();
-		throwError(6000, "Error 0x%08X in sceSslInit\n", res);
-	}
-
-	res = sceHttpInit(0x25800);
-	
-	if (res < 0) 
-	{
-		netTerm();
-		throwError(6000, "Error 0x%08X in sceHttpInit\n", res);
-	}
-
-	res = sceHttpsInit(0, 0, 0, 0);
-	if (res < 0) 
-	{
-		netTerm();
-		throwError(6000, "Error 0x%08X in sceHttpsInit\n", res);
-	}
-
-	res = sceHttpsLoadDefaultCert(0, 0);
-	
-	if (res < 0) 
-	{
-		netTerm();
-		throwError(6000, "Error 0x%08X in sceHttpsLoadDefaultCert\n", res);
-	}
-
-	res = sceHttpLoadSystemCookie();
-	
-	if (res < 0) 
-	{
-		netTerm();
-		throwError(6000, "Error 0x%08X in sceHttpsLoadDefaultCert\n", res);
-	}	
-}
-
-#define BROWSER_MEMORY (10*1024*1024) 
-
-SceUID vpl;
-pspUtilityHtmlViewerParam params;
-
-void htmlViewerInit(char *url)
-{
-	int res;
-	
-	vpl = sceKernelCreateVpl("BrowserVpl", PSP_MEMORY_PARTITION_USER, 0, BROWSER_MEMORY + 256, NULL);
-	
-	if (vpl < 0) 
-		throwError(6000, "Error 0x%08X creating vpl.\n", vpl);
-
-	memset(&params, 0, sizeof(pspUtilityHtmlViewerParam));
-	
-	params.base.size = sizeof(pspUtilityHtmlViewerParam);
-	
-	sceUtilityGetSystemParamInt(PSP_SYSTEMPARAM_ID_INT_LANGUAGE, &params.base.language);
-	sceUtilityGetSystemParamInt(PSP_SYSTEMPARAM_ID_INT_UNKNOWN, &params.base.buttonSwap);
-	
-	params.base.graphicsThread = 17;
-	params.base.accessThread = 19;
-	params.base.fontThread = 18;
-	params.base.soundThread = 16;	
-	params.memsize = BROWSER_MEMORY;
-	params.initialurl = url;
-	params.numtabs = 1;
-	params.cookiemode = PSP_UTILITY_HTMLVIEWER_COOKIEMODE_DEFAULT;
-	params.homeurl = url;
-	params.textsize = PSP_UTILITY_HTMLVIEWER_TEXTSIZE_NORMAL;
-	params.displaymode = PSP_UTILITY_HTMLVIEWER_DISPLAYMODE_SMART_FIT;
-	params.options = PSP_UTILITY_HTMLVIEWER_DISABLE_STARTUP_LIMITS|PSP_UTILITY_HTMLVIEWER_ENABLE_FLASH;
-	params.interfacemode = PSP_UTILITY_HTMLVIEWER_INTERFACEMODE_FULL;
-	params.connectmode = PSP_UTILITY_HTMLVIEWER_CONNECTMODE_MANUAL_ALL;
-	
-	// Note the lack of 'ms0:' on the paths	
-	params.dldirname = "/PSP/PHOTO";
-	
-	res = sceKernelAllocateVpl(vpl, params.memsize, &params.memaddr, NULL);
-	
-	if (res < 0) 
-		throwError(6000, "Error 0x%08X allocating browser memory.\n", res);
-
-	res = sceUtilityHtmlViewerInitStart(&params);
-	
-	if (res < 0)
-		throwError(6000, "Error 0x%08X initing browser.\n", res);
-}
-
-int updateHtmlViewer()
-{
-	draw();
-
-	switch (sceUtilityHtmlViewerGetStatus())
-	{	
-		case PSP_UTILITY_DIALOG_VISIBLE:			
-			sceUtilityHtmlViewerUpdate(1);
-		break;
-	
-		case PSP_UTILITY_DIALOG_QUIT:		
-			sceUtilityHtmlViewerShutdownStart();		
-		break;
-	
-		case PSP_UTILITY_DIALOG_NONE:
-			return 0;
-		break;
-		
-		default:
-			break;
-	}
-
-	return 1;
-}
 
 int startbrowser(int argc, char *argv[])
 {
-	char url[] = "http://www.ps2dev.org/";
+	int skip = 0;
+    int enabled = 1;
+    int selectedConfig = 0;
+    SetupCallbacks();
 
-	setupGu();
-	netInit();
-	htmlViewerInit(url);	
+    oslIntraFontInit(INTRAFONT_CACHE_MED);
+    oslNetInit();
 
-	while(updateHtmlViewer())
-	{
-		sceDisplayWaitVblankStart();
-		sceGuSwapBuffers();
-	}
+	bkg = oslLoadImageFilePNG("system/framework/framework-res/res/background.png", OSL_IN_RAM | OSL_SWIZZLED, OSL_PF_8888);
+	
+    //Load font:
+    OSL_FONT *font = oslLoadFontFile("flash0:/font/ltn0.pgf");
+    oslSetFont(font);
 
-	netTerm();
-	sceKernelFreeVpl(vpl, params.memaddr);
-	sceKernelDeleteVpl(vpl);
-	sceKernelExitGame();
+    if (!oslIsWlanPowerOn())
+        sprintf(message, "Please turn on the WLAN.");
 
-	return 0;
+    //Get connections list:
+    struct oslNetConfig configs[OSL_MAX_NET_CONFIGS];
+    int numconfigs = oslGetNetConfigs(configs);
+    if (!numconfigs){
+        sprintf(message, "No configuration found!");
+        enabled = 0;
+    }
+
+    while(runningFlag && !osl_quit){
+        if (!skip){
+			oslStartDrawing();
+			oslDrawImageXY(bkg, 0, 0);
+            if (enabled){
+                sprintf(buffer, "Press X to connect to %s.", configs[selectedConfig].name);
+    			oslDrawString(30, 50, buffer);
+    			oslDrawString(30, 80, "Press UP and DOWN to change settings.");
+            }
+            oslDrawString(30, 150, "Press /\\ to quit.");
+			oslDrawString(30, 200, message);
+
+			oslEndDrawing();
+		}
+        oslEndFrame();
+        skip = oslSyncFrame();
+
+        oslReadKeys();
+        if (osl_keys->released.triangle)
+            runningFlag = 0;
+
+        if (osl_keys->released.cross){
+            connectToAP(selectedConfig + 1);
+        }else if (osl_keys->released.up){
+            if (++selectedConfig >= numconfigs)
+                selectedConfig = numconfigs - 1;
+        }else if (osl_keys->released.down){
+            if (--selectedConfig < 0)
+                selectedConfig = 0;
+        }
+    }
+    //Quit OSL:
+    oslNetTerm();
+    oslEndGfx();
+    sceKernelExitGame();
+    return 0;
+
 }
+

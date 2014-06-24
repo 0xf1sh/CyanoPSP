@@ -51,6 +51,32 @@ void Exittoshell()
 	home();
 }
 
+void shutdown_device()
+{
+	scePowerRequestStandby();
+}
+
+void standby_device()
+{
+	scePowerRequestSuspend();
+	return 0;
+}
+
+void USB_Toggle()
+{	
+	SceCtrlData pad;
+	
+	if(pad.Buttons & PSP_CTRL_SELECT)
+		{
+			enableUsb();
+		}
+		
+		else if(pad.Buttons & PSP_CTRL_SELECT)
+		{
+			disableUsb();
+		}
+}
+
 void CheckerSetColor(int color)
 {
     hcMenuSetColors(0x00FFFFFF, color);
