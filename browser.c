@@ -1,7 +1,7 @@
 #include <pspkernel.h>
 #include <oslib/oslib.h>
 
-#define ADDRESS "www.google.it"
+#define ADDRESS "www.google.com"
 
 static int runningFlag = 1;
 static OSL_IMAGE *bkg = NULL;
