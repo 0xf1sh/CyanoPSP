@@ -148,49 +148,27 @@ void appdrawericon()
 		oslDrawImageXY(appicon,223,200);
 }
 
-void back()
-{
+void navbar_buttons()
+{		
+		oslDrawImageXY(navbar, 110, 237);
+		
 		if (cursor->x  >= 144 && cursor->x  <= 204 && cursor->y >= 226 && cursor->y <= 271)
 		oslDrawImageXY(backicon,110, 237);
 	
 		else
 		oslDrawImageXY(navbar,110, 237);
-}
-
-void home_icon()
-{
+		
 		if (cursor->x  >= 205 && cursor->x  <= 271 && cursor->y >= 226 && cursor->y <= 271)
 		oslDrawImageXY(homeicon,110, 237);
 	
 		else
 		oslDrawImageXY(navbar,110, 237);
-}
-
-void multi()
-{
+		
 		if (cursor->x  >= 272 && cursor->x  <= 332 && cursor->y >= 226 && cursor->y <= 271)
 		oslDrawImageXY(multicon,110, 237);
 	
 		else
 		oslDrawImageXY(navbar,110, 237);
-}
-
-void navbar_buttons()
-{
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			home();
-		}
-		
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			home();
-		}
-		
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			multitask();
-		}
 }
 
 void android_notif()
@@ -256,18 +234,15 @@ int skip = 0;
     oslIntraFontInit(INTRAFONT_CACHE_MED);
 	oslNetInit();
 
-    //Load font:
-    OSL_FONT *font = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(font, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
-	oslSetFont(font);	//Set fonts
+    setfont();
 
     while(runningFlag && !osl_quit){
 		browser = oslBrowserIsActive();
 		if (!skip){
             oslStartDrawing();
             oslDrawImageXY(background, 0, 0);
-            oslDrawString(148, 50, "Press X to open the internet browser");
-            oslDrawString(80, 150, "Press /\\ to quit.");
+            oslDrawString(100, 50, "Press X to open the internet browser");
+            oslDrawString(100, 150, "Press /\\ to quit.");
 
             oslDrawString(30, 200, message);
 
@@ -305,13 +280,21 @@ int skip = 0;
 	oslNetTerm();
 }
 
+void setfont()
+{
+	OSL_FONT *DroidSans = oslLoadIntraFontFile("system/fonts/DroidSans.pgf", INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8);
+	oslIntraFontSetStyle(DroidSans, 0.5f, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
+	oslSetFont(DroidSans);
+}
+
 int main()
 {
 	initOSLib();
+	oslIntraFontInit(INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8);
 	
 	//loads our sound
 	tone = oslLoadSoundFile("system/media/audio/ui/KeypressStandard.wav", OSL_FMT_NONE);
-	
+
 	//loads our images into memory
 	background = oslLoadImageFilePNG("system/framework/framework-res/res/background.png", OSL_IN_RAM, OSL_PF_8888);
 	cursor = oslLoadImageFilePNG("system/cursor/cursor.png", OSL_IN_RAM, OSL_PF_8888);
@@ -349,6 +332,8 @@ int main()
 	cursor->x = 240;
 	cursor->y = 136;
 	
+	setfont();
+	
 	//Main loop to run the program
 	while (!osl_quit)
 	{
@@ -363,8 +348,7 @@ int main()
 			
 		//Print the images onto the screen
 		oslDrawImage(background);		
-		oslDrawImageXY(navbar, 110, 237);
-		oslDrawImageXY(wificon, 387, 1);
+		oslDrawImageXY(wificon, 375, 1);
 		oslDrawImageXY(google, 22, 26);
 		oslDrawImageXY(apollo, 105, 190);
 		oslDrawImageXY(browser, 276, 190);
@@ -372,12 +356,12 @@ int main()
 		oslDrawImageXY(message, 160, 190);
 		oslDrawImageXY(pointer, 231, 180);
 		
+		digitaltime();
+		
 		//calls the functions	
 		appdrawericon();
 		battery();
-		back();
-		home_icon();
-		multi();
+		navbar_buttons();
 		android_notif();
 		oslDrawImage(cursor);
 		

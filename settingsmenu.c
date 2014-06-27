@@ -31,7 +31,7 @@
 #define FW_302 0x03000210
 
 //declaration
-OSL_IMAGE *settingsbg, *cursor, *navbar, *wificon, *usbdebug, *aboutbg, *offswitch, *onswitch, *themebg, *performancebg, *wifibg, *developerbg, *about, *performance, *developeroptions, *themes, *wifi, *processorbg, *processor;
+OSL_IMAGE *settingsbg, *cursor, *wificon, *usbdebug, *aboutbg, *offswitch, *onswitch, *themebg, *performancebg, *wifibg, *developerbg, *about, *performance, *developeroptions, *themes, *wifi, *processorbg, *processor;
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -247,11 +247,7 @@ void about_menu()
 //loads our images into memory
 	aboutbg = oslLoadImageFilePNG("system/settings/aboutbg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	//Load fonts:
-	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
-	//Set fonts
-	oslSetFont(pgfFont);
+	setfont();
 	
 	//Debugger
 	if (!aboutbg || !cursor || !wificon)
@@ -273,20 +269,19 @@ void about_menu()
 		
 		//Print the images onto the screen
 		oslDrawImageXY(aboutbg, 0, 19);
-		oslDrawImageXY(navbar, 110, 237);
-		oslDrawImageXY(wificon, 387, 1);
+		oslDrawImageXY(wificon, 375, 1);
 
 		pspgetmodel();
 		oslDrawString(37,123,"CyanoPSP - Alpha build 2");
 		oslDrawString(37,172,"Kernel Version");
 		oslDrawString(37,185,"Undefined-pspsdk_oslib");
 		oslDrawString(37,198,"joellovesanna@psp #1");
+		
+		digitaltime();
 			
 		//calls the functions
 		battery();
-		back();
-		home_icon();
-		multi();
+		navbar_buttons();
 		android_notif();
 		usb_icon();
 		oslDrawImage(cursor);
@@ -340,6 +335,9 @@ void about_menu()
 	    //For sleep
         oslAudioVSync();
 }
+
+	oslDeleteImage(aboutbg);
+
 }
 
 void performance_menu()
@@ -348,11 +346,7 @@ void performance_menu()
 	performancebg = oslLoadImageFilePNG("system/settings/performancebg.png", OSL_IN_RAM, OSL_PF_8888);
 	processor = oslLoadImageFilePNG("system/settings/processor.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	//Load fonts:
-	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
-	//Set fonts
-	oslSetFont(pgfFont);
+	setfont();
 	
 	//Debugger
 	if (!performancebg || !cursor || !wificon || !processor)
@@ -374,18 +368,17 @@ void performance_menu()
 		
 		//Print the images onto the screen
 		oslDrawImageXY(performancebg, 0, 19);
-		oslDrawImageXY(navbar, 110, 237);
-		oslDrawImageXY(wificon, 387, 1);
+		oslDrawImageXY(wificon, 375, 1);
 
 		oslDrawString(40,98,"Processor");
 		oslDrawString(40,161,"Ram Management");
 		oslDrawString(40,215,"Memory Management");
+		
+		digitaltime();
 			
 		//calls the functions
 		battery();
-		back();
-		home_icon();
-		multi();
+		navbar_buttons();
 		android_notif();
 		usb_icon();
 		
@@ -440,6 +433,9 @@ void performance_menu()
 	    //For sleep
         oslAudioVSync();
 }
+
+	oslDeleteImage(performancebg);
+
 }
 
 void processor_menu()
@@ -447,11 +443,7 @@ void processor_menu()
 //loads our images into memory
 	processorbg = oslLoadImageFilePNG("system/settings/processorbg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	//Load fonts:
-	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
-	//Set fonts
-	oslSetFont(pgfFont);
+	setfont();
 	
 	//Debugger
 	if (!processorbg || !cursor || !wificon)
@@ -473,8 +465,7 @@ void processor_menu()
 		
 		//Print the images onto the screen
 		oslDrawImageXY(processorbg, 0, 19);
-		oslDrawImageXY(navbar, 110, 237);
-		oslDrawImageXY(wificon, 387, 1);
+		oslDrawImageXY(wificon, 375, 1);
 
 		oslDrawString(35,74,"Current CPU Frequency");
 		pspgetcpu_bus();
@@ -483,12 +474,12 @@ void processor_menu()
 		oslDrawString(35,197,"20 MHz");
 		oslDrawString(35,236,"Maximum CPU Frequency");
 		oslDrawString(35,249,"333 MHz");
+		
+		digitaltime();
 			
 		//calls the functions
 		battery();
-		back();
-		home_icon();
-		multi();
+		navbar_buttons();
 		android_notif();
 		usb_icon();
 		oslDrawImage(cursor);
@@ -531,6 +522,9 @@ void processor_menu()
 	    //For sleep
         oslAudioVSync();
 }
+
+	oslDeleteImage(processorbg);
+
 }
 
 void theme_menu()
@@ -538,11 +532,7 @@ void theme_menu()
 //loads our images into memory
 	themebg = oslLoadImageFilePNG("system/settings/themebg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	//Load fonts:
-	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
-	//Set fonts
-	oslSetFont(pgfFont);
+	setfont();
 	
 	//Debugger
 	if (!themebg || !cursor || !wificon)
@@ -564,19 +554,18 @@ void theme_menu()
 		
 		//Print the images onto the screen
 		oslDrawImageXY(themebg, 0, 19);
-		oslDrawImageXY(navbar, 110, 237);
-		oslDrawImageXY(wificon, 387, 1);
+		oslDrawImageXY(wificon, 375, 1);
 
 		oslDrawString(65,74,"Theme Packs");
 		oslDrawString(65,128,"Styles");
 		oslDrawString(65,184,"Icons");
 		oslDrawString(65,236,"Fonts");
-			
+		
+		digitaltime();
+		
 		//calls the functions
 		battery();
-		back();
-		home_icon();
-		multi();
+		navbar_buttons();
 		android_notif();
 		usb_icon();
 		oslDrawImage(cursor);
@@ -619,6 +608,9 @@ void theme_menu()
 	    //For sleep
         oslAudioVSync();
 }
+
+	oslDeleteImage(themebg);
+	
 }
 
 void wifi_menu()
@@ -626,11 +618,7 @@ void wifi_menu()
 //loads our images into memory
 	wifibg = oslLoadImageFilePNG("system/settings/wifibg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	//Load fonts:
-	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
-	//Set fonts
-	oslSetFont(pgfFont);
+	setfont();
 	
 	//Debugger
 	if (!wifibg || !cursor || !wificon)
@@ -652,16 +640,14 @@ void wifi_menu()
 		
 		//Print the images onto the screen
 		oslDrawImageXY(wifibg, 0, 19);
-		oslDrawImageXY(navbar, 110, 237);
-		oslDrawImageXY(wificon, 387, 1);
+		oslDrawImageXY(wificon, 375, 1);
 		
 		wlanstatus1();
+		digitaltime();
 		
 		//calls the functions
 		battery();
-		back();
-		home_icon();
-		multi();
+		navbar_buttons();
 		android_notif();
 		usb_icon();
 		oslDrawImage(cursor);
@@ -704,6 +690,9 @@ void wifi_menu()
 	    //For sleep
         oslAudioVSync();
 }
+
+	oslDeleteImage(wifibg);	
+	
 }
 
 void developer_menu()
@@ -711,11 +700,7 @@ void developer_menu()
 //loads our images into memory
 	developerbg = oslLoadImageFilePNG("system/settings/developerbg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	//Load fonts:
-	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
-	//Set fonts
-	oslSetFont(pgfFont);
+	setfont();
 	
 	//Debugger
 	if (!developerbg || !cursor || !wificon)
@@ -737,19 +722,18 @@ void developer_menu()
 		
 		//Print the images onto the screen
 		oslDrawImageXY(developerbg, 0, 19);
-		oslDrawImageXY(navbar, 110, 237);
-		oslDrawImageXY(wificon, 387, 1);
+		oslDrawImageXY(wificon, 375, 1);
 
 		oslDrawString(35,76,"Launch Tools");
 		oslDrawString(35,128,"Take bug report");
 		oslDrawString(35,184,"Advanced Reboot");
 		oslDrawString(35,236,"Backup Password");
 			
+		digitaltime();
+	
 		//calls the functions
 		battery();
-		back();
-		home_icon();
-		multi();
+		navbar_buttons();
 		android_notif();
 		usb_icon();
 		oslDrawImage(cursor);
@@ -792,6 +776,9 @@ void developer_menu()
 	    //For sleep
         oslAudioVSync();
 }
+
+	oslDeleteImage(developerbg);
+	
 }
 
 void settings_highlight()
@@ -840,11 +827,7 @@ int settingsmenu()
 	developeroptions = oslLoadImageFilePNG("system/settings/developeroptions.png", OSL_IN_RAM, OSL_PF_8888);
 	wifi = oslLoadImageFilePNG("system/settings/wifi.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	//Load fonts:
-	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
-	//Set fonts
-	oslSetFont(pgfFont);
+	setfont();
 	
 	//Debugger
 	if (!settingsbg || !cursor || !wificon || !onswitch || !offswitch || !about || !developeroptions || !wifi || !themes || !performance)
@@ -866,7 +849,7 @@ int settingsmenu()
 		
 		//Print the images onto the screen
 		oslDrawImageXY(settingsbg, 0, 19);
-		oslDrawImageXY(wificon, 387, 1);
+		oslDrawImageXY(wificon, 375, 1);
 
 		wlanstatus();
 		oslDrawString(55,76,"Wi-Fi");
@@ -874,16 +857,15 @@ int settingsmenu()
 		oslDrawString(55,161,"Themes");
 		oslDrawString(55,204,"Performance");
 		oslDrawString(55,246,"About PSP");
+		
+		digitaltime();
 			
 		//calls the functions
 		battery();
 		android_notif();
 		usb_icon();
 		settings_highlight();
-		oslDrawImageXY(navbar, 110, 237);
-		back();
-		home_icon();
-		multi();
+		navbar_buttons();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)
@@ -949,5 +931,13 @@ int settingsmenu()
 	    //For sleep
         oslAudioVSync();
 		}
+		
+	oslDeleteImage(settingsbg);
+	oslDeleteImage(about);
+	oslDeleteImage(performance);
+	oslDeleteImage(themes);
+	oslDeleteImage(developeroptions);
+	oslDeleteImage(wifi);
+	
 }
 

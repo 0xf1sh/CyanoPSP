@@ -2,7 +2,7 @@
 #include <oslib/oslib.h>
 
 //declaration
-OSL_IMAGE *background, *cursor, *multi_task, *wificon, *navbar;
+OSL_IMAGE *background, *cursor, *multi_task, *wificon;
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -11,11 +11,7 @@ int multitask()
 {	
 	multi_task = oslLoadImageFilePNG("system/home/menu/multi_task.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	//Load fonts:
-	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.6, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
-	//Set fonts
-	oslSetFont(pgfFont);
+	setfont();
 	
 	//Debugger
 	if (!background || !cursor|| !multi_task)
@@ -34,17 +30,16 @@ int multitask()
 
 		//Print the images onto the screen
 		oslDrawImageXY(background, 0,0);
-		oslDrawImageXY(navbar, 110, 237);
-		oslDrawImageXY(wificon, 387, 1);
-		oslDrawImageXY(multi_task, 0,0);
+		oslDrawImageXY(wificon, 375, 1);
+		oslDrawImageXY(multi_task, 0,10);
 		
-		oslDrawString(240,136,"No recent apps");
+		oslDrawString(200,136,"No recent apps");
+
+		digitaltime();
 		
 		//calls the functions
 		battery();
-		back();
-		home_icon();
-		multi();
+		navbar_buttons();
 		android_notif();
 		usb_icon();
 		oslDrawImage(cursor);

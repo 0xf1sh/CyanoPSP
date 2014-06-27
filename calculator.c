@@ -2,7 +2,7 @@
 #include <oslib/oslib.h>
 
 //declaration
-OSL_IMAGE *cursor, *calcbackground, *navbar, *wificon;
+OSL_IMAGE *cursor, *calcbackground, *wificon;
 
 //variables
 int result;
@@ -54,9 +54,8 @@ int calculator()
 
 		//Print the images onto the screen
 		oslDrawImageXY(calcbackground, 0, 19);		
-		
-		oslDrawImageXY(navbar, 110, 237);
-		oslDrawImageXY(wificon, 387, 1);
+
+		oslDrawImageXY(wificon, 375, 1);
 		
 		oslDrawString(40,77,"sin");
 		oslDrawString(94,77,"cos");
@@ -94,9 +93,7 @@ int calculator()
 		
 		//calls the functions
 		battery();
-		back();
-		home_icon();
-		multi();
+		navbar_buttons();
 		android_notif();
 		usb_icon();
 		oslDrawImage(cursor);

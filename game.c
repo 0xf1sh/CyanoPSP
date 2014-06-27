@@ -1,15 +1,122 @@
 #include <pspkernel.h>
 #include <oslib/oslib.h>
+#include "game.h"
 
 //declaration
-OSL_IMAGE *gamebg, *cursor, *navbar;
+OSL_IMAGE *gamebg, *cursor, *icon, *noicon;
 
 //definition of our sounds
 OSL_SOUND *tone;
 
+int xstrtoi(char * str, int len) 
+{
+	int val;
+	int c;
+	int i;
+	val = 0;
+	for (i = 0; i < len; i++){
+		c = *(str + i);
+		if (c >= '0' && c <= '9') {
+			c -= '0';
+		} else if (c >= 'A' && c <= 'F') {
+			c = (c - 'A') + 10;
+		} else if (c >= 'a' && c <= 'f') {
+			c = (c - 'a') + 10;
+		} else {
+			return 0;
+		}
+		val *= 16;
+		val += c;
+	}
+	return val;
+};
+
+#ifdef CEF
+
+int cef_launch(char * file, int type, int extra)
+{
+	int runlevel = 0;	
+
+	//create loadexec struct
+	SceKernelLoadExecVSHParam param;
+	memset(&param, 0, sizeof(param));
+	param.size = sizeof(param);
+
+	char disc[34];
+	char * exec = file;
+
+	strcpy(disc, "disc0:/PSP_GAME/SYSDIR/EBOOT.BIN");
+
+	if(type == PBP) //pbp files
+	{
+		switch(extra)
+		{
+			case entry138::APP:
+				runlevel = HOMEBREW_RUNLEVEL;
+				param.args = strlen(file) + 1;
+				param.argp = file;
+				param.key = "game";
+
+				break;
+
+			case entry138::PS1:
+				runlevel = POPS_RUNLEVEL;
+				param.args = strlen(file) + 1;
+				param.argp = file;
+				param.key = "pops";
+
+				break;
+
+			case entry138::PSN:
+				runlevel = PSN_RUNLEVEL;
+				param.args = strlen(disc) + 1;
+				param.argp = disc;
+				param.key = "umdemu";
+				
+#ifdef ARK
+				sctrlSESetBootConfFileIndex(MODE_NP9660);
+				sctrlSESetUmdFile("");
+#endif
+
+#ifdef TN
+				sctrlSEMountUmdFromFile(file, MODE_NP9660);
+#endif
+				break;
+		};
+	}
+	else //backups
+	{
+		if(extra == entry138::PATCHED)
+			strcpy(disc, "disc0:/PSP_GAME/SYSDIR/EBOOT.OLD");
+
+		runlevel = ISO_RUNLEVEL;
+		param.args = strlen(disc) + 1;
+		param.argp = disc;	
+
+#ifdef ARK
+		param.key = "umdemu";
+		sctrlSESetBootConfFileIndex(MODE_INFERNO);
+		sctrlSESetUmdFile(file);
+#endif
+
+#ifdef TN
+
+		param.key = "game";
+		sctrlSEMountUmdFromFile(file, MODE_MARCH33);
+		exec = disc;
+#endif		
+
+	};
+
+	//start app
+	return sctrlKernelLoadExecVSHWithApitype(runlevel, exec, &param);
+};
+#endif
+
 int gamemenu()
 {	
 	gamebg = oslLoadImageFilePNG("system/home/menu/gamebg.png", OSL_IN_RAM, OSL_PF_8888);
+	noicon = oslLoadImageFilePNG("system/home/menu/noicon.png", OSL_IN_VRAM, OSL_PF_8888);;
 	
 	//Load fonts:
 	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
@@ -34,14 +141,11 @@ int gamemenu()
 
 		//Print the images onto the screen
 		oslDrawImageXY(gamebg, 0,0);
-		oslDrawImageXY(navbar, 110, 237);
 		
 		oslDrawString(240,136,"Work in Progress");
 		
 		//calls the functions
-		back();
-		home_icon();
-		multi();
+		navbar_buttons();
 		android_notif();
 		usb_icon();
 		oslDrawImage(cursor);

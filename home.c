@@ -2,7 +2,7 @@
 #include <oslib/oslib.h>
 
 //declaration
-OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon;
+OSL_IMAGE *background, *cursor, *appicon, *appicon2, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon;
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -10,9 +10,11 @@ OSL_SOUND *tone;
 int home()
 {
 	//Debugger
-	if (!background || !cursor || !appicon || !appicon2 || !navbar || !wificon || !apollo || !gmail || !message || !browser || !google || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
+	if (!background || !cursor || !appicon || !appicon2 || !wificon || !apollo || !gmail || !message || !browser || !google || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
+	setfont();
+
 	//Main loop to run the program
 	while (!osl_quit)
 	{
@@ -27,19 +29,18 @@ int home()
 			
 		//Print the images onto the screen
 		oslDrawImage(background);		
-		oslDrawImageXY(navbar, 110, 237);
-		oslDrawImageXY(wificon, 387, 1);
+		oslDrawImageXY(wificon, 375, 1);
 		oslDrawImageXY(google, 22, 26);
 		oslDrawImageXY(apollo, 105, 190);
 		oslDrawImageXY(browser, 276, 190);
 		oslDrawImageXY(gmail, 331, 190);
 		oslDrawImageXY(message, 160, 190);
 		oslDrawImageXY(pointer, 231, 180);
+		
+		digitaltime();
 		appdrawericon();
 		battery();
-		back();
-		home_icon();
-		multi();
+		navbar_buttons();
 		android_notif();
 		usb_icon();
 		oslDrawImage(cursor);

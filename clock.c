@@ -4,26 +4,58 @@
 #include <psprtc.h>
 
 //declaration
-OSL_IMAGE *clockbg, *cursor, *wificon, *navbar;
+OSL_IMAGE *clockbg, *cursor, *wificon;
+
+OSL_FONT *DroidSans;
+
+void centerclock()
+{
+	//Load fonts:
+	OSL_FONT *clockFont = oslLoadIntraFontFile("system/fonts/DroidSans.pgf", INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8);
+	oslIntraFontSetStyle(clockFont, 0.9f, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
+	//Set fonts
+	oslSetFont(clockFont);
+	
+	pspTime time;
+	sceRtcGetCurrentClockLocalTime(&time);
+	
+	if (time.hour > 12)
+		time.hour -= 12;
+	
+	oslDrawStringf(240,136,"%02d:%02d", time.hour, time.minutes);
+	
+}
+
+void digitaltime()
+{
+	pspTime time;
+	sceRtcGetCurrentClockLocalTime(&time);
+	
+	if(time.hour >= 12) 
+		oslDrawString(458,4,"PM"); 
+	else 
+		oslDrawString(458,4,"AM");   
+		
+	if (time.hour > 12)
+		time.hour -= 12;
+	
+	if (time.hour == 00)
+	time.hour = 12;
+		
+	oslDrawStringf(420,4,"%02d:%02d", time.hour, time.minutes);	
+}
 
 int pspclock()
 {
 	//loads our images into memory
 	clockbg = oslLoadImageFilePNG("system/home/menu/clockbg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	//Load fonts:
-	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
-	//Set fonts
-	oslSetFont(pgfFont);
-	
-	pspTime time;
-	sceRtcGetCurrentClockLocalTime(&time);
-	
 	//Debugger
-	if (!clockbg || !cursor || !wificon || !navbar)
+	if (!clockbg || !cursor || !wificon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-
+	
+	setfont();
+	
 	while (!osl_quit)
   {		
 		//Draws images onto the screen
@@ -38,26 +70,16 @@ int pspclock()
 		
 		//Print the images onto the screen
 		oslDrawImageXY(clockbg, 0, 19);
-		oslDrawImageXY(navbar, 110, 237);
-		oslDrawImageXY(wificon, 387, 1);
-			
-		oslPrintf_xy(435,6,"%02d:%02d", time.hour, time.minutes);	
+		oslDrawImageXY(wificon, 375, 1);
 		
-		if (time.hour > 12)
-		time.hour -= 12;
-		
-		if(time.hour/12 == 1) 
-		oslDrawString(445,6,"PM"); 
-		else 
-		oslDrawString(445,6,"AM");
+		digitaltime();
 		
 		//calls the functions
 		battery();
-		back();
-		home_icon();
-		multi();
+		navbar_buttons();
 		android_notif();
 		usb_icon();
+		digitaltime();
 		oslDrawImage(cursor);
 
 		if (osl_pad.held.square)

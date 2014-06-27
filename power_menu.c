@@ -40,7 +40,7 @@ int powermenu()
 			
 		//Print the images onto the screen
 		oslDrawImage(background);
-		oslDrawImageXY(wificon, 387, 1);
+		oslDrawImageXY(wificon, 375, 1);
 		oslDrawImageXY(google, 22, 26);
 		oslDrawImageXY(apollo, 105, 190);
 		oslDrawImageXY(browser, 276, 190);
@@ -48,6 +48,8 @@ int powermenu()
 		oslDrawImageXY(message, 160, 190);
 		oslDrawImageXY(pointer, 231, 180);
 		oslDrawImageXY(power, 114, 10);	
+		
+		digitaltime();
 
 		battery();
 		usb_icon();

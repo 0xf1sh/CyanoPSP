@@ -2,15 +2,13 @@
 #include <oslib/oslib.h>
 
 //declaration
-OSL_IMAGE *background, *cursor, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *fb, *settings,*pointer, *pointer1, *isoloadericon;
+OSL_IMAGE *background, *cursor, *wificon, *apollo, *gmail, *message, *browser, *google, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *fb, *settings,*pointer, *pointer1, *isoloadericon;
 
 //definition of our sounds
 OSL_SOUND *tone;
 
 int appdrawer()
-{
-	oslIntraFontInit(INTRAFONT_CACHE_MED);
-		
+{	
 	//loads our images into memory
 	clockx = oslLoadImageFilePNG("system/home/icons/clock.png", OSL_IN_RAM, OSL_PF_8888);
 	email = oslLoadImageFilePNG("system/home/icons/email.png", OSL_IN_RAM, OSL_PF_8888);
@@ -22,11 +20,8 @@ int appdrawer()
 	calendar = oslLoadImageFilePNG("system/home/icons/calendar.png", OSL_IN_RAM, OSL_PF_8888);
 	people = oslLoadImageFilePNG("system/home/icons/people.png", OSL_IN_RAM, OSL_PF_8888);
 	isoloadericon = oslLoadImageFilePNG("system/home/icons/isoloadericon.png", OSL_IN_RAM, OSL_PF_8888);
-		
-	//Load fonts:
-	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
-	oslSetFont(pgfFont);	//Set fonts
+	
+	setfont();
 	
 	//Debugger
 	if (!clockx || !settings || !email || !gallery || !calc || !phone || !calendar || !people || !fb || !isoloadericon)
@@ -47,44 +42,43 @@ int appdrawer()
 		//Print the images onto the screen
 		oslDrawImage(background);
 		
-		oslDrawImageXY(navbar, 110, 237);
-		oslDrawImageXY(wificon, 387, 1);
+		oslDrawImageXY(wificon, 375, 1);
 		oslDrawImageXY(apollo, 30, 35);
-		oslDrawString(50,85,"Apollo");
-		oslDrawImageXY(browser, 97, 35);
-		oslDrawString(115,85,"Browser");
+		oslDrawString(30,85,"Apollo");
+		oslDrawImageXY(browser, 95, 35);
+		oslDrawString(90,85,"Browser");
 		oslDrawImageXY(calc, 157, 35);
-		oslDrawString(180,85,"Calculator");
+		oslDrawString(148,85,"Calculator");
 		oslDrawImageXY(calendar, 217, 38);
-		oslDrawString(246,85,"Calendar");
+		oslDrawString(218,85,"Calendar");
 		oslDrawImageXY(clockx, 277, 35);
-		oslDrawString(300,85,"Clock");
+		oslDrawString(283,85,"Clock");
 		oslDrawImageXY(email, 337, 35);
-		oslDrawString(358,85,"Email");
+		oslDrawString(342,85,"Email");
 		oslDrawImageXY(fb, 397, 35);
-		oslDrawString(431,85,"File Manager");
+		oslDrawString(388,85,"File Manager");
 		oslDrawImageXY(gallery, 30, 120);
-		oslDrawString(51,175,"Gallery");
+		oslDrawString(29,175,"Gallery");
 		oslDrawImageXY(gmail, 97, 120);
-		oslDrawString(117,175,"Gmail");
+		oslDrawString(100,175,"Gmail");
 		oslDrawImageXY(isoloadericon, 157, 120);
-		oslDrawString(178,175,"Game");
+		oslDrawString(163,175,"Game");
 		oslDrawImageXY(message, 217, 120);
-		oslDrawString(239,175,"Messages");
+		oslDrawString(211,175,"Messages");
 		oslDrawImageXY(people, 277, 120);
-		oslDrawString(299,175,"People");
+		oslDrawString(279,175,"People");
 		oslDrawImageXY(phone, 337, 120);
-		oslDrawString(361,175,"Phone");
+		oslDrawString(340,175,"Phone");
 		oslDrawImageXY(settings, 396, 120);
-		oslDrawString(422,175,"Settings");
+		oslDrawString(397,175,"Settings");
 		oslDrawImageXY(pointer, 220, 221);
 		oslDrawImageXY(pointer1, 234, 222);
 		oslDrawImageXY(pointer1, 244, 222);
 		
+		digitaltime();
+		
 		battery();
-		back();
-		home_icon();
-		multi();
+		navbar_buttons();
 		android_notif();
 		usb_icon();
 		oslDrawImage(cursor);

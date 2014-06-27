@@ -14,7 +14,9 @@ int style = 0;
 OSL_SOUND *tone;
 
 int lockscreen()
-{
+{	
+	setfont();
+	
 	//loads our images into memory
 	lock = oslLoadImageFilePNG("System/Lockscreen/lock.png", OSL_IN_RAM, OSL_PF_8888);
 	unlock = oslLoadImageFilePNG("System/Lockscreen/unlock.png", OSL_IN_RAM, OSL_PF_8888);
@@ -48,10 +50,13 @@ int lockscreen()
 		//Print the images onto the screen
 		oslDrawImage(background);	
 		
-		oslDrawImageXY(wificon, 387, 1);
+		oslDrawImageXY(wificon, 375, 1);
 		oslDrawImageXY(circles, 223, 240);
 		battery();
 		usb_icon();
+		
+		digitaltime();
+		
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.cross && cursor->x >= 190 && cursor->x <= 290 && cursor->y >= 120 && cursor->y <= 220)

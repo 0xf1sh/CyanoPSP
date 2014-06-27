@@ -9,7 +9,7 @@
 #include <oslib/oslib.h>
 
 //declaration
-OSL_IMAGE *mp3bg, *cursor, *wificon, *navbar;
+OSL_IMAGE *mp3bg, *cursor, *wificon;
 
 #define MP3FILE "ms0:/MUSIC/Test.mp3"
 
@@ -100,7 +100,7 @@ int mp3player()
 	oslSetFont(pgfFont);
 	
 	//Debugger
-	if (!mp3bg || !cursor || !wificon || !navbar)
+	if (!mp3bg || !cursor || !wificon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
 	//init screen and callbacks
@@ -187,8 +187,7 @@ int mp3player()
 		
 		//Print the images onto the screen
 		oslDrawImageXY(mp3bg, 0, 19);
-		oslDrawImageXY(navbar, 110, 237);
-		oslDrawImageXY(wificon, 387, 1);
+		oslDrawImageXY(wificon, 375, 1);
 		
 		sceDisplayWaitVblankStart();
 		pspDebugScreenSetXY(0, 0);
@@ -204,9 +203,7 @@ int mp3player()
 		
 		//calls the functions
 		battery();
-		back();
-		home_icon();
-		multi();
+		navbar_buttons();
 		android_notif();
 		usb_icon();
 		oslDrawImage(cursor);
