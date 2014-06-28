@@ -1,14 +1,21 @@
+#include <pspkernel.h>
+#include <pspctrl.h>
+#include <pspdebug.h>
+#include <pspsdk.h>
 #include <oslib/oslib.h>
 #include <pspiofilemgr.h>
+#include <pspiofilemgr_dirent.h>
 #include <string.h>
+#include "fm.h"
 
 //declaration
-OSL_IMAGE *filemanagerbg, *cursor, *wificon, *navbar;
+OSL_IMAGE *filemanagerbg, *cursor, *wificon;
 
 char fileName;
 SceIoDirent dirent;
-SceUID dirId = NULL;
+SceUID dirId = 0;
 int dirStatus = 1;
+int dfd, result = 0;
 
 int fileExists(const char* path)
 {
@@ -105,6 +112,36 @@ int nextDir()
 	return FIO_S_ISDIR(dirent.d_stat.st_mode);
 }
 
+int listFiles(void) {
+
+	// Clear out "dir" by setting all it's members to 0 
+	memset(&dirent, 0, sizeof(dirent));
+	
+	// Open up the directory
+	dfd = sceIoDopen(rootdir);
+	
+	// Make sure that the directory was able to open
+	if(dfd < 0) {
+		return dfd;
+	}
+
+	// This portion will continue to read contents in 
+	// the directory and print it one-by-one :)
+	while (sceIoDread(dfd, &dirent) > 0) {	
+		//Confirm that the file is an actual name, blah, blah
+		if (dirent.d_name[0] == '.')
+			continue;
+			
+		// Print the file inside the directory
+		oslDrawStringf(40,50,"%s\n", dirent.d_name);
+			
+	}
+	
+	// Close and return, we're done :D
+	sceIoDclose(dfd);
+	return result;
+}
+
 int filemanage()
 {
 	//loads our images into memory
@@ -117,7 +154,7 @@ int filemanage()
 	oslSetFont(pgfFont);
 	
 	//Debugger
-	if (!filemanagerbg || !cursor || !wificon || !navbar)
+	if (!filemanagerbg || !cursor || !wificon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
 	while (!osl_quit)
@@ -134,17 +171,13 @@ int filemanage()
 		
 		//Print the images onto the screen
 		oslDrawImageXY(filemanagerbg, 0, 19);
-		oslDrawImageXY(navbar, 110, 237);
-		oslDrawImageXY(wificon, 387, 1);
+		oslDrawImageXY(wificon, 375, 1);
 		
-		oslDrawString(240,136,"Work in Progress");
+		listFiles();
 		
 		//calls the functions
 		battery();
-		navbar_buttons();
-		android_notif();
 		usb_icon();
-		oslDrawImage(cursor);
 
 		if (osl_pad.held.square)
 		{
