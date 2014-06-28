@@ -39,9 +39,7 @@ int filemanage()
 		
 		//calls the functions
 		battery();
-		back();
-		home_icon();
-		multi();
+		navbar_buttons();
 		android_notif();
 		usb_icon();
 		oslDrawImage(cursor);

@@ -70,6 +70,12 @@ int powermenu()
 			recoverymain();
 		}
 		
+		if (cursor->x >= 128 && cursor->x <= 354 && cursor->y >= 192 && cursor->y <= 242 && osl_pad.held.cross)
+		{
+			return;
+			oslWriteImageFilePNG(oslGetDrawBuffer(), "ms0:/PSP/GAME/CyanogenMod/SCREENSHOT.PNG", 0);
+		}
+		
 		if (cursor->x >= 128 && cursor->x <= 354 && cursor->y >= 196 && cursor->y <= 248 && osl_pad.held.cross)
 		{
 			home();

@@ -6,10 +6,10 @@
 #include <pspsdk.h>
 #include <pspusb.h>
 #include <pspusbstor.h>
-#include <pspusbdevice.h>
 #include <pspmodulemgr.h>
 #include <oslib/oslib.h>
 #include <psprtc.h>
+#include "include/pspusbdevice.h"
 #include "main.h"
 #include "appdrawer.h"
 #include "home.h"

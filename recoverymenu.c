@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <oslib/oslib.h>
 
-#include <kubridge.h>
+#include "include/kubridge.h"
 
 #include "recoverymenu.h"
 #include "modules/ipl_update.h"

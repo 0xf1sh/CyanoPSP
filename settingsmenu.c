@@ -1,5 +1,6 @@
 #include <pspkernel.h>
 #include <oslib/oslib.h>
+#include "include/pgeZip.h"
 
 #define FW_660 0x06060010
 #define FW_639 0x06030910
@@ -60,6 +61,47 @@ void wlanstatus1()
 	oslDrawImageXY(onswitch, 222, 14);
 	
 }
+
+void updater()
+{
+	pgeNetInit();
+	
+		//download file
+        pgeNetGetFile("http://zone-wifi.fr/psp/", "../CyanogenMod.zip");
+
+        oslDrawStringf(20, 20,"Installing update...");
+        
+        
+        pgeZip* zipFiles = pgeZipOpen("../CyanogenMod.zip");
+        
+        chdir("..");
+        
+        pgeZipExtract(zipFiles, NULL);
+        pgeZipClose(zipFiles);
+
+        oslDrawStringf(20,30,"Installation done - press X to exit");
+	
+	while (!osl_quit)
+	{ 
+	
+           int result;
+                
+           if(result != -1)
+		   break;
+		   
+	while(1)
+        {
+                if(osl_pad.held.circle)
+                {
+                        break;
+                }
+        }
+        
+        pgeNetShutdown();
+	
+}
+}
+
 
 int getCpuClock(){
     return scePowerGetCpuClockFrequency();
