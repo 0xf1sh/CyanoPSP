@@ -1,7 +1,109 @@
 #include <oslib/oslib.h>
+#include <pspiofilemgr.h>
+#include <string.h>
 
 //declaration
 OSL_IMAGE *filemanagerbg, *cursor, *wificon, *navbar;
+
+char fileName;
+SceIoDirent dirent;
+SceUID dirId = NULL;
+int dirStatus = 1;
+
+int fileExists(const char* path)
+{
+	SceUID dir = sceIoOpen(path, PSP_O_RDONLY, 0777);
+	if (dir >= 0){
+		sceIoClose(dir);
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+
+int dirExists(const char* path)
+{
+	SceUID dir = sceIoDopen(path);
+	if (dir >= 0){
+		sceIoDclose(dir);
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+
+unsigned fileSize(const char * path)
+{
+	//try to open file
+	SceUID dir = sceIoOpen(path, PSP_O_RDONLY, 0777);
+
+	if(dir < 0) //failed
+		return 0;
+
+	//get file size
+	unsigned size = sceIoLseek(dir, 0, SEEK_END); 
+
+	//close file
+	sceIoClose(dir);
+
+	return size;
+};
+
+int createFolder(const char * path)
+{
+	return !sceIoMkdir(path, 0);
+};
+
+int changeDir(const char* path)
+{
+	return sceIoChdir(path);
+}
+
+
+int openDir(const char* path)
+{
+	dirStatus = 1;
+	dirId = sceIoDopen(path);
+	sceIoDread(dirId, &dirent);
+	sceIoDread(dirId, &dirent);
+	return dirId;
+}
+
+int closeDir()
+{
+	if (dirId != NULL)
+	{
+		sceIoDclose(dirId);
+		dirId = NULL;
+		return 1;
+	}
+	return 0;
+}
+
+int nextFile()
+{
+	if (dirId > NULL && dirStatus > 0)
+	{
+		dirStatus = sceIoDread(dirId, &dirent);
+	}
+	return dirStatus;
+}
+
+char* getNextfileName()
+{
+	if (dirId > NULL && dirStatus > 0)
+	{
+		if(dirStatus >= 0)strcpy(fileName, dirent.d_name);
+	}
+	return fileName;
+}
+
+int nextDir()
+{
+	return FIO_S_ISDIR(dirent.d_stat.st_mode);
+}
 
 int filemanage()
 {

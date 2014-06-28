@@ -32,7 +32,9 @@
 #define FW_302 0x03000210
 
 //declaration
-OSL_IMAGE *settingsbg, *cursor, *wificon, *usbdebug, *aboutbg, *offswitch, *onswitch, *themebg, *performancebg, *wifibg, *developerbg, *about, *performance, *developeroptions, *themes, *wifi, *processorbg, *processor;
+OSL_IMAGE *settingsbg, *cursor, *wificon, *usbdebug, *aboutbg, *offswitch, *onswitch, *themebg, *performancebg, *wifibg, *developerbg, *about, *performance, 
+		  *developeroptions, *themes, *wifi, *processorbg, *processor, *background, *appicon1, *appicon2, *navbar, *apollo, *gmail, *message, *browser, 
+		  *backicon, *homeicon, *multicon, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *isoloadericon, *fb, *settings;
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -41,6 +43,12 @@ int usb_debug = 0;
 char pspmodel;
 char usbStatus = 0;
 char usbModuleStatus = 0;
+char defaultTheme;
+char defaultZip;
+char InputTheme;
+int ThemeZip;
+int theme;
+char name;
 
 void wlanstatus()
 {
@@ -568,6 +576,144 @@ void processor_menu()
 	oslDeleteImage(processorbg);
 
 }
+
+/* Work in Progress Theme Manager */
+
+/*
+
+void ThemePackLocation()
+{
+        defaultTheme = "Themes/Original.zip";
+        InputTheme = "Themes/Theme.zip";
+}
+
+void GetTheme()
+{
+        switch(theme)
+        {
+                case navbar:
+                {
+                        return GetTextureFromZip("nav.png");
+                }
+                break;
+                case appicon1:
+                {
+                        return GetTextureFromZip("appicon1.png");
+                }
+                break;
+                case appicon2:
+                {
+                        return GetTextureFromZip("appicon2.png");
+                }
+                break;
+                case backicon:
+                {
+                        return GetTextureFromZip("backicon.png");
+                }
+                break;
+                case homeicon:
+                {
+                        return GetTextureFromZip("homeicon.png");
+                }
+                break;
+                case multicon:
+                {
+                        return GetTextureFromZip("multicon.png");
+                }
+                break;
+                case wificon:
+                {
+                        return GetTextureFromZip("wificon.png");
+                }
+                break;
+                case apollo:
+                {
+                        return GetTextureFromZip("apollo.png");
+                }
+                break;
+                case browser:
+                {
+                        return GetTextureFromZip("browser.png");
+                }
+                break;
+                case calc:
+                {
+                        return GetTextureFromZip("calc.png");
+                }
+                break;
+                case calendar:
+                {
+                        return GetTextureFromZip("calendar.png");
+                }
+                break;
+				case clock:
+                {
+                        return GetTextureFromZip("clock.png");
+                }
+                break;
+                case email:
+                {
+                        return GetTextureFromZip("email.png");
+                }
+                break;
+				case fb:
+                {
+                        return GetTextureFromZip("fb.png");
+                }
+                break;
+                case gallery:
+                {
+                        return GetTextureFromZip("gallery.png");
+                }
+                break;
+				case gmail:
+                {
+                        return GetTextureFromZip("gmail.png");
+                }
+                break;
+                case isoloadericon:
+                {
+                        return GetTextureFromZip("isoloadericon.png");
+                }
+                break;
+				case message:
+                {
+                        return GetTextureFromZip("message.png");
+                }
+                break;
+                case people:
+                {
+                        return GetTextureFromZip("people.png");
+                }
+                break;
+				case phone:
+                {
+                        return GetTextureFromZip("phone.png");
+                }
+                break;
+                case settings:
+                {
+                        return GetTextureFromZip("settings.png");
+                }
+                break;
+        }
+
+        return "";
+}
+
+void SetZipName()
+{
+        defaultZip = name;
+        InputTheme = defaultTheme + defaultZip;
+
+        if(ThemeZip != NULL)
+        {
+                pgeZipClose(ThemeZip);
+        }
+        ThemeZip = pgeZipOpen(InputTheme);
+}
+
+*/
 
 void theme_menu()
 {
