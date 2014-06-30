@@ -15,7 +15,6 @@ char fileName;
 SceIoDirent dirent;
 SceUID dirId = 0;
 int dirStatus = 1;
-int dfd, result = 0;
 
 int fileExists(const char* path)
 {
@@ -113,9 +112,12 @@ int nextDir()
 }
 
 int listFiles(void) {
-
+	
+	SceIoDirent direct;
+	int dfd, result = 0;
+	
 	// Clear out "dir" by setting all it's members to 0 
-	memset(&dirent, 0, sizeof(dirent));
+	memset(&direct, 0, sizeof(direct));
 	
 	// Open up the directory
 	dfd = sceIoDopen(rootdir);
@@ -127,14 +129,14 @@ int listFiles(void) {
 
 	// This portion will continue to read contents in 
 	// the directory and print it one-by-one :)
-	while (sceIoDread(dfd, &dirent) > 0) {	
+	while (sceIoDread(dfd, &direct) > 0) {	
 		//Confirm that the file is an actual name, blah, blah
-		if (dirent.d_name[0] == '.')
+		if (direct.d_name[0] == '.')
 			continue;
 			
-		// Print the file inside the directory
-		oslDrawStringf(40,50,"%s\n", dirent.d_name);
-			
+		int y = 50;
+		oslDrawStringf(50, y+=45, "%s/n", direct.d_name);
+		
 	}
 	
 	// Close and return, we're done :D
@@ -142,7 +144,7 @@ int listFiles(void) {
 	return result;
 }
 
-int filemanage()
+int filemanage(int argc, char *argv[])
 {
 	//loads our images into memory
 	filemanagerbg = oslLoadImageFilePNG("system/home/menu/filemanagerbg.png", OSL_IN_RAM, OSL_PF_8888);

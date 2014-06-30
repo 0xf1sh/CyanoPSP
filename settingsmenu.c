@@ -32,9 +32,9 @@
 #define FW_302 0x03000210
 
 //declaration
-OSL_IMAGE *settingsbg, *cursor, *wificon, *usbdebug, *aboutbg, *offswitch, *onswitch, *themebg, *performancebg, *wifibg, *developerbg, *about, *performance, 
-		  *developeroptions, *themes, *wifi, *processorbg, *processor, *background, *appicon1, *appicon2, *navbar, *apollo, *gmail, *message, *browser, 
-		  *backicon, *homeicon, *multicon, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *isoloadericon, *fb, *settings;
+OSL_IMAGE *settingsbg, *cursor, *wificon, *usbdebug, *aboutbg, *offswitch, *onswitch, *themebg, *performancebg, *wifibg, *developerbg, *about, *highlight, 
+		  *developeroptions, *themes, *wifi, *processorbg, *background, *appicon1, *appicon2, *navbar, *apollo, *gmail, *message, *browser, 
+		  *backicon, *homeicon, *multicon, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *isoloadericon, *fb, *settings, *updatesbg, *performance;
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -74,10 +74,14 @@ void updater()
 {
 	pgeNetInit();
 	
+	while (!osl_quit)
+	{ 	
+		settings_deleteImages();
+		
 		//download file
-        pgeNetGetFile("http://zone-wifi.fr/psp/", "../CyanogenMod.zip");
+        pgeNetGetFile("http://zone-wifi.fr/psp/PSP/GAME/", "../CyanogenMod PSP-C Alpha Build 1.zip");
 
-        oslDrawStringf(20, 20,"Installing update...");
+        oslDrawStringf(50, 40,"Installing update...");
         
         
         pgeZip* zipFiles = pgeZipOpen("../CyanogenMod.zip");
@@ -87,27 +91,17 @@ void updater()
         pgeZipExtract(zipFiles, NULL);
         pgeZipClose(zipFiles);
 
-        oslDrawStringf(20,30,"Installation done - press X to exit");
-	
-	while (!osl_quit)
-	{ 
-	
-           int result;
+        oslDrawStringf(50,60,"Installation done - press X to exit");	
+		
+        int result;
                 
-           if(result != -1)
-		   break;
-		   
-	while(1)
-        {
-                if(osl_pad.held.circle)
-                {
-                        break;
-                }
-        }
-        
-        pgeNetShutdown();
-	
+        if(result != -1)
+		{
+			break;
+		}
+
 }
+	pgeNetShutdown();
 }
 
 
@@ -263,46 +257,45 @@ void pspgetmodel()
 	
 		if(pspmodel == 0)
 		{
-			oslDrawString(37,73,"Model: PSP 1000");
+			oslDrawString(37,136,"Model: PSP 1000");
 		}
    
 		else if(pspmodel == 1)
 		{
-			oslDrawString(37,73,"Model: PSP 2000");
+			oslDrawString(37,136,"Model: PSP 2000");
 		}
    
 		else if (pspmodel == 2)
 		{
-			oslDrawString(37,73,"Model: PSP 3000");
+			oslDrawString(37,136,"Model: PSP 3000");
 		}
    
 		else if(pspmodel == 3)
 		{
-			oslDrawString(37,73,"Model: PSP 3000");
+			oslDrawString(37,136,"Model: PSP 3000");
 		}
 		
 		else if (pspmodel == 4)
 		{
-			oslDrawString(37,73,"Model: PSP Go N1000");
+			oslDrawString(37,136,"Model: PSP Go N1000");
 		}
    
 		else
 		{
-			oslDrawString(37,73,"Model: PS Vita");
+			oslDrawString(37,136,"Model: PS Vita");
 		}
 }
 
 void about_menu()
-{
-//loads our images into memory
+{	
 	aboutbg = oslLoadImageFilePNG("system/settings/aboutbg.png", OSL_IN_RAM, OSL_PF_8888);
+	
+	//Debugger
+	if (!aboutbg)
+		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	setfont();
 	
-	//Debugger
-	if (!aboutbg || !cursor || !wificon)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-		
 	//Main loop to run the program
 	while (!osl_quit)
 	{
@@ -321,8 +314,10 @@ void about_menu()
 		oslDrawImageXY(aboutbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 
+		oslDrawString(37,73,"CyanoPSP Updates");
+		oslDrawString(37,87,"Click for, view or install available updates");
 		pspgetmodel();
-		oslDrawString(37,123,"CyanoPSP - Alpha build 2");
+		oslDrawString(37,122,"CyanoPSP - Alpha build 2");
 		oslDrawString(37,172,"Kernel Version");
 		oslDrawString(37,185,"Undefined-pspsdk_oslib");
 		oslDrawString(37,198,"joellovesanna@psp #1");
@@ -334,6 +329,14 @@ void about_menu()
 		navbar_buttons();
 		android_notif();
 		usb_icon();
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 45 && cursor->y <= 90)
+		{
+			oslDrawImageXY(highlight, 16, 53);
+			oslDrawString(37,73,"CyanoPSP Updates");
+			oslDrawString(37,87,"Click for, view or install available updates");
+		}
+		
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)
@@ -349,21 +352,30 @@ void about_menu()
 		if (osl_pad.held.circle)
 		{
 			settingsmenu();
+			oslDeleteImage(aboutbg);
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			settingsmenu();
+			oslDeleteImage(aboutbg);
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			home();
+			oslDeleteImage(aboutbg);
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			multitask();
+			oslDeleteImage(aboutbg);
+		}
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 70 && cursor->y <= 138 && osl_pad.held.cross)
+		{
+			updates_menu();
 		}
 		
 		if(osl_pad.held.select)
@@ -385,23 +397,113 @@ void about_menu()
 	    //For sleep
         oslAudioVSync();
 }
-
-	oslDeleteImage(aboutbg);
-
 }
 
-void performance_menu()
-{
-//loads our images into memory
-	performancebg = oslLoadImageFilePNG("system/settings/performancebg.png", OSL_IN_RAM, OSL_PF_8888);
-	processor = oslLoadImageFilePNG("system/settings/processor.png", OSL_IN_RAM, OSL_PF_8888);
+void updates_menu()
+{	
+	updatesbg = oslLoadImageFilePNG("system/settings/updatesbg.png", OSL_IN_RAM, OSL_PF_8888);
+	
+	//Debugger
+	if (!updatesbg)
+		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	setfont();
 	
-	//Debugger
-	if (!performancebg || !cursor || !wificon || !processor)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	//Main loop to run the program
+	while (!osl_quit)
+	{
 		
+		//Draws images onto the screen
+		oslStartDrawing();
+		
+		oslClearScreen(RGB(0,0,0));
+		
+		controls();	
+			
+		//Initiate the PSP's controls
+		oslReadKeys();
+		
+		//Print the images onto the screen
+		oslDrawImageXY(updatesbg, 0, 19);
+		oslDrawImageXY(wificon, 375, 1);
+
+		oslDrawString(35,73,"Check for Updates");
+
+		digitaltime();
+			
+		//calls the functions
+		battery();
+		navbar_buttons();
+		android_notif();
+		usb_icon();
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 45 && cursor->y <= 90)
+		{
+			oslDrawImageXY(highlight, 16, 54);
+			oslDrawString(37,73,"Check for Updates");
+			
+			if (osl_pad.held.cross)
+			{
+				updater();
+			}		
+		}
+
+		oslDrawImage(cursor);
+		
+		if (osl_pad.held.square)
+		{
+			powermenu();
+		}
+		
+		if (osl_pad.held.L)
+		{
+			lockscreen();
+        }
+		
+		if (osl_pad.held.circle)
+		{
+			about_menu();
+			oslDeleteImage(updatesbg);
+		}
+
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			about_menu();
+			oslDeleteImage(updatesbg);
+		}
+		
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			home();
+			oslDeleteImage(updatesbg);
+		}
+
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			multitask();
+			oslDeleteImage(updatesbg);
+		}
+		
+		oslEndDrawing();
+        
+        oslEndFrame();
+        oslSyncFrame();
+
+	    //For sleep
+        oslAudioVSync();
+}
+}
+
+void performance_menu()
+{	
+	performancebg = oslLoadImageFilePNG("system/settings/performancebg.png", OSL_IN_RAM, OSL_PF_8888);
+	
+	//Debugger
+	if (!performancebg)
+		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	
+	setfont();
+
 	//Main loop to run the program
 	while (!osl_quit)
 	{
@@ -434,7 +536,7 @@ void performance_menu()
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 80 && cursor->y <= 138)
 		{
-			oslDrawImageXY(processor, 16, 83);
+			oslDrawImageXY(highlight, 16, 83);
 			oslDrawString(40,98,"Processor");
 		}
 		
@@ -453,16 +555,19 @@ void performance_menu()
 		if (osl_pad.held.circle)
 		{
 			settingsmenu();
+			oslDeleteImage(performancebg);
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			settingsmenu();
+			oslDeleteImage(performancebg);
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			home();
+			oslDeleteImage(performancebg);
 		}
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 80 && cursor->y <= 138 && osl_pad.held.cross)
@@ -473,6 +578,7 @@ void performance_menu()
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			multitask();
+			oslDeleteImage(performancebg);
 		}
 	
 		oslEndDrawing();
@@ -483,22 +589,18 @@ void performance_menu()
 	    //For sleep
         oslAudioVSync();
 }
-
-	oslDeleteImage(performancebg);
-
 }
 
 void processor_menu()
-{
-//loads our images into memory
+{	
 	processorbg = oslLoadImageFilePNG("system/settings/processorbg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	setfont();
-	
 	//Debugger
-	if (!processorbg || !cursor || !wificon)
+	if (!processorbg)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-		
+
+	setfont();
+
 	//Main loop to run the program
 	while (!osl_quit)
 	{
@@ -546,22 +648,25 @@ void processor_menu()
 		
 		if (osl_pad.held.circle)
 		{
-			settingsmenu();
+			performance_menu();
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			settingsmenu();
+			performance_menu();
+			oslDeleteImage(processorbg);
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			home();
+			oslDeleteImage(processorbg);
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			multitask();
+			oslDeleteImage(processorbg);
 		}
 		
 		oslEndDrawing();
@@ -572,9 +677,6 @@ void processor_menu()
 	    //For sleep
         oslAudioVSync();
 }
-
-	oslDeleteImage(processorbg);
-
 }
 
 /* Work in Progress Theme Manager */
@@ -716,16 +818,15 @@ void SetZipName()
 */
 
 void theme_menu()
-{
-//loads our images into memory
+{	
 	themebg = oslLoadImageFilePNG("system/settings/themebg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	setfont();
-	
 	//Debugger
-	if (!themebg || !cursor || !wificon)
+	if (!themebg)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-		
+
+	setfont();
+
 	//Main loop to run the program
 	while (!osl_quit)
 	{
@@ -771,21 +872,25 @@ void theme_menu()
 		if (osl_pad.held.circle)
 		{
 			settingsmenu();
+			oslDeleteImage(themebg);
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			settingsmenu();
+			oslDeleteImage(themebg);
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			home();
+			oslDeleteImage(themebg);
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			multitask();
+			oslDeleteImage(themebg);
 		}
 		
 		oslEndDrawing();
@@ -796,22 +901,19 @@ void theme_menu()
 	    //For sleep
         oslAudioVSync();
 }
-
-	oslDeleteImage(themebg);
-	
 }
 
 void wifi_menu()
-{
-//loads our images into memory
+{	
 	wifibg = oslLoadImageFilePNG("system/settings/wifibg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	setfont();
-	
 	//Debugger
-	if (!wifibg || !cursor || !wificon)
+	if (!wifibg)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-		
+
+	
+	setfont();
+
 	//Main loop to run the program
 	while (!osl_quit)
 	{
@@ -853,21 +955,25 @@ void wifi_menu()
 		if (osl_pad.held.circle)
 		{
 			settingsmenu();
+			oslDeleteImage(wifibg);	
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			settingsmenu();
+			oslDeleteImage(wifibg);	
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			home();
+			oslDeleteImage(wifibg);	
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			multitask();
+			oslDeleteImage(wifibg);	
 		}
 		
 		oslEndDrawing();
@@ -877,23 +983,19 @@ void wifi_menu()
 
 	    //For sleep
         oslAudioVSync();
-}
-
-	oslDeleteImage(wifibg);	
-	
+}	
 }
 
 void developer_menu()
 {
-//loads our images into memory
 	developerbg = oslLoadImageFilePNG("system/settings/developerbg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	setfont();
-	
 	//Debugger
-	if (!developerbg || !cursor || !wificon)
+	if (!developerbg)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-		
+	
+	setfont();
+
 	//Main loop to run the program
 	while (!osl_quit)
 	{
@@ -939,21 +1041,25 @@ void developer_menu()
 		if (osl_pad.held.circle)
 		{
 			settingsmenu();
+			oslDeleteImage(developerbg);
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			settingsmenu();
+			oslDeleteImage(developerbg);
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			home();
+			oslDeleteImage(developerbg);
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			multitask();
+			oslDeleteImage(developerbg);
 		}
 		
 		oslEndDrawing();
@@ -963,10 +1069,7 @@ void developer_menu()
 
 	    //For sleep
         oslAudioVSync();
-}
-
-	oslDeleteImage(developerbg);
-	
+}	
 }
 
 void settings_highlight()
@@ -1003,6 +1106,16 @@ void settings_highlight()
 		}
 }
 
+void settings_deleteImages()
+{
+	oslDeleteImage(settingsbg);
+	oslDeleteImage(about);
+	oslDeleteImage(themes);
+	oslDeleteImage(developeroptions);
+	oslDeleteImage(wifi);
+	oslDeleteImage(highlight);
+}
+
 int settingsmenu()
 {
 	//loads our images into memory
@@ -1010,17 +1123,18 @@ int settingsmenu()
 	offswitch = oslLoadImageFilePNG("system/settings/offswitch.png", OSL_IN_RAM, OSL_PF_8888);
 	onswitch = oslLoadImageFilePNG("system/settings/onswitch.png", OSL_IN_RAM, OSL_PF_8888);
 	about = oslLoadImageFilePNG("system/settings/about.png", OSL_IN_RAM, OSL_PF_8888);
-	performance = oslLoadImageFilePNG("system/settings/performance.png", OSL_IN_RAM, OSL_PF_8888);
 	themes = oslLoadImageFilePNG("system/settings/themes.png", OSL_IN_RAM, OSL_PF_8888);
 	developeroptions = oslLoadImageFilePNG("system/settings/developeroptions.png", OSL_IN_RAM, OSL_PF_8888);
 	wifi = oslLoadImageFilePNG("system/settings/wifi.png", OSL_IN_RAM, OSL_PF_8888);
-	
+	highlight = oslLoadImageFilePNG("system/settings/highlight.png", OSL_IN_RAM, OSL_PF_8888);
+	performance = oslLoadImageFilePNG("system/settings/performance.png", OSL_IN_RAM, OSL_PF_8888);
+		
 	setfont();
 	
 	//Debugger
-	if (!settingsbg || !cursor || !wificon || !onswitch || !offswitch || !about || !developeroptions || !wifi || !themes || !performance)
+	if (!settingsbg || !onswitch || !offswitch || !about || !developeroptions || !wifi || !themes || !highlight)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-		
+
 	//Main loop to run the program
 	while (!osl_quit)
 	{
@@ -1099,16 +1213,19 @@ int settingsmenu()
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			appdrawer();
+			settings_deleteImages();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			home();
+			settings_deleteImages();
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			multitask();
+			settings_deleteImages();
 		}
 			
         oslEndDrawing();
@@ -1119,13 +1236,5 @@ int settingsmenu()
 	    //For sleep
         oslAudioVSync();
 		}
-		
-	oslDeleteImage(settingsbg);
-	oslDeleteImage(about);
-	oslDeleteImage(performance);
-	oslDeleteImage(themes);
-	oslDeleteImage(developeroptions);
-	oslDeleteImage(wifi);
-	
 }
 

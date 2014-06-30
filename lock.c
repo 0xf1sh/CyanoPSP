@@ -13,6 +13,18 @@ int style = 0;
 //definition of our sounds
 OSL_SOUND *tone;
 
+void lockscreen_deleteimages()
+{
+	oslDeleteImage(lock);
+	oslDeleteImage(unlock);
+	oslDeleteImage(messenger);
+    oslDeleteImage(circle);
+	oslDeleteImage(messenger2);
+	oslDeleteImage(music);
+	oslDeleteImage(music2);	
+	oslDeleteImage(circles);
+}
+
 int lockscreen()
 {	
 	setfont();
@@ -70,6 +82,7 @@ int lockscreen()
 		if (style == 0)
 		{
 		home();
+		lockscreen_deleteimages();
 		}
 		
 		if (click == 1) {

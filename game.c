@@ -116,7 +116,6 @@ int cef_launch(char * file, int type, int extra)
 int gamemenu()
 {	
 	gamebg = oslLoadImageFilePNG("system/home/menu/gamebg.png", OSL_IN_RAM, OSL_PF_8888);
-	noicon = oslLoadImageFilePNG("system/home/menu/noicon.png", OSL_IN_VRAM, OSL_PF_8888);;
 	
 	//Load fonts:
 	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");

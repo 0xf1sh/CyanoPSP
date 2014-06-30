@@ -7,9 +7,8 @@ OSL_IMAGE *background, *cursor, *wificon, *apollo, *gmail, *message, *browser, *
 //definition of our sounds
 OSL_SOUND *tone;
 
-int appdrawer()
-{	
-	//loads our images into memory
+void appdrawer_loadImages()
+{
 	clockx = oslLoadImageFilePNG("system/home/icons/clock.png", OSL_IN_RAM, OSL_PF_8888);
 	email = oslLoadImageFilePNG("system/home/icons/email.png", OSL_IN_RAM, OSL_PF_8888);
 	fb = oslLoadImageFilePNG("system/home/icons/fb.png", OSL_IN_RAM, OSL_PF_8888);
@@ -20,6 +19,26 @@ int appdrawer()
 	calendar = oslLoadImageFilePNG("system/home/icons/calendar.png", OSL_IN_RAM, OSL_PF_8888);
 	people = oslLoadImageFilePNG("system/home/icons/people.png", OSL_IN_RAM, OSL_PF_8888);
 	isoloadericon = oslLoadImageFilePNG("system/home/icons/isoloadericon.png", OSL_IN_RAM, OSL_PF_8888);
+}
+
+void appdrawer_deleteImages()
+{
+	oslDeleteImage(clockx);
+	oslDeleteImage(email);
+	oslDeleteImage(fb);
+	oslDeleteImage(settings);
+	oslDeleteImage(gallery);
+	oslDeleteImage(phone);
+	oslDeleteImage(calc);
+	oslDeleteImage(calendar);
+	oslDeleteImage(people);
+	oslDeleteImage(isoloadericon);
+}
+
+int appdrawer()
+{	
+	//loads our images into memory
+	appdrawer_loadImages();
 	
 	setfont();
 	
@@ -92,6 +111,7 @@ int appdrawer()
 		if (cursor->x >= 78 && cursor->x <= 120 && cursor->y >= 24 && cursor->y <= 70 && osl_pad.held.cross)
 		{
 			internet();
+			appdrawer_deleteImages();
 		}
 		
 		if (osl_pad.held.L)
@@ -102,51 +122,61 @@ int appdrawer()
 		if (osl_pad.held.circle)
 		{
 			home();
+			appdrawer_deleteImages();
 		}
 		
 		if (cursor->x >= 142 && cursor->x <= 177 && cursor->y >= 44 && cursor->y <= 60 && osl_pad.held.cross)
 		{
 			calculator();
+			appdrawer_deleteImages();
 		}
 		
 		if (cursor->x >= 385 && cursor->x <= 430 && cursor->y >= 103 && cursor->y <= 151 && osl_pad.held.cross)
 		{
 			settingsmenu();
+			appdrawer_deleteImages();
 		}
 		
 		if (cursor->x >= 266 && cursor->x <= 311 && cursor->y >= 25 && cursor->y <= 70 && osl_pad.held.cross)
 		{
 			pspclock();
+			appdrawer_deleteImages();
 		}
 		
 		if (cursor->x >= 18 && cursor->x <= 65 && cursor->y >= 25 && cursor->y <= 70 && osl_pad.held.cross)
 		{
 			mp3player();
+			appdrawer_deleteImages();
 		}
 		
 		if (cursor->x >= 147 && cursor->x <= 191 && cursor->y >= 112 && cursor->y <= 154 && osl_pad.held.cross)
 		{
 			gamemenu();
+			appdrawer_deleteImages();
 		}
 		
 		if (cursor->x >= 387 && cursor->x <= 432 && cursor->y >= 25 && cursor->y <= 70 && osl_pad.held.cross)
 		{
 			filemanage();
+			appdrawer_deleteImages();
 		}
 		
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			home();
+			appdrawer_deleteImages();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			home();
+			appdrawer_deleteImages();
 		}
 		
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			multitask();
+			appdrawer_deleteImages();
 		}
 				
         oslEndDrawing();

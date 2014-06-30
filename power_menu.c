@@ -60,7 +60,7 @@ int powermenu()
 			home();
 		}
 			
-		if (cursor->x >= 128 && cursor->x <= 354 && cursor->y >= 35 && cursor->y <= 86 && osl_pad.held.cross)
+		if (cursor->x >= 128 && cursor->x <= 354 && cursor->y >= 25 && cursor->y <= 86 && osl_pad.held.cross)
 		{
 			sceKernelExitGame();
 		}
@@ -71,9 +71,9 @@ int powermenu()
 		}
 		
 		if (cursor->x >= 128 && cursor->x <= 354 && cursor->y >= 192 && cursor->y <= 242 && osl_pad.held.cross)
-		{
-			return;
+		{	
 			oslWriteImageFilePNG(oslGetDrawBuffer(), "ms0:/PSP/GAME/CyanogenMod/SCREENSHOT.PNG", 0);
+			return;
 		}
 		
 		if (cursor->x >= 128 && cursor->x <= 354 && cursor->y >= 196 && cursor->y <= 248 && osl_pad.held.cross)
