@@ -81,8 +81,8 @@ int lockscreen()
 		if (ending == 1)
 		if (style == 0)
 		{
-		home();
 		lockscreen_deleteimages();
+		return;
 		}
 		
 		if (click == 1) {

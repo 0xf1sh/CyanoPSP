@@ -72,19 +72,18 @@ void wlanstatus1()
 
 void updater()
 {
-	pgeNetInit();
+	oslNetInit(); 
 	
 	while (!osl_quit)
 	{ 	
 		settings_deleteImages();
 		
 		//download file
-        pgeNetGetFile("http://zone-wifi.fr/psp/PSP/GAME/", "../CyanogenMod PSP-C Alpha Build 1.zip");
+        oslNetGetFile("http://zone-wifi.fr/psp/PSP/GAME/CyanogenMod PSP-C Alpha Build 1.zip", "../");
 
         oslDrawStringf(50, 40,"Installing update...");
-        
-        
-        pgeZip* zipFiles = pgeZipOpen("../CyanogenMod.zip");
+    
+        pgeZip* zipFiles = pgeZipOpen("CyanogenMod PSP-C Alpha Build 1.zip");
         
         chdir("..");
         
@@ -101,7 +100,7 @@ void updater()
 		}
 
 }
-	pgeNetShutdown();
+	oslNetTerm();
 }
 
 
@@ -257,32 +256,32 @@ void pspgetmodel()
 	
 		if(pspmodel == 0)
 		{
-			oslDrawString(37,136,"Model: PSP 1000");
+			oslDrawString(37,133,"Model: PSP 1000");
 		}
    
 		else if(pspmodel == 1)
 		{
-			oslDrawString(37,136,"Model: PSP 2000");
+			oslDrawString(37,133,"Model: PSP 2000");
 		}
    
 		else if (pspmodel == 2)
 		{
-			oslDrawString(37,136,"Model: PSP 3000");
+			oslDrawString(37,133,"Model: PSP 3000");
 		}
    
 		else if(pspmodel == 3)
 		{
-			oslDrawString(37,136,"Model: PSP 3000");
+			oslDrawString(37,133,"Model: PSP 3000");
 		}
 		
 		else if (pspmodel == 4)
 		{
-			oslDrawString(37,136,"Model: PSP Go N1000");
+			oslDrawString(37,133,"Model: PSP Go N1000");
 		}
    
 		else
 		{
-			oslDrawString(37,136,"Model: PS Vita");
+			oslDrawString(37,133,"Model: PS Vita");
 		}
 }
 
@@ -317,10 +316,11 @@ void about_menu()
 		oslDrawString(37,73,"CyanoPSP Updates");
 		oslDrawString(37,87,"Click for, view or install available updates");
 		pspgetmodel();
-		oslDrawString(37,122,"CyanoPSP - Alpha build 2");
+		oslDrawString(37,119,"CyanoPSP - Alpha build 2");
+		oslDrawString(37,147,"Build Date - Wednesday July 2nd 12:00 AM EST");
 		oslDrawString(37,172,"Kernel Version");
-		oslDrawString(37,185,"Undefined-pspsdk_oslib");
-		oslDrawString(37,198,"joellovesanna@psp #1");
+		oslDrawString(37,186,"Undefined-pspsdk_oslib");
+		oslDrawString(37,200,"joellovesanna@psp #1");
 		
 		digitaltime();
 			

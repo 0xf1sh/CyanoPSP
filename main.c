@@ -226,58 +226,34 @@ void __psp_free_heap(void);
 
 void internet()
 {
-int skip = 0;
-    char message[100] = "";
-    int browser = 0;
-    SetupCallbacks();
-
-    oslIntraFontInit(INTRAFONT_CACHE_MED);
-	oslNetInit();
-
-    setfont();
-
-    while(runningFlag && !osl_quit){
-		browser = oslBrowserIsActive();
-		if (!skip){
-            oslStartDrawing();
-            oslDrawImageXY(background, 0, 0);
-            oslDrawString(100, 50, "Press X to open the internet browser");
-            oslDrawString(100, 150, "Press /\\ to quit.");
-
-            oslDrawString(30, 200, message);
-
-            if (browser){
-                oslDrawBrowser();
-                if (oslGetBrowserStatus() == PSP_UTILITY_DIALOG_NONE){
-					sprintf(message, "Browser closed");
-                    oslEndBrowser();
-                }
-            }
-            oslEndDrawing();
-        }
-        oslEndFrame();
-        skip = oslSyncFrame();
-
-        if (!browser){
-            oslReadKeys();
-            if (osl_keys->pressed.triangle){
-                runningFlag = 0;
-            }else if (osl_keys->pressed.cross){
-                int res = oslBrowserInit("http://www.google.com/", "/PSP/PHOTO", 5*1024*1024,
-                                         PSP_UTILITY_HTMLVIEWER_DISPLAYMODE_SMART_FIT,
-                                         PSP_UTILITY_HTMLVIEWER_DISABLE_STARTUP_LIMITS,
-                                         PSP_UTILITY_HTMLVIEWER_INTERFACEMODE_FULL,
-                                         PSP_UTILITY_HTMLVIEWER_CONNECTMODE_MANUAL_ALL);
-                memset(message, 0, sizeof(message));
-				if (res)
-					sprintf(message, "Error %i initializing browser!", res);
-				else
-					sprintf(message, "Browser initialized.");
-			}
-        }
-    }
-    //Quit OSL:
-	oslNetTerm();
+int browser = 0; 
+    int skip=0; 
+    oslNetInit(); 
+    oslBrowserInit("yourIP","yourdst",10*1024*1024, 
+                        PSP_UTILITY_HTMLVIEWER_DISPLAYMODE_SMART_FIT, 
+                        PSP_UTILITY_HTMLVIEWER_DISABLE_STARTUP_LIMITS, 
+                        PSP_UTILITY_HTMLVIEWER_INTERFACEMODE_FULL, 
+                        PSP_UTILITY_HTMLVIEWER_CONNECTMODE_MANUAL_ALL); 
+  
+    while(!osl_quit){ 
+        browser = oslBrowserIsActive(); 
+        if (!skip){ 
+            oslStartDrawing(); 
+            oslCls(); 
+            oslDrawBrowser(); 
+            if (browser){ 
+                oslDrawBrowser(); 
+                if (oslGetBrowserStatus() == PSP_UTILITY_DIALOG_NONE){ 
+                    oslEndBrowser(); 
+                    break; 
+                } 
+            } 
+            oslEndDrawing(); 
+        } 
+        oslEndFrame(); 
+        skip = oslSyncFrame(); 
+    } 
+    oslNetTerm();
 }
 
 void setfont()
