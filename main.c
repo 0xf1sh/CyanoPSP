@@ -26,6 +26,8 @@
 #include "mp3player.h"
 #include "game.h"
 
+#define screenshotpath "ms0:/PSP/GAME/CyanogenMod/screenshot"
+
 PSP_MODULE_INFO("CyanoPSP - C", 0x200, 2, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(-1024);
@@ -70,6 +72,7 @@ OSL_SOUND *tone;
 int initOSLib(){
     oslInit(0);
     oslInitGfx(OSL_PF_8888, 1);
+	oslSetBilinearFilter(1);
     oslInitAudio();
     oslSetQuitOnLoadFailure(1);
     oslSetKeyAutorepeatInit(40);
@@ -137,6 +140,20 @@ void battery()
 		if (scePowerIsBatteryCharging() == 1)
 			oslDrawImageXY(battcharge,batx,baty);
 		
+}
+
+void makescreenshotdir()
+{
+	SceUID dir = sceIoDopen(screenshotpath);
+	
+	if (dir >= 0)
+	{
+		sceIoDclose(dir);
+	}
+	else 
+	{
+		sceIoMkdir("ms0:/PSP/GAME/CyanogenMod/screenshot",0777);
+}
 }
 
 void appdrawericon()
@@ -311,7 +328,8 @@ int main()
 	
 	//Main loop to run the program
 	while (!osl_quit)
-	{
+	{	
+		makescreenshotdir();
 
 		//Draws images onto the screen
 		oslStartDrawing();

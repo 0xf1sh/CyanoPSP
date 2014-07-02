@@ -1,20 +1,29 @@
+// Thanks to Omega2058, for helping me out with this.
+
 #include <pspkernel.h>
 #include <pspctrl.h>
 #include <pspdebug.h>
 #include <pspsdk.h>
 #include <oslib/oslib.h>
 #include <pspiofilemgr.h>
+#include <pspiofilemgr_kernel.h>
 #include <pspiofilemgr_dirent.h>
+#include <stdio.h>
 #include <string.h>
 #include "fm.h"
 
 //declaration
-OSL_IMAGE *filemanagerbg, *cursor, *wificon;
+OSL_IMAGE *filemanagerbg, *cursor, *wificon, *diricon, *imageicon, *mp3icon, *txticon, *unknownicon;
+
+//Load fonts:
+OSL_FONT *pgfFont;
 
 char fileName;
 SceIoDirent dirent;
 SceUID dirId = 0;
 int dirStatus = 1;
+int curr;
+int amount;
 
 int fileExists(const char* path)
 {
@@ -98,9 +107,10 @@ int nextFile()
 }
 
 char* getNextfileName()
-{
+{	
+	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
 	if (dirId > NULL && dirStatus > 0)
-	{
+	{	
 		if(dirStatus >= 0)strcpy(fileName, dirent.d_name);
 	}
 	return fileName;
@@ -112,12 +122,11 @@ int nextDir()
 }
 
 int listFiles(void) {
-	
-	SceIoDirent direct;
-	int dfd, result = 0;
+
+	int dfd, result = 0, y = 23, iconY = 18, sCurr = 0;
 	
 	// Clear out "dir" by setting all it's members to 0 
-	memset(&direct, 0, sizeof(direct));
+	memset(&dirent, 0, sizeof(dirent));
 	
 	// Open up the directory
 	dfd = sceIoDopen(rootdir);
@@ -129,36 +138,61 @@ int listFiles(void) {
 
 	// This portion will continue to read contents in 
 	// the directory and print it one-by-one :)
-	while (sceIoDread(dfd, &direct) > 0) {	
+	while (sceIoDread(dfd, &dirent) > 0) {	
 		//Confirm that the file is an actual name, blah, blah
-		if (direct.d_name[0] == '.')
+		if (strcmp(dirent.d_name, ".") == 0)
+			continue;
+		if (strcmp(dirent.d_name, ".") == 0)
 			continue;
 			
-		int y = 50;
-		oslDrawStringf(50, y+=45, "%s/n", direct.d_name);
-		
+		if (curr == sCurr) {
+			oslIntraFontSetStyle(pgfFont, 0.5, RGBA(41,118,195,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
+			oslDrawStringf(80, y+=46, "%s", dirent.d_name);
+			goto end;
+		}
+
+		// Print the file inside the directory
+		oslIntraFontSetStyle(pgfFont, 0.5, RGBA(0,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
+		oslDrawStringf(80, y+=46, "%s", dirent.d_name);
+		oslDrawImageXY(diricon, 36, 56);
+
+		end:
+		sCurr++;
+		result++;
 	}
-	
+
 	// Close and return, we're done :D
 	sceIoDclose(dfd);
 	return result;
+
 }
 
 int filemanage(int argc, char *argv[])
 {
 	//loads our images into memory
-	filemanagerbg = oslLoadImageFilePNG("system/home/menu/filemanagerbg.png", OSL_IN_RAM, OSL_PF_8888);
+	filemanagerbg = oslLoadImageFilePNG("system/app/filemanager/filemanagerbg.png", OSL_IN_RAM, OSL_PF_8888);
+	diricon = oslLoadImageFilePNG("system/app/filemanager/dir.png", OSL_IN_RAM, OSL_PF_8888);
+	imageicon = oslLoadImageFilePNG("system/app/filemanager/image.png", OSL_IN_RAM, OSL_PF_8888);
+	mp3icon = oslLoadImageFilePNG("system/app/filemanager/mp3.png", OSL_IN_RAM, OSL_PF_8888);
+	txticon = oslLoadImageFilePNG("system/app/filemanager/txt.png", OSL_IN_RAM, OSL_PF_8888);
+	unknownicon= oslLoadImageFilePNG("system/app/filemanager/unknownfile.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	//Load fonts:
-	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(0,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
+	pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
+	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(0,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
 	//Set fonts
 	oslSetFont(pgfFont);
 	
 	//Debugger
 	if (!filemanagerbg || !cursor || !wificon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	
+	SceCtrlData pad;
+	
+	curr = 0;
 
+	// Get the number of files in the directory
+	amount = listFiles();
+	
 	while (!osl_quit)
   {
 		//Draws images onto the screen
@@ -180,7 +214,27 @@ int filemanage(int argc, char *argv[])
 		//calls the functions
 		battery();
 		usb_icon();
-
+		
+		sceCtrlReadBufferPositive(&pad, 1);
+		
+		if (pad.Buttons & PSP_CTRL_DOWN)
+		{
+		curr++;
+		listFiles();
+		}
+		
+		if (pad.Buttons & PSP_CTRL_UP)
+		{
+		curr--;
+		listFiles();
+		}
+		
+		if(curr > amount)
+			curr = 0;
+		
+		if(curr < 0)
+			curr = amount;
+        
 		if (osl_pad.held.square)
 		{
 			powermenu();

@@ -12,6 +12,16 @@ void power_off()
 //definition of our sounds
 OSL_SOUND *tone;
 
+int screenshot = 0;
+
+void screencapture()
+{	
+	if (screenshot == 1)
+	{
+		oslWriteImageFilePNG(oslGetDrawBuffer(), "ms0:/PSP/GAME/CyanogenMod/screenshot/screenshot.PNG", 0);
+	}
+}
+
 int powermenu()
 {	
 	power = oslLoadImageFile("system/home/menu/power.png", OSL_IN_RAM, OSL_PF_8888);
@@ -54,7 +64,9 @@ int powermenu()
 		battery();
 		usb_icon();
 		oslDrawImage(cursor);
-					
+		
+		screencapture();
+		
 		if (osl_pad.held.circle)
 		{
 			return;
@@ -70,10 +82,12 @@ int powermenu()
 			recoverymain();
 		}
 		
+		screencapture();
+		
 		if (cursor->x >= 128 && cursor->x <= 354 && cursor->y >= 192 && cursor->y <= 242 && osl_pad.held.cross)
 		{	
-			oslWriteImageFilePNG(oslGetDrawBuffer(), "ms0:/PSP/GAME/CyanogenMod/SCREENSHOT.PNG", 0);
 			return;
+			screenshot = 1;
 		}
 				
 		//Ends printing

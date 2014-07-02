@@ -19,6 +19,7 @@ void internet();
 void android_notif();
 void battery();
 void appdrawericon();
+void makescreenshotdir();
 void setfont();
 void clean1();
 void loadDroidSansfont();

@@ -293,7 +293,6 @@ void refreshMenu(int offSet, char* menuData, int loadedCache)
 {
   	int i;
 	u32 color;
-	oslClearScreen(RGB(0,0,0));
 	for(i = offSet; i < (MAXMENUSIZE + offSet); ++i)
 	{
     	color = 0x00FFFFFF;
@@ -302,11 +301,11 @@ void refreshMenu(int offSet, char* menuData, int loadedCache)
 
 		if (loadedCache == 1)
 		{
-    		oslDrawStringf(0, 15 + (i - offSet) * 12, folders[i], color);
+    		oslDrawStringf(0, 15 + (i - offSet) * 12, folders[i]);
 		}
 		else
 		{
-			oslDrawStringf(0, 15 + (i - offSet) * 12, &menuData[MAX_NAME_SIZE*i], color);
+			oslDrawStringf(0, 15 + (i - offSet) * 12, &menuData[MAX_NAME_SIZE*i]);
 		}
   	}
 }
@@ -347,13 +346,9 @@ static int xstrtoi(char *str, int len) {
 
 int gamemenu(int argc, char *argv[])
 {	
-	gamebg = oslLoadImageFilePNG("system/home/menu/gamebg.png", OSL_IN_RAM, OSL_PF_8888);
+	gamebg = oslLoadImageFilePNG("system/app/game/gamebg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	//Load fonts:
-	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.6, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
-	//Set fonts
-	oslSetFont(pgfFont);
+	setfont();
 	
 	//Debugger
 	if (!gamebg || !cursor)
