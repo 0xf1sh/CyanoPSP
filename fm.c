@@ -22,7 +22,16 @@ SceUID dirId = 0;
 int dirStatus = 1;
 int curr;
 int amount;
-int sCurr = 0;
+
+void filemanager_unload()
+{
+	oslDeleteImage(filemanagerbg);
+	oslDeleteImage(diricon);
+	oslDeleteImage(imageicon);
+	oslDeleteImage(mp3icon);
+	oslDeleteImage(txticon);
+	oslDeleteImage(unknownicon);
+}
 
 int fileExists(const char* path)
 {
@@ -124,7 +133,7 @@ int nextDir()
 
 int listFiles(void) {
 
-	int dfd, result = 0, y = 23, iconY = 18;
+	int dfd, result = 0, y = 23, iconY = 18, sCurr = 0;;
 	
 	// Clear out "dir" by setting all it's members to 0 
 	memset(&dirent, 0, sizeof(dirent));
@@ -166,16 +175,6 @@ int listFiles(void) {
 	sceIoDclose(dfd);
 	return result;
 
-}
-
-void filemanager_unload()
-{
-	oslDeleteImage(filemanagerbg);
-	oslDeleteImage(diricon);
-	oslDeleteImage(imageicon);
-	oslDeleteImage(mp3icon);
-	oslDeleteImage(txticon);
-	oslDeleteImage(unknownicon);
 }
 
 int filemanage(int argc, char *argv[])
@@ -228,18 +227,15 @@ int filemanage(int argc, char *argv[])
 		
 		sceCtrlReadBufferPositive(&pad, 1);
 		
-		if (pad.Buttons & PSP_CTRL_DOWN)
-		{
-		curr++;
-		if(curr>1)(curr=0);
-		while(pad.Buttons)(sceCtrlReadBufferPositive(&pad, 1));
+		if (pad.Buttons & PSP_CTRL_DOWN) {
+			pspDebugScreenClear();
+			curr++;
+			while(pad.Buttons)(sceCtrlReadBufferPositive(&pad, 1));
 		}
-		
-		if (pad.Buttons & PSP_CTRL_UP)
-		{
-		curr--;
-		if(curr<0)(curr=1);
-		while(pad.Buttons)(sceCtrlReadBufferPositive(&pad, 1));
+		if (pad.Buttons & PSP_CTRL_UP) {
+			pspDebugScreenClear();
+			curr--;
+			while(pad.Buttons)(sceCtrlReadBufferPositive(&pad, 1));
 		}
 		
 		if(curr > amount)

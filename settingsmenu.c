@@ -33,7 +33,7 @@
 
 //declaration
 OSL_IMAGE *settingsbg, *cursor, *wificon, *usbdebug, *aboutbg, *offswitch, *onswitch, *themebg, *performancebg, *wifibg, *developerbg, *about, *highlight, 
-		  *developeroptions, *themes, *wifi, *processorbg, *background, *appicon1, *appicon2, *navbar, *apollo, *gmail, *message, *browser, 
+		  *developeroptions, *themes, *wifi, *processorbg, *background, *appicon1, *appicon2, *navbar, *apollo, *gmail, *message, *browser, *cpuset,
 		  *backicon, *homeicon, *multicon, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *isoloadericon, *fb, *settings, *updatesbg, *performance;
 
 //definition of our sounds
@@ -49,6 +49,9 @@ char InputTheme;
 int ThemeZip;
 int theme;
 char name;
+int setclock = 6;
+int setclockrlimit = 0;
+int setclockllimit = 9;
 
 void wlanstatus()
 {
@@ -616,17 +619,18 @@ void processor_menu()
 		oslReadKeys();
 		
 		//Print the images onto the screen
+		
 		oslDrawImageXY(processorbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
-
+		
 		oslDrawString(35,74,"Current CPU Frequency");
 		pspgetcpu_bus();
-		oslDrawString(35,128,"MIPS R4000");
+		oslDrawString(35,128,"CPU Overclock");
 		oslDrawString(35,184,"Minimum CPU Frequency");
 		oslDrawString(35,197,"20 MHz");
 		oslDrawString(35,236,"Maximum CPU Frequency");
 		oslDrawString(35,249,"333 MHz");
-		
+	
 		digitaltime();
 			
 		//calls the functions
@@ -634,17 +638,93 @@ void processor_menu()
 		navbar_buttons();
 		android_notif();
 		usb_icon();
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 118 && cursor->y <= 174)
+		{
+			oslDrawImageXY(highlight, 16, 118);
+			oslDrawString(35,128,"CPU Overclock");
+			oslDrawString(35,142,"Press R to increase frequency and L to decrease frequency");
+			oslDrawString(35,156,"Press triangle to reset to default, 222/111");
+		}
+				
+		if(setclock = 0)
+		{	
+			scePowerSetClockFrequency(20, 20, 10);
+		}
+   
+		else if(setclock = 1)
+		{	
+			scePowerSetClockFrequency(75, 75, 37);
+		}
+		
+		else if(setclock = 2)
+		{
+			scePowerSetClockFrequency(100, 100, 50);
+		}
+		
+		else if(setclock = 3)
+		{	
+			scePowerSetClockFrequency(133, 133, 66);
+		}
+		
+		else if(setclock = 4)
+		{	
+			scePowerSetClockFrequency(166, 166, 83);
+		}
+		
+		else if(setclock = 5)
+		{	
+			scePowerSetClockFrequency(200, 200, 100);
+		}
+		
+		else if(setclock = 6)
+		{
+			scePowerSetClockFrequency(222, 222, 111);
+		}
+		
+		else if(setclock = 7)
+		{
+			scePowerSetClockFrequency(266, 266, 133);
+		}
+		
+		else if(setclock = 8)
+		{
+			scePowerSetClockFrequency(300, 300, 150);
+		}
+		
+		else if(setclock = 9)
+		{
+			scePowerSetClockFrequency(333, 333, 166);
+		}
+		
+		if (setclock >= setclockrlimit)
+		{setclock = setclockrlimit;}
+		
+		else if (setclock <= setclockllimit)
+		{setclock = setclockllimit;}
+
+		if (osl_pad.held.R)
+		{
+		 setclock+1;
+		}
+		
+		if (osl_pad.held.L)
+		{
+		 setclock-1;
+		}
+		
+		if (osl_pad.held.triangle)
+		{
+		 setclock = 6;
+		 scePowerSetClockFrequency(222, 222, 111);
+		}
+		
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)
 		{
 			powermenu();
 		}
-		
-		if (osl_pad.held.L)
-		{
-			lockscreen();
-        }
 		
 		if (osl_pad.held.circle)
 		{
