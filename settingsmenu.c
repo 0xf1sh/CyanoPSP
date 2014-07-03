@@ -350,27 +350,27 @@ void about_menu()
         }
 		
 		if (osl_pad.held.circle)
-		{
-			settingsmenu();
+		{	
 			oslDeleteImage(aboutbg);
+			settingsmenu();	
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			settingsmenu();
+		{	
 			oslDeleteImage(aboutbg);
+			settingsmenu();	
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			home();
+		{	
 			oslDeleteImage(aboutbg);
+			home();	
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			multitask();
+		{	
 			oslDeleteImage(aboutbg);
+			multitask();	
 		}
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 70 && cursor->y <= 138 && osl_pad.held.cross)
@@ -462,26 +462,26 @@ void updates_menu()
 		
 		if (osl_pad.held.circle)
 		{
-			about_menu();
 			oslDeleteImage(updatesbg);
+			about_menu();
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			about_menu();
 			oslDeleteImage(updatesbg);
+			about_menu();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			home();
 			oslDeleteImage(updatesbg);
+			home();
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			multitask();
 			oslDeleteImage(updatesbg);
+			multitask();
 		}
 		
 		oslEndDrawing();
@@ -554,20 +554,20 @@ void performance_menu()
 		
 		if (osl_pad.held.circle)
 		{
-			settingsmenu();
 			oslDeleteImage(performancebg);
+			settingsmenu();
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			settingsmenu();
 			oslDeleteImage(performancebg);
+			settingsmenu();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			home();
 			oslDeleteImage(performancebg);
+			home();
 		}
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 80 && cursor->y <= 138 && osl_pad.held.cross)
@@ -577,8 +577,8 @@ void performance_menu()
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			multitask();
 			oslDeleteImage(performancebg);
+			multitask();
 		}
 	
 		oslEndDrawing();
@@ -652,21 +652,21 @@ void processor_menu()
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			performance_menu();
+		{	
 			oslDeleteImage(processorbg);
+			performance_menu();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			home();
 			oslDeleteImage(processorbg);
+			home();
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			multitask();
+		{	
 			oslDeleteImage(processorbg);
+			multitask();	
 		}
 		
 		oslEndDrawing();
@@ -871,26 +871,26 @@ void theme_menu()
 		
 		if (osl_pad.held.circle)
 		{
-			settingsmenu();
 			oslDeleteImage(themebg);
+			settingsmenu();
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			settingsmenu();
 			oslDeleteImage(themebg);
+			settingsmenu();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			home();
 			oslDeleteImage(themebg);
+			home();
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			multitask();
 			oslDeleteImage(themebg);
+			multitask();
 		}
 		
 		oslEndDrawing();
@@ -953,27 +953,27 @@ void wifi_menu()
         }
 		
 		if (osl_pad.held.circle)
-		{
-			settingsmenu();
+		{	
 			oslDeleteImage(wifibg);	
+			settingsmenu();
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			settingsmenu();
 			oslDeleteImage(wifibg);	
+			settingsmenu();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			home();
 			oslDeleteImage(wifibg);	
+			home();
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			multitask();
 			oslDeleteImage(wifibg);	
+			multitask();
 		}
 		
 		oslEndDrawing();
@@ -1040,26 +1040,26 @@ void developer_menu()
 		
 		if (osl_pad.held.circle)
 		{
-			settingsmenu();
 			oslDeleteImage(developerbg);
+			settingsmenu();
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			settingsmenu();
 			oslDeleteImage(developerbg);
+			settingsmenu();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			home();
 			oslDeleteImage(developerbg);
+			home();
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			multitask();
 			oslDeleteImage(developerbg);
+			multitask();
 		}
 		
 		oslEndDrawing();
@@ -1181,10 +1181,29 @@ int settingsmenu()
         }
 		
 		if (osl_pad.held.circle)
-		{
+		{	
+			settings_deleteImages();
+			appdrawer();
+		}
+			
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{	
+			settings_deleteImages();
 			appdrawer();
 		}
 		
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{	
+			settings_deleteImages();
+			home();
+		}
+
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{	
+			settings_deleteImages();
+			multitask();
+		}
+			
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 53 && cursor->y <= 98 && osl_pad.held.cross)
 		{
 			wifi_menu();
@@ -1209,25 +1228,7 @@ int settingsmenu()
 		{
 			about_menu();
 		}
-			
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			appdrawer();
-			settings_deleteImages();
-		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			home();
-			settings_deleteImages();
-		}
-
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			multitask();
-			settings_deleteImages();
-		}
-			
         oslEndDrawing();
         
         oslEndFrame();

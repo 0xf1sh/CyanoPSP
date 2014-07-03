@@ -280,6 +280,18 @@ void setfont()
 	oslSetFont(DroidSans);
 }
 
+void loadicons()
+{
+	appicon = oslLoadImageFilePNG("system/home/icons/appicon1.png", OSL_IN_RAM, OSL_PF_8888);
+	appicon2 = oslLoadImageFile("system/home/icons/appicon2.png", OSL_IN_RAM, OSL_PF_8888);
+}
+
+void unloadicons()
+{
+	oslDeleteImage(appicon);
+	oslDeleteImage(appicon2);
+}
+
 int main()
 {
 	initOSLib();
@@ -289,10 +301,9 @@ int main()
 	tone = oslLoadSoundFile("system/media/audio/ui/KeypressStandard.wav", OSL_FMT_NONE);
 
 	//loads our images into memory
+	loadicons();
 	background = oslLoadImageFilePNG("system/framework/framework-res/res/background.png", OSL_IN_RAM, OSL_PF_8888);
 	cursor = oslLoadImageFilePNG("system/cursor/cursor.png", OSL_IN_RAM, OSL_PF_8888);
-	appicon = oslLoadImageFilePNG("system/home/icons/appicon1.png", OSL_IN_RAM, OSL_PF_8888);
-	appicon2 = oslLoadImageFile("system/home/icons/appicon2.png", OSL_IN_RAM, OSL_PF_8888);
 	navbar = oslLoadImageFile("system/home/icons/nav.png", OSL_IN_RAM, OSL_PF_8888);
 	wificon = oslLoadImageFile("system/home/icons/wificon.png", OSL_IN_RAM, OSL_PF_8888);
 	apollo = oslLoadImageFilePNG("system/home/icons/apollo.png", OSL_IN_RAM, OSL_PF_5551);
@@ -366,11 +377,13 @@ int main()
 		//Launching the browser
 		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
 		{
+			unloadicons();
 			internet();
 		}
 			
 		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
 		{
+			unloadicons();
 			appdrawer();
 		}
 		
@@ -381,11 +394,13 @@ int main()
 		
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
+			unloadicons();
 			multitask();
 		}
 		
 		if (osl_pad.held.R && osl_pad.held.cross)
 		{
+			unloadicons();
 			recoverymain();
         }
 		

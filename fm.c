@@ -1,5 +1,3 @@
-// Thanks to Omega2058, for helping me out with this.
-
 #include <pspkernel.h>
 #include <pspctrl.h>
 #include <pspdebug.h>
@@ -24,6 +22,7 @@ SceUID dirId = 0;
 int dirStatus = 1;
 int curr;
 int amount;
+int sCurr = 0;
 
 int fileExists(const char* path)
 {
@@ -121,9 +120,11 @@ int nextDir()
 	return FIO_S_ISDIR(dirent.d_stat.st_mode);
 }
 
+// Thanks to Omega2058, for helping me out with this.
+
 int listFiles(void) {
 
-	int dfd, result = 0, y = 23, iconY = 18, sCurr = 0;
+	int dfd, result = 0, y = 23, iconY = 18;
 	
 	// Clear out "dir" by setting all it's members to 0 
 	memset(&dirent, 0, sizeof(dirent));
@@ -165,6 +166,16 @@ int listFiles(void) {
 	sceIoDclose(dfd);
 	return result;
 
+}
+
+void filemanager_unload()
+{
+	oslDeleteImage(filemanagerbg);
+	oslDeleteImage(diricon);
+	oslDeleteImage(imageicon);
+	oslDeleteImage(mp3icon);
+	oslDeleteImage(txticon);
+	oslDeleteImage(unknownicon);
 }
 
 int filemanage(int argc, char *argv[])
@@ -220,13 +231,15 @@ int filemanage(int argc, char *argv[])
 		if (pad.Buttons & PSP_CTRL_DOWN)
 		{
 		curr++;
-		listFiles();
+		if(curr>1)(curr=0);
+		while(pad.Buttons)(sceCtrlReadBufferPositive(&pad, 1));
 		}
 		
 		if (pad.Buttons & PSP_CTRL_UP)
 		{
 		curr--;
-		listFiles();
+		if(curr<0)(curr=1);
+		while(pad.Buttons)(sceCtrlReadBufferPositive(&pad, 1));
 		}
 		
 		if(curr > amount)
@@ -246,23 +259,9 @@ int filemanage(int argc, char *argv[])
         }
 		
 		if (osl_pad.held.circle)
-		{
+		{	
+			filemanager_unload();
 			appdrawer();
-		}
-
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			appdrawer();
-		}
-		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			home();
-		}
-
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			multitask();
 		}
 		
 		oslEndDrawing();

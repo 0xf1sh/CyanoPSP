@@ -48,7 +48,7 @@ void digitaltime()
 int pspclock()
 {
 	//loads our images into memory
-	clockbg = oslLoadImageFilePNG("system/home/menu/clockbg.png", OSL_IN_RAM, OSL_PF_8888);
+	clockbg = oslLoadImageFilePNG("system/app/clock/clockbg.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	//Debugger
 	if (!clockbg || !cursor || !wificon)
@@ -83,7 +83,7 @@ int pspclock()
 		oslDrawImage(cursor);
 
 		if (osl_pad.held.square)
-		{
+		{	
 			powermenu();
 		}
 		
@@ -94,21 +94,25 @@ int pspclock()
 		
 		if (osl_pad.held.circle)
 		{
+			oslDeleteImage(clockbg);
 			appdrawer();
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
+		{	
+			oslDeleteImage(clockbg);
 			appdrawer();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
+			oslDeleteImage(clockbg);
 			home();
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
+			oslDeleteImage(clockbg);
 			multitask();
 		}
 		

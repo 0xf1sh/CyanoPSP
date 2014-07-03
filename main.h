@@ -19,6 +19,8 @@ void internet();
 void android_notif();
 void battery();
 void appdrawericon();
+void loadicons();
+void unloadicons();
 void makescreenshotdir();
 void setfont();
 void clean1();

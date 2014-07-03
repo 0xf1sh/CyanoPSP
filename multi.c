@@ -44,28 +44,37 @@ int multitask()
 		usb_icon();
 		oslDrawImage(cursor);
 		
+		if (osl_pad.held.square)
+		{
+			powermenu();
+		}
+		
 		if (osl_pad.held.L)
 		{
 			lockscreen();
         }
 		
 		if (osl_pad.held.circle)
-		{
-			home();
+		{	
+			oslDeleteImage(multi_task);
+			return;
 		}
 		
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
+			oslDeleteImage(multi_task);
 			home();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
+		{	
+			oslDeleteImage(multi_task);
 			home();
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
+			oslDeleteImage(multi_task);
 			multitask();
 		}
 				

@@ -123,8 +123,6 @@ int calculator()
 		
 		if (y == 1)
 		{
-		oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
-		
 			if (x ==1)
 			{
 			oslDrawString(40,77,"sin");
@@ -162,8 +160,6 @@ int calculator()
 		
 		else if (y == 2)
 		{
-		oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
-		
 			if (x == 1)
 			{
 				oslDrawString(40,120,"1/x");
@@ -200,8 +196,6 @@ int calculator()
 		
 		else if (y == 3) 
 		{
-		oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
-		
 			if (x == 1)
 			{
 				oslDrawString(298,240,"");
@@ -238,8 +232,6 @@ int calculator()
 		
 		else if (y == 4)
 		{
-		oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
-		
 			if (x == 1)
 			{
 				oslDrawString(298,240,"");
@@ -280,27 +272,31 @@ int calculator()
 		}
 		
 		if (osl_pad.held.circle)
-		{
+		{	
+			oslDeleteImage(calcbackground);
 			appdrawer();
 		}
 		
 		if (osl_pad.held.L)
-		{
+		{	
 			lockscreen();
         }
 		
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
+		{	
+			oslDeleteImage(calcbackground);
 			appdrawer();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
+			oslDeleteImage(calcbackground);
 			home();
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
+		{	
+			oslDeleteImage(calcbackground);
 			multitask();
 		}
 		

@@ -30,10 +30,6 @@ int powermenu()
 	if (!background || !cursor || !wificon || !power)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
-	//Sets the cursor's original position on the screen
-	cursor->x = 240;
-	cursor->y = 136;
-	
 	//Main loop to run the program
 	while (!osl_quit)
 	{

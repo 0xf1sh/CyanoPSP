@@ -91,7 +91,7 @@ int mp3player()
 	SceCtrlData pad;
 	 
 	//loads our images into memory
-	mp3bg = oslLoadImageFilePNG("system/home/menu/mp3bg.png", OSL_IN_RAM, OSL_PF_8888);
+	mp3bg = oslLoadImageFilePNG("system/app/apollo/mp3bg.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	//Load fonts:
 	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
