@@ -1,6 +1,12 @@
 #include <pspkernel.h>
 #include <oslib/oslib.h>
 #include "include/pgeZip.h"
+#include <pspiofilemgr.h>
+#include <pspiofilemgr_kernel.h>
+#include <pspiofilemgr_dirent.h>
+#include <stdio.h>
+#include <string.h>
+#include "fm.h"
 
 #define FW_660 0x06060010
 #define FW_639 0x06030910
@@ -30,6 +36,7 @@
 #define FW_310 0x03010010
 #define FW_303 0x03000310
 #define FW_302 0x03000210
+#define configFile "Config.TXT"
 
 //declaration
 OSL_IMAGE *settingsbg, *cursor, *wificon, *usbdebug, *aboutbg, *offswitch, *onswitch, *themebg, *performancebg, *wifibg, *developerbg, *about, *highlight, 
@@ -49,9 +56,15 @@ char InputTheme;
 int ThemeZip;
 int theme;
 char name;
-int setclock = 6;
+int setclock;
 int setclockrlimit = 0;
 int setclockllimit = 9;
+char Version[10] = "2.0 Alpha";
+char lang[12] = "English";
+char theme_bootanim[10] = "";
+char theme_icons[10] = "";
+char theme_style[10] = "";
+char theme_fonts[10] = "";
 
 void wlanstatus()
 {
@@ -73,6 +86,34 @@ void wlanstatus1()
 	
 }
 
+void loadConfig()
+{	
+	FILE * configtxt = fopen(configFile, "rb");
+
+	if(!configtxt) 
+	return saveConfig();
+	
+	//close file
+	fclose(configtxt);
+}
+
+void saveConfig()
+{
+	FILE * configtxt = fopen(configFile, "wb"); //create config file
+	fprintf(configtxt,
+"\r\Version= %s\r\n\
+Language = %s\r\n\
+ClockFrequency =  %s\r\n\
+BootAnimation = %s\r\n\
+Fonts = %s\r\n\
+Style =  %s\r\n\
+Icons = %s\r\n",
+	Version,lang,setclock,theme_bootanim,theme_fonts,theme_style,theme_icons);
+
+	fclose(configtxt);	
+
+}
+
 void updater()
 {
 	oslNetInit(); 
@@ -82,11 +123,11 @@ void updater()
 		settings_deleteImages();
 		
 		//download file
-        oslNetGetFile("http://zone-wifi.fr/psp/PSP/GAME/CyanogenMod PSP-C Alpha Build 1.zip", "../");
+        oslNetGetFile("http://zone-wifi.fr/psp/PSP/GAME/CyanoPSPUpdate.zip", "../");
 
         oslDrawStringf(50, 40,"Installing update...");
     
-        pgeZip* zipFiles = pgeZipOpen("CyanogenMod PSP-C Alpha Build 1.zip");
+        pgeZip* zipFiles = pgeZipOpen("CyanoPSPUpdate.zip");
         
         chdir("..");
         
@@ -603,6 +644,58 @@ void processor_menu()
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
 	setfont();
+	
+	setclock = 6;
+	
+	if(setclock == 0)
+		{	
+			scePowerSetClockFrequency(20, 20, 10);
+		}
+   
+		else if(setclock == 1)
+		{	
+			scePowerSetClockFrequency(75, 75, 37);
+		}
+		
+		else if(setclock == 2)
+		{
+			scePowerSetClockFrequency(100, 100, 50);
+		}
+		
+		else if(setclock == 3)
+		{	
+			scePowerSetClockFrequency(133, 133, 66);
+		}
+		
+		else if(setclock == 4)
+		{	
+			scePowerSetClockFrequency(166, 166, 83);
+		}
+		
+		else if(setclock == 5)
+		{	
+			scePowerSetClockFrequency(200, 200, 100);
+		}
+		
+		else if(setclock == 6)
+		{
+			scePowerSetClockFrequency(222, 222, 111);
+		}
+		
+		else if(setclock == 7)
+		{
+			scePowerSetClockFrequency(266, 266, 133);
+		}
+		
+		else if(setclock == 8)
+		{
+			scePowerSetClockFrequency(300, 300, 150);
+		}
+		
+		else if(setclock == 9)
+		{
+			scePowerSetClockFrequency(333, 333, 166);
+		}
 
 	//Main loop to run the program
 	while (!osl_quit)
@@ -646,55 +739,15 @@ void processor_menu()
 			oslDrawString(35,142,"Press R to increase frequency and L to decrease frequency");
 			oslDrawString(35,156,"Press triangle to reset to default, 222/111");
 		}
-				
-		if(setclock = 0)
-		{	
-			scePowerSetClockFrequency(20, 20, 10);
-		}
-   
-		else if(setclock = 1)
-		{	
-			scePowerSetClockFrequency(75, 75, 37);
-		}
 		
-		else if(setclock = 2)
+		if (osl_pad.held.R)
 		{
-			scePowerSetClockFrequency(100, 100, 50);
+		 setclock++;
 		}
 		
-		else if(setclock = 3)
-		{	
-			scePowerSetClockFrequency(133, 133, 66);
-		}
-		
-		else if(setclock = 4)
-		{	
-			scePowerSetClockFrequency(166, 166, 83);
-		}
-		
-		else if(setclock = 5)
-		{	
-			scePowerSetClockFrequency(200, 200, 100);
-		}
-		
-		else if(setclock = 6)
+		if (osl_pad.held.L)
 		{
-			scePowerSetClockFrequency(222, 222, 111);
-		}
-		
-		else if(setclock = 7)
-		{
-			scePowerSetClockFrequency(266, 266, 133);
-		}
-		
-		else if(setclock = 8)
-		{
-			scePowerSetClockFrequency(300, 300, 150);
-		}
-		
-		else if(setclock = 9)
-		{
-			scePowerSetClockFrequency(333, 333, 166);
+		 setclock--;
 		}
 		
 		if (setclock >= setclockrlimit)
@@ -702,16 +755,6 @@ void processor_menu()
 		
 		else if (setclock <= setclockllimit)
 		{setclock = setclockllimit;}
-
-		if (osl_pad.held.R)
-		{
-		 setclock+1;
-		}
-		
-		if (osl_pad.held.L)
-		{
-		 setclock-1;
-		}
 		
 		if (osl_pad.held.triangle)
 		{
@@ -994,9 +1037,19 @@ void wifi_menu()
 	
 	setfont();
 
+	struct oslNetConfig{
+    char name[128];
+    char IP[128];
+	};
+	
+	
+	
 	//Main loop to run the program
 	while (!osl_quit)
-	{
+	{	
+		oslIsWlanConnected();
+		
+		struct oslNetConfig index;
 		
 		//Draws images onto the screen
 		oslStartDrawing();
@@ -1011,6 +1064,9 @@ void wifi_menu()
 		//Print the images onto the screen
 		oslDrawImageXY(wifibg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
+		
+		oslDrawStringf(40,40,index.name);
+		oslDrawStringf(100,40,index.IP);
 		
 		wlanstatus1();
 		digitaltime();
@@ -1035,6 +1091,7 @@ void wifi_menu()
 		if (osl_pad.held.circle)
 		{	
 			oslDeleteImage(wifibg);	
+			oslNetTerm();
 			settingsmenu();
 		}
 
@@ -1060,7 +1117,6 @@ void wifi_menu()
         
         oslEndFrame();
         oslSyncFrame();
-
 	    //For sleep
         oslAudioVSync();
 }	
@@ -1214,7 +1270,7 @@ int settingsmenu()
 	//Debugger
 	if (!settingsbg || !onswitch || !offswitch || !about || !developeroptions || !wifi || !themes || !highlight)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-
+	
 	//Main loop to run the program
 	while (!osl_quit)
 	{
