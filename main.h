@@ -22,6 +22,7 @@ void appdrawericon();
 void loadicons();
 void unloadicons();
 void makescreenshotdir();
+void firstBootMessage();
 void setfont();
 void clean1();
 void loadDroidSansfont();

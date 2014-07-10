@@ -66,7 +66,7 @@ int home()
 		}
 		
 		if (osl_pad.held.L)
-		{
+		{	
 			lockscreen();
         }
 		

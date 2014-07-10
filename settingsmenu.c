@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "fm.h"
+#include "settingsmenu.h"
 
 #define FW_660 0x06060010
 #define FW_639 0x06030910
@@ -60,7 +61,7 @@ int setclock;
 int setclockrlimit = 0;
 int setclockllimit = 9;
 char Version[10] = "2.0 Alpha";
-char lang[12] = "English";
+char lang[12] = "Uk English";
 char theme_bootanim[10] = "";
 char theme_icons[10] = "";
 char theme_style[10] = "";
@@ -103,12 +104,13 @@ void saveConfig()
 	fprintf(configtxt,
 "\r\Version= %s\r\n\
 Language = %s\r\n\
-ClockFrequency =  %s\r\n\
+ClockFrequency =  %d\r\n\
 BootAnimation = %s\r\n\
 Fonts = %s\r\n\
 Style =  %s\r\n\
-Icons = %s\r\n",
-	Version,lang,setclock,theme_bootanim,theme_fonts,theme_style,theme_icons);
+Icons = %s\r\n\
+First boot = %d\r\n",
+	Version,lang,setclock,theme_bootanim,theme_fonts,theme_style,theme_icons,firstBoot);
 
 	fclose(configtxt);	
 

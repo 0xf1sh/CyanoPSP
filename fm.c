@@ -22,6 +22,8 @@ SceUID dirId = 0;
 int dirStatus = 1;
 int curr;
 int amount;
+int lim;
+int ini;
 
 void filemanager_unload()
 {
@@ -56,6 +58,8 @@ int dirExists(const char* path)
 		return 0;
 	}
 }
+
+static const int files_count = sizeof(curr) / sizeof(curr);
 
 unsigned fileSize(const char * path)
 {
@@ -133,7 +137,7 @@ int nextDir()
 
 int listFiles(void) {
 
-	int dfd, result = 0, y = 23, iconY = 18, sCurr = 0;;
+	int dfd, result = 0, y = 23, iconY = 18, sCurr = 0;
 	
 	// Clear out "dir" by setting all it's members to 0 
 	memset(&dirent, 0, sizeof(dirent));
@@ -159,13 +163,13 @@ int listFiles(void) {
 			oslIntraFontSetStyle(pgfFont, 0.5, RGBA(41,118,195,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
 			oslDrawStringf(80, y+=46, "%s", dirent.d_name);
 			goto end;
-		}
+		}	
 
 		// Print the file inside the directory
 		oslIntraFontSetStyle(pgfFont, 0.5, RGBA(0,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
 		oslDrawStringf(80, y+=46, "%s", dirent.d_name);
 		oslDrawImageXY(diricon, 36, 56);
-
+		
 		end:
 		sCurr++;
 		result++;
@@ -203,6 +207,11 @@ int filemanage(int argc, char *argv[])
 	// Get the number of files in the directory
 	amount = listFiles();
 	
+	if (amount >5)
+	lim = amount;
+
+	ini = 1;
+	
 	while (!osl_quit)
   {
 		//Draws images onto the screen
@@ -224,14 +233,19 @@ int filemanage(int argc, char *argv[])
 		//calls the functions
 		battery();
 		usb_icon();
-		
+
 		sceCtrlReadBufferPositive(&pad, 1);
 		
 		if (pad.Buttons & PSP_CTRL_DOWN) {
 			pspDebugScreenClear();
+			ini++;
+			lim++;
 			curr++;
+			if(curr>5)
+			curr=0;
 			while(pad.Buttons)(sceCtrlReadBufferPositive(&pad, 1));
 		}
+
 		if (pad.Buttons & PSP_CTRL_UP) {
 			pspDebugScreenClear();
 			curr--;

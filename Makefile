@@ -32,7 +32,7 @@ LDFLAGS =
 STDLIBS= -losl -lpng -lz \
          -lpsphprm -lpspsdk -lpspctrl -lpspumd -lpsprtc -lpsppower -lpspgu -lpspgum  -lpspaudiolib -lpspaudio -lpsphttp -lpspssl -lpspwlan \
          -lpspnet_adhocmatching -lpspnet_adhoc -lpspnet_adhocctl -lm -ljpeg -lpspvram -lpsputility -lpspkubridge -lpspsystemctrl_user  -lpspreg \
-		 -lpspusb -lpspusbstor -lpspusbdevice -lpspmp3 -lmad
+		 -lpspusb -lpspusbstor -lpspusbdevice -lpspmp3 -lmad -lpspaudiocodec 
 		 
 LIBS=$(STDLIBS)$(YOURLIBS)
 

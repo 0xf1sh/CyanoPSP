@@ -33,9 +33,8 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(-1024);
 
 // Globals:
-
 int runningFlag = 1;
- 
+
 // Callbacks:
 
 /* Exit callback */
@@ -64,7 +63,9 @@ int SetupCallbacks(void) {
 }
 
 //declaration
-OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon, *usbdebug, *recoverybg;
+OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, 
+		  *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon, *usbdebug, 
+		  *recoverybg, *welcome, *ok, *transbackground;
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -273,6 +274,27 @@ int browser = 0;
     oslNetTerm();
 }
 
+//First Boot Message
+void firstBootMessage(){
+	
+	if (loadConfig() && firstBoot == 1)
+	{
+	oslDrawImageXY(transbackground, 0, 0);
+	oslDrawImageXY(welcome, 140, 40);
+	oslDrawImageXY(ok, 360, 200);
+	}
+	
+	if (cursor->x >= 360 && cursor->x <= 460 && cursor->y >= 200 && cursor->y <= 250 && osl_pad.held.cross)
+	{
+		oslDeleteImage(welcome);
+		oslDeleteImage(ok);
+		oslDeleteImage(transbackground);
+		return firstBoot=0;
+		saveConfig();
+		home();
+	}
+}
+
 void setfont()
 {
 	OSL_FONT *DroidSans = oslLoadIntraFontFile("system/fonts/DroidSans.pgf", INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8);
@@ -326,12 +348,17 @@ int main()
 	homeicon = oslLoadImageFilePNG("system/home/icons/homeicon.png", OSL_IN_RAM, OSL_PF_8888);
 	multicon = oslLoadImageFilePNG("system/home/icons/multicon.png", OSL_IN_RAM, OSL_PF_8888);
 	usbdebug = oslLoadImageFilePNG("system/home/icons/usbdebug.png", OSL_IN_RAM, OSL_PF_8888);
+	welcome = oslLoadImageFilePNG("system/home/icons/welcome.png", OSL_IN_RAM, OSL_PF_8888);
+	ok = oslLoadImageFilePNG("system/home/icons/ok.png", OSL_IN_RAM, OSL_PF_8888);
+	transbackground = oslLoadImageFilePNG("system/home/icons/transbackground.png", OSL_IN_RAM, OSL_PF_8888);
 
 	//Debugger
 	if (!background || !cursor || !appicon || !appicon2 || !navbar || !wificon || !apollo || !gmail || !message || !browser || !google || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	loadConfig();
+
+	firstBoot = 1;
 	
 	//Sets the cursor's original position on the screen
 	cursor->x = 240;
@@ -369,6 +396,7 @@ int main()
 		battery();
 		navbar_buttons();
 		android_notif();
+		firstBootMessage();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)
