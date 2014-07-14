@@ -128,7 +128,8 @@ First boot = %d\r\n",
 
 void updater()
 {	
-	
+	while (!osl_quit)
+	{
 		//download file
         oslNetGetFile("http://zone-wifi.fr/psp/PSP/GAME/CyanogenMod.zip", "../");
 
@@ -142,7 +143,7 @@ void updater()
         pgeZipClose(zipFiles);
 
         oslDrawStringf(60,80,"Installation done - press X to exit");	
-		
+	}
 }	
 
 
@@ -422,12 +423,14 @@ void about_menu()
 		
 		if(osl_pad.held.select)
 		{
+			LoadStartModule("modules/RemoteJoyLite.prx");
 			enableUsb();
 			usb_debug = 1;
 		}
 		
 		else if(osl_pad.held.select)
-		{
+		{	
+			StopUnloadModule("modules/RemoteJoyLite.prx");
 			disableUsb();
 			usb_debug = 0;
 		}

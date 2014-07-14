@@ -171,6 +171,21 @@ int LoadStartModule(char *module)
     return 0;
 }
 
+int StopUnloadModule(char *module)
+{
+	SceUID mod = sceKernelLoadModule(module, 0, NULL);
+	
+	if (mod >= 0)
+    {
+		sceKernelStopModule(mod, 0, NULL, NULL, NULL);
+		sceKernelUnloadModule(mod);
+		if (mod < 0)
+            Error("Cannot load/start %s", module);
+    }
+
+    return 0;
+}
+
 //Battery
 //By raing3 
 u32 GetBatSer()
