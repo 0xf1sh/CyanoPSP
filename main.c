@@ -1,14 +1,23 @@
 #include <pspkernel.h>
 #include <pspdebug.h>
+#include <pspsdk.h>
+
+//PSP Net 
 #include <pspnet.h>
 #include <pspnet_inet.h>
 #include <pspnet_apctl.h>
-#include <pspsdk.h>
+
+//PSP USB
 #include <pspusb.h>
 #include <pspusbstor.h>
 #include <pspmodulemgr.h>
+
+//OSLib
 #include <oslib/oslib.h>
+
+//PSP Time
 #include <psprtc.h>
+
 #include "include/pspusbdevice.h"
 #include "main.h"
 #include "appdrawer.h"

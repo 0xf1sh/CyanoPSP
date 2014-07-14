@@ -1,11 +1,21 @@
 #include <pspkernel.h>
+
+//PSP Net Stuff
+#include <pspnet.h>
+#include <pspnet_inet.h>
+#include <pspnet_apctl.h>
+
+//OSLib
 #include <oslib/oslib.h>
-#include "include/pgeZip.h"
+
+//File Management
 #include <pspiofilemgr.h>
 #include <pspiofilemgr_kernel.h>
 #include <pspiofilemgr_dirent.h>
 #include <stdio.h>
 #include <string.h>
+
+#include "include/pgeZip.h"
 #include "fm.h"
 #include "settingsmenu.h"
 
@@ -117,37 +127,23 @@ First boot = %d\r\n",
 }
 
 void updater()
-{
-	oslNetInit(); 
+{	
 	
-	while (!osl_quit)
-	{ 	
-		settings_deleteImages();
-		
 		//download file
-        oslNetGetFile("http://zone-wifi.fr/psp/PSP/GAME/CyanoPSPUpdate.zip", "../");
+        oslNetGetFile("http://zone-wifi.fr/psp/PSP/GAME/CyanogenMod.zip", "../");
 
-        oslDrawStringf(50, 40,"Installing update...");
+        oslDrawStringf(60, 70,"Installing update...");
     
-        pgeZip* zipFiles = pgeZipOpen("CyanoPSPUpdate.zip");
+        pgeZip* zipFiles = pgeZipOpen("../CyanogenMod.zip");
         
         chdir("..");
         
         pgeZipExtract(zipFiles, NULL);
         pgeZipClose(zipFiles);
 
-        oslDrawStringf(50,60,"Installation done - press X to exit");	
+        oslDrawStringf(60,80,"Installation done - press X to exit");	
 		
-        int result;
-                
-        if(result != -1)
-		{
-			break;
-		}
-
-}
-	oslNetTerm();
-}
+}	
 
 
 int getCpuClock(){
@@ -447,6 +443,10 @@ void about_menu()
 
 void updates_menu()
 {	
+	char message[100] = "";
+	
+	oslNetInit(); 
+	
 	updatesbg = oslLoadImageFilePNG("system/settings/updatesbg.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	//Debugger
@@ -472,8 +472,11 @@ void updates_menu()
 		//Print the images onto the screen
 		oslDrawImageXY(updatesbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
-
+		
 		oslDrawString(35,73,"Check for Updates");
+		
+		oslInitNetDialog();
+		memset(message, 0, sizeof(message));
 
 		digitaltime();
 			
@@ -538,6 +541,7 @@ void updates_menu()
 	    //For sleep
         oslAudioVSync();
 }
+	oslNetTerm();
 }
 
 void performance_menu()
@@ -1044,7 +1048,7 @@ void wifi_menu()
     char IP[128];
 	};
 	
-	
+	oslNetInit(); 
 	
 	//Main loop to run the program
 	while (!osl_quit)
@@ -1066,6 +1070,9 @@ void wifi_menu()
 		//Print the images onto the screen
 		oslDrawImageXY(wifibg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
+		
+		oslInitNetDialog();
+		memset(message, 0, sizeof(message));
 		
 		oslDrawStringf(40,40,index.name);
 		oslDrawStringf(100,40,index.IP);
@@ -1122,6 +1129,7 @@ void wifi_menu()
 	    //For sleep
         oslAudioVSync();
 }	
+	oslNetTerm();
 }
 
 void developer_menu()
