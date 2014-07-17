@@ -47,7 +47,10 @@
 #define FW_310 0x03010010
 #define FW_303 0x03000310
 #define FW_302 0x03000210
+
 #define configFile "Config.TXT"
+
+#define Address "www.google.com"
 
 //declaration
 OSL_IMAGE *settingsbg, *cursor, *wificon, *usbdebug, *aboutbg, *offswitch, *onswitch, *themebg, *performancebg, *wifibg, *developerbg, *about, *highlight, 
@@ -76,7 +79,71 @@ char theme_bootanim[10] = "";
 char theme_icons[10] = "";
 char theme_style[10] = "";
 char theme_fonts[10] = "";
+static char Settings_message[100] = "";
+static char buffer[100] = "";
 
+int connectAPCallback(int state){
+    oslStartDrawing();
+    oslDrawString(30, 200, "Connecting to AP...");
+    sprintf(buffer, "State: %i", state);
+    oslDrawString(30, 230, buffer);
+    oslEndDrawing();
+    oslEndFrame();
+    oslSyncFrame();
+
+    return 0;
+}
+
+
+int connectToAP(int config){
+    oslStartDrawing();
+    oslDrawString(30, 200, "Connecting to AP...");
+    oslEndDrawing();
+    oslEndFrame();
+    oslSyncFrame();
+
+    int result = oslConnectToAP(config, 30, connectAPCallback);
+    if (!result){
+        char ip[30] = "";
+        char resolvedIP[30] = "";
+
+        oslStartDrawing();
+        oslGetIPaddress(ip);
+        sprintf(buffer, "IP address: %s", ip);
+        oslDrawString(30, 170, buffer);
+
+        sprintf(buffer, "Resolving %s", Address);
+        oslDrawString(30, 200, buffer);
+        oslEndDrawing();
+        oslEndFrame();
+        oslSyncFrame();
+
+        result = oslResolveAddress(Address, resolvedIP);
+
+        oslStartDrawing();
+        oslGetIPaddress(ip);
+        if (!result)
+            sprintf(buffer, "Resolved IP address: %s", ip);
+        else
+            sprintf(buffer, "Error resolving address!");
+        oslDrawString(30, 230, buffer);
+        oslEndDrawing();
+        oslEndFrame();
+        oslSyncFrame();
+		sceKernelDelayThread(3*1000000);
+    }else{
+        oslStartDrawing();
+        sprintf(buffer, "Error connecting to AP!");
+        oslDrawString(200, 200, buffer);
+        oslEndDrawing();
+        oslEndFrame();
+        oslSyncFrame();
+		sceKernelDelayThread(3*1000000);
+    }
+    oslDisconnectFromAP();
+    return 0;
+}	
+	
 void wlanstatus()
 {
 	if (sceWlanGetSwitchState() == 0)
@@ -331,28 +398,22 @@ void pspgetmodel()
 void about_menu()
 {	
 	aboutbg = oslLoadImageFilePNG("system/settings/aboutbg.png", OSL_IN_RAM, OSL_PF_8888);
-	
-	//Debugger
+
 	if (!aboutbg)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	setfont();
-	
-	//Main loop to run the program
+
 	while (!osl_quit)
 	{
-		
-		//Draws images onto the screen
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
 		
 		controls();	
-			
-		//Initiate the PSP's controls
+
 		oslReadKeys();
-		
-		//Print the images onto the screen
+
 		oslDrawImageXY(aboutbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 
@@ -366,8 +427,7 @@ void about_menu()
 		oslDrawString(37,200,"joellovesanna@psp #1");
 		
 		digitaltime();
-			
-		//calls the functions
+
 		battery();
 		navbar_buttons();
 		android_notif();
@@ -438,52 +498,41 @@ void about_menu()
         
         oslEndFrame();
         oslSyncFrame();
-
-	    //For sleep
         oslAudioVSync();
 }
 }
 
 void updates_menu()
-{	
-	char message[100] = "";
-	
+{		
 	oslNetInit(); 
 	
 	updatesbg = oslLoadImageFilePNG("system/settings/updatesbg.png", OSL_IN_RAM, OSL_PF_8888);
-	
-	//Debugger
+
 	if (!updatesbg)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	setfont();
-	
-	//Main loop to run the program
+
 	while (!osl_quit)
 	{
-		
-		//Draws images onto the screen
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
 		
 		controls();	
-			
-		//Initiate the PSP's controls
+
 		oslReadKeys();
-		
-		//Print the images onto the screen
+
 		oslDrawImageXY(updatesbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 		
 		oslDrawString(35,73,"Check for Updates");
 		
 		oslInitNetDialog();
-		memset(message, 0, sizeof(message));
+		memset(Settings_message, 0, sizeof(Settings_message));
 
 		digitaltime();
-			
-		//calls the functions
+
 		battery();
 		navbar_buttons();
 		android_notif();
@@ -540,8 +589,6 @@ void updates_menu()
         
         oslEndFrame();
         oslSyncFrame();
-
-	    //For sleep
         oslAudioVSync();
 }
 	oslNetTerm();
@@ -550,28 +597,22 @@ void updates_menu()
 void performance_menu()
 {	
 	performancebg = oslLoadImageFilePNG("system/settings/performancebg.png", OSL_IN_RAM, OSL_PF_8888);
-	
-	//Debugger
+
 	if (!performancebg)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	setfont();
 
-	//Main loop to run the program
 	while (!osl_quit)
 	{
-		
-		//Draws images onto the screen
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
 		
 		controls();	
-			
-		//Initiate the PSP's controls
+
 		oslReadKeys();
-		
-		//Print the images onto the screen
+
 		oslDrawImageXY(performancebg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 
@@ -580,8 +621,7 @@ void performance_menu()
 		oslDrawString(40,215,"Memory Management");
 		
 		digitaltime();
-			
-		//calls the functions
+
 		battery();
 		navbar_buttons();
 		android_notif();
@@ -638,8 +678,6 @@ void performance_menu()
         
         oslEndFrame();
         oslSyncFrame();
-
-	    //For sleep
         oslAudioVSync();
 }
 }
@@ -648,7 +686,6 @@ void processor_menu()
 {	
 	processorbg = oslLoadImageFilePNG("system/settings/processorbg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	//Debugger
 	if (!processorbg)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
@@ -706,21 +743,16 @@ void processor_menu()
 			scePowerSetClockFrequency(333, 333, 166);
 		}
 
-	//Main loop to run the program
 	while (!osl_quit)
 	{
-		
-		//Draws images onto the screen
+
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
 		
 		controls();	
-			
-		//Initiate the PSP's controls
+
 		oslReadKeys();
-		
-		//Print the images onto the screen
 		
 		oslDrawImageXY(processorbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
@@ -734,8 +766,7 @@ void processor_menu()
 		oslDrawString(35,249,"333 MHz");
 	
 		digitaltime();
-			
-		//calls the functions
+
 		battery();
 		navbar_buttons();
 		android_notif();
@@ -805,8 +836,6 @@ void processor_menu()
         
         oslEndFrame();
         oslSyncFrame();
-
-	    //For sleep
         oslAudioVSync();
 }
 }
@@ -952,28 +981,22 @@ void SetZipName()
 void theme_menu()
 {	
 	themebg = oslLoadImageFilePNG("system/settings/themebg.png", OSL_IN_RAM, OSL_PF_8888);
-	
-	//Debugger
+
 	if (!themebg)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
 	setfont();
 
-	//Main loop to run the program
 	while (!osl_quit)
 	{
-		
-		//Draws images onto the screen
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
 		
 		controls();	
-			
-		//Initiate the PSP's controls
+
 		oslReadKeys();
-		
-		//Print the images onto the screen
+
 		oslDrawImageXY(themebg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 
@@ -983,8 +1006,7 @@ void theme_menu()
 		oslDrawString(65,236,"Fonts");
 		
 		digitaltime();
-		
-		//calls the functions
+
 		battery();
 		navbar_buttons();
 		android_notif();
@@ -1029,8 +1051,6 @@ void theme_menu()
         
         oslEndFrame();
         oslSyncFrame();
-
-	    //For sleep
         oslAudioVSync();
 }
 }
@@ -1038,56 +1058,68 @@ void theme_menu()
 void wifi_menu()
 {	
 	wifibg = oslLoadImageFilePNG("system/settings/wifibg.png", OSL_IN_RAM, OSL_PF_8888);
-	
-	//Debugger
+
 	if (!wifibg)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-
 	
 	setfont();
 
-	struct oslNetConfig{
-    char name[128];
-    char IP[128];
-	};
+	int enabled = 1;
+    int selectedConfig = 0;
+	int wifi_y = 50;
+	
+	//Get connections list:
+    struct oslNetConfig configs[OSL_MAX_NET_CONFIGS];
+    int numconfigs = oslGetNetConfigs(configs);
+	if (!numconfigs)
+	{
+        sprintf(Settings_message, "No configuration found!");
+        enabled = 0;
+    }
 	
 	oslNetInit(); 
 	
-	//Main loop to run the program
+	if (!oslIsWlanPowerOn())
+        sprintf(Settings_message, "Please turn on the Wlan switch.");
+
 	while (!osl_quit)
-	{	
-		oslIsWlanConnected();
-		
-		struct oslNetConfig index;
-		
-		//Draws images onto the screen
+	{			
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
 		
 		controls();	
-			
-		//Initiate the PSP's controls
+
 		oslReadKeys();
-		
-		//Print the images onto the screen
+
 		oslDrawImageXY(wifibg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
+
+		 if (enabled){
+                sprintf(buffer, "%s", configs[selectedConfig].name);
+    			oslDrawString(30, wifi_y+28, buffer);
+         }
 		
-		oslInitNetDialog();
-		memset(message, 0, sizeof(message));
-		
-		oslDrawStringf(40,40,index.name);
-		oslDrawStringf(100,40,index.IP);
+		oslDrawString(30, 200, Settings_message);
 		
 		wlanstatus1();
 		digitaltime();
-		
-		//calls the functions
+
 		battery();
 		navbar_buttons();
 		android_notif();
 		usb_icon();
+		
+		 if (osl_keys->released.cross){
+            connectToAP(selectedConfig + 1);
+        }else if (osl_keys->released.up){
+            if (++selectedConfig >= numconfigs)
+                selectedConfig = numconfigs - 1;
+        }else if (osl_keys->released.down){
+            if (--selectedConfig < 0)
+                selectedConfig = 0;
+        }
+		
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)
@@ -1129,7 +1161,6 @@ void wifi_menu()
         
         oslEndFrame();
         oslSyncFrame();
-	    //For sleep
         oslAudioVSync();
 }	
 	oslNetTerm();
@@ -1138,28 +1169,22 @@ void wifi_menu()
 void developer_menu()
 {
 	developerbg = oslLoadImageFilePNG("system/settings/developerbg.png", OSL_IN_RAM, OSL_PF_8888);
-	
-	//Debugger
+
 	if (!developerbg)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	setfont();
 
-	//Main loop to run the program
 	while (!osl_quit)
 	{
-		
-		//Draws images onto the screen
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
 		
 		controls();	
-			
-		//Initiate the PSP's controls
+
 		oslReadKeys();
-		
-		//Print the images onto the screen
+
 		oslDrawImageXY(developerbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 
@@ -1169,8 +1194,7 @@ void developer_menu()
 		oslDrawString(35,236,"Backup Password");
 			
 		digitaltime();
-	
-		//calls the functions
+
 		battery();
 		navbar_buttons();
 		android_notif();
@@ -1215,8 +1239,6 @@ void developer_menu()
         
         oslEndFrame();
         oslSyncFrame();
-
-	    //For sleep
         oslAudioVSync();
 }	
 }
@@ -1267,7 +1289,6 @@ void settings_deleteImages()
 
 int settingsmenu()
 {
-	//loads our images into memory
 	settingsbg = oslLoadImageFilePNG("system/settings/settingsbg.png", OSL_IN_RAM, OSL_PF_8888);
 	offswitch = oslLoadImageFilePNG("system/settings/offswitch.png", OSL_IN_RAM, OSL_PF_8888);
 	onswitch = oslLoadImageFilePNG("system/settings/onswitch.png", OSL_IN_RAM, OSL_PF_8888);
@@ -1279,26 +1300,20 @@ int settingsmenu()
 	performance = oslLoadImageFilePNG("system/settings/performance.png", OSL_IN_RAM, OSL_PF_8888);
 		
 	setfont();
-	
-	//Debugger
+
 	if (!settingsbg || !onswitch || !offswitch || !about || !developeroptions || !wifi || !themes || !highlight)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-	
-	//Main loop to run the program
+
 	while (!osl_quit)
 	{
-		
-		//Draws images onto the screen
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
 		
 		controls();	
-			
-		//Initiate the PSP's controls
+
 		oslReadKeys();
-		
-		//Print the images onto the screen
+
 		oslDrawImageXY(settingsbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 
@@ -1310,8 +1325,7 @@ int settingsmenu()
 		oslDrawString(55,246,"About PSP");
 		
 		digitaltime();
-			
-		//calls the functions
+
 		battery();
 		android_notif();
 		usb_icon();
@@ -1382,8 +1396,6 @@ int settingsmenu()
         
         oslEndFrame();
         oslSyncFrame();
-
-	    //For sleep
         oslAudioVSync();
 		}
 }
