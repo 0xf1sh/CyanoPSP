@@ -1,17 +1,12 @@
 #include <pspkernel.h>
 #include <oslib/oslib.h>
 
-//declaration
 OSL_IMAGE *background, *cursor, *wificon, *lock, *unlock, *circle, *messenger, *music, *circles, *music2, *messenger2;
 
-//variables
 int click = 0;
 int ending = 0;
 int batteryLife;
 int style = 0;
-
-//definition of our sounds
-OSL_SOUND *tone;
 
 void lockscreen_deleteimages()
 {
@@ -29,7 +24,6 @@ int lockscreen()
 {	
 	setfont();
 	
-	//loads our images into memory
 	lock = oslLoadImageFilePNG("System/Lockscreen/lock.png", OSL_IN_RAM, OSL_PF_8888);
 	unlock = oslLoadImageFilePNG("System/Lockscreen/unlock.png", OSL_IN_RAM, OSL_PF_8888);
 	circle = oslLoadImageFilePNG("System/Lockscreen/circle.png", OSL_IN_RAM, OSL_PF_8888);
@@ -38,28 +32,22 @@ int lockscreen()
 	music = oslLoadImageFilePNG("System/Lockscreen/music.png", OSL_IN_RAM, OSL_PF_8888);
 	circles = oslLoadImageFilePNG("System/Lockscreen/circles.png", OSL_IN_RAM, OSL_PF_8888);
 	music2 = oslLoadImageFilePNG("System/Lockscreen/music2.png", OSL_IN_RAM, OSL_PF_8888);
-	
-	//Debugger
+
 	if (!background || !cursor || !lock || !unlock || !circle || !messenger || !music || !circles)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 		
 	style = 0;
 	click = 0;
 	ending = 0;
-	
-	//Main loop to run the program
+
 	while (!osl_quit)
 	{		
-		//Draws images onto the screen
 		oslStartDrawing();
 		
-		//calls the functions
 		controls();	
-											
-		//Initiate the PSP's controls
+
 		oslReadKeys();
 
-		//Print the images onto the screen
 		oslDrawImage(background);	
 		
 		oslDrawImageXY(wificon, 375, 1);
@@ -131,16 +119,10 @@ int lockscreen()
 		oslDrawImageXY(lock, 190,120);
 		}
 		oslDrawImage(cursor);
-		
-		//Ends printing
-		oslEndDrawing();
 
-		//Synchronizes the screen 
+		oslEndDrawing();
 		oslSyncFrame();	
-					   
-	    //For sleep
         oslAudioVSync();
 	}
-	
 }
 

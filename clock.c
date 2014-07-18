@@ -3,17 +3,12 @@
 #include <oslib/oslib.h>
 #include <psprtc.h>
 
-//declaration
 OSL_IMAGE *clockbg, *cursor, *wificon;
-
-OSL_FONT *DroidSans;
 
 void centerclock()
 {
-	//Load fonts:
 	OSL_FONT *clockFont = oslLoadIntraFontFile("system/fonts/DroidSans.pgf", INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8);
 	oslIntraFontSetStyle(clockFont, 0.9f, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
-	//Set fonts
 	oslSetFont(clockFont);
 	
 	pspTime time;
@@ -47,10 +42,8 @@ void digitaltime()
 
 int pspclock()
 {
-	//loads our images into memory
 	clockbg = oslLoadImageFilePNG("system/app/clock/clockbg.png", OSL_IN_RAM, OSL_PF_8888);
-	
-	//Debugger
+
 	if (!clockbg || !cursor || !wificon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
@@ -58,23 +51,19 @@ int pspclock()
 	
 	while (!osl_quit)
   {		
-		//Draws images onto the screen
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
 		
 		controls();	
-			
-		//Initiate the PSP's controls
+
 		oslReadKeys();
-		
-		//Print the images onto the screen
+
 		oslDrawImageXY(clockbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 		
 		digitaltime();
-		
-		//calls the functions
+
 		battery();
 		navbar_buttons();
 		android_notif();
@@ -117,11 +106,7 @@ int pspclock()
 		}
 		
 		oslEndDrawing();
-        
-        oslEndFrame();
-        oslSyncFrame();
-
-	    //For sleep
+		oslSyncFrame();	
         oslAudioVSync();
 	}
 }

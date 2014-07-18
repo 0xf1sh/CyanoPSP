@@ -26,7 +26,6 @@
 #include "clock.h"
 #include "calculator.h"
 #include "settingsmenu.h"
-#include "browser.h" 
 #include "multi.h"
 #include "power_menu.h"
 #include "apollo.h"
@@ -36,10 +35,11 @@
 #include "game.h"
 
 #define screenshotpath "ms0:/PSP/GAME/CyanogenMod/screenshot"
+#define downloadpath "ms0:/PSP/GAME/CyanogenMod/downloads"
 
 PSP_MODULE_INFO("CyanoPSP - C", 0x200, 2, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
-PSP_HEAP_SIZE_KB(-1024);
+PSP_HEAP_SIZE_KB(-128);
 
 // Globals:
 int runningFlag = 1;
@@ -74,7 +74,7 @@ int SetupCallbacks(void) {
 //declaration
 OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, 
 		  *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon, *usbdebug, 
-		  *recoverybg, *welcome, *ok, *transbackground;
+		  *recoverybg, *welcome, *ok, *transbackground, *notif2;
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -166,6 +166,20 @@ void makescreenshotdir()
 }
 }
 
+void makedownloaddir()
+{
+	SceUID dir = sceIoDopen(downloadpath);
+	
+	if (dir >= 0)
+	{
+		sceIoDclose(dir);
+	}
+	else 
+	{
+		sceIoMkdir("ms0:/PSP/GAME/CyanogenMod/downloads",0777);
+}
+}
+
 void appdrawericon()
 {
 		if (cursor->x  >= 215 && cursor->x  <= 243 && cursor->y >= 195 && cursor->y <= 230)
@@ -199,7 +213,7 @@ void navbar_buttons()
 }
 
 void android_notif()
-{
+{		
 		oslDrawImageXY(notif,0,notif_y);
 		
 		if ((osl_pad.held.cross && notif_y == 0 && cursor->y <= 1) || (osl_pad.held.cross && notif_y == 0 && cursor->y >= 246))
@@ -208,6 +222,11 @@ void android_notif()
 			notif_down = 0;
 		}
 
+		if (cursor->x >= 437 && cursor->x <= 466 && cursor->y >= 12 && cursor->y <= 37 && osl_pad.held.cross)
+		{
+			android_notif2();
+		}
+		
 		if (notif_up == 1) 
 		{
 			notif_y=notif_y-10;
@@ -249,6 +268,44 @@ void android_notif()
 		}
 }
 
+void android_notif2()
+{
+	setfont();
+	
+	while (!osl_quit)
+	{
+		
+		//Draws images onto the screen
+		oslStartDrawing();
+		
+		//Print the images onto the screen
+		oslDrawImageXY(notif2, 0, 19);
+		
+		pspTime time;
+	sceRtcGetCurrentClockLocalTime(&time);
+	
+	oslDrawStringf(82,6,"%s", time.day);	
+	oslDrawStringf(82,16,"%s %02d", time.month, time.day);	
+		
+		//calls the functions
+		battery();
+		navbar_buttons();
+		android_notif();
+		usb_icon();
+		oslDrawImage(cursor);
+		
+		if (osl_pad.held.square)
+		{
+			powermenu();
+		}
+		
+		if (osl_pad.held.L)
+		{
+			lockscreen();
+        }
+	}	
+}
+
 void __psp_free_heap(void); 
 
 void internet()
@@ -256,7 +313,7 @@ void internet()
 int browser = 0; 
     int skip=0; 
     oslNetInit(); 
-    oslBrowserInit("yourIP","yourdst",10*1024*1024, 
+    oslBrowserInit("https://www.google.com/","/PSP/GAME/CyanogenMod/downloads",10*1024*1024, 
                         PSP_UTILITY_HTMLVIEWER_DISPLAYMODE_SMART_FIT, 
                         PSP_UTILITY_HTMLVIEWER_DISABLE_STARTUP_LIMITS, 
                         PSP_UTILITY_HTMLVIEWER_INTERFACEMODE_FULL, 
@@ -343,6 +400,7 @@ int main()
 	browser = oslLoadImageFile("system/home/icons/browser.png", OSL_IN_RAM, OSL_PF_8888);
 	google = oslLoadImageFile("system/home/icons/google.png", OSL_IN_RAM, OSL_PF_8888);
 	notif = oslLoadImageFile("system/home/menu/notif.png", OSL_IN_RAM, OSL_PF_8888);
+	notif2 = oslLoadImageFile("system/home/menu/notif2.png", OSL_IN_RAM, OSL_PF_8888);
 	batt100 = oslLoadImageFile("system/home/icons/100.png", OSL_IN_RAM, OSL_PF_8888);
 	batt80 = oslLoadImageFile("system/home/icons/80.png", OSL_IN_RAM, OSL_PF_8888);
 	batt60 = oslLoadImageFile("system/home/icons/60.png", OSL_IN_RAM, OSL_PF_8888);
@@ -379,7 +437,8 @@ int main()
 	while (!osl_quit)
 	{	
 		makescreenshotdir();
-
+		makedownloaddir();
+		
 		//Draws images onto the screen
 		oslStartDrawing();
 		

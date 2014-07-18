@@ -1,16 +1,12 @@
 #include <pspkernel.h>
 #include <oslib/oslib.h>
 
-//declaration
 OSL_IMAGE *background, *cursor, *wificon, *power, *apollo, *gmail, *message, *browser, *google, *pointer;
 
 void power_off()
 {
 	scePowerRequestStandby();
 }
-
-//definition of our sounds
-OSL_SOUND *tone;
 
 int screenshot = 0;
 
@@ -25,26 +21,20 @@ void screencapture()
 int powermenu()
 {	
 	power = oslLoadImageFile("system/home/menu/power.png", OSL_IN_RAM, OSL_PF_8888);
-	
-	//Debugger
+
 	if (!background || !cursor || !wificon || !power)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-	
-	//Main loop to run the program
+
 	while (!osl_quit)
 	{
 		 __psp_free_heap();
-		 
-		//Draws images onto the screen
+
 		oslStartDrawing();
-		
-		//calls the functions
+
 		controls();	
-											
-		//Initiate the PSP's controls
+
 		oslReadKeys();
-			
-		//Print the images onto the screen
+
 		oslDrawImage(background);
 		oslDrawImageXY(wificon, 375, 1);
 		oslDrawImageXY(google, 22, 26);
@@ -85,14 +75,9 @@ int powermenu()
 			return;
 			screenshot = 1;
 		}
-				
-		//Ends printing
+		
 		oslEndDrawing();
-
-		//Synchronizes the screen 
 		oslSyncFrame();	
-					   
-	    //For sleep
         oslAudioVSync();
 	}
 }

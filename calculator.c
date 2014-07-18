@@ -1,10 +1,8 @@
 #include <pspkernel.h>
 #include <oslib/oslib.h>
 
-//declaration
 OSL_IMAGE *cursor, *calcbackground, *wificon;
 
-//variables
 int result;
 int x;
 int y;
@@ -12,9 +10,6 @@ int enterednumber;
 int numberuse = 0;
 int suppression = 1;
 int Number = 0;
-
-//definition of our sounds
-OSL_SOUND *tone;
 
 OSL_COLOR black = RGB(0,0,0),red = RGB(255,0,0), white = RGB(255,255,255);
 
@@ -26,33 +21,25 @@ void oslPrintText(int x, int y, char * text, OSL_COLOR color) {
  
 int calculator()
 {
-	//loads our images into memory
 	calcbackground = oslLoadImageFile("system/app/calculator/calcbg.png", OSL_IN_RAM, OSL_PF_8888);
-		
-	//Load fonts:
+	
 	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
-	//Set fonts
 	oslSetFont(pgfFont);
 
-	//Debugger
 	if (!calcbackground || !cursor || !wificon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-		
-	//Main loop to run the program
+
 	while (!osl_quit)
 	{
-		//Draws images onto the screen
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
 		
 		controls();	
-		
-		//Initiate the PSP's controls
+
 		oslReadKeys();
 
-		//Print the images onto the screen
 		oslDrawImageXY(calcbackground, 0, 19);		
 
 		oslDrawImageXY(wificon, 375, 1);
@@ -90,8 +77,7 @@ int calculator()
 		oslDrawString(433,210,"=");
 
 		oslDrawString(35,27,"0");
-		
-		//calls the functions
+
 		battery();
 		navbar_buttons();
 		android_notif();
@@ -301,11 +287,7 @@ int calculator()
 		}
 		
         oslEndDrawing();
-        
-        oslEndFrame();
-        oslSyncFrame();
-
-	    //For sleep
+		oslSyncFrame();	
         oslAudioVSync();
 		}
 }

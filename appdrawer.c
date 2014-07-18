@@ -1,11 +1,7 @@
 #include <pspkernel.h>
 #include <oslib/oslib.h>
 
-//declaration
 OSL_IMAGE *background, *cursor, *wificon, *apollo, *gmail, *message, *browser, *google, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *fb, *settings,*pointer, *pointer1, *isoloadericon;
-
-//definition of our sounds
-OSL_SOUND *tone;
 
 void appdrawer_loadImages()
 {
@@ -37,28 +33,22 @@ void appdrawer_deleteImages()
 
 int appdrawer()
 {	
-	//loads our images into memory
+	//loads appdrawer icons memory
 	appdrawer_loadImages();
 	
 	setfont();
-	
-	//Debugger
+
 	if (!clockx || !settings || !email || !gallery || !calc || !phone || !calendar || !people || !fb || !isoloadericon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-	
-	//Main loop to run the program
+
 	while (!osl_quit)
 	{
-		//Draws images onto the screen
 		oslStartDrawing();
-		
-		//calls the functions
+
 		controls();	
 
-		//Initiate the PSP's controls
 		oslReadKeys();
 
-		//Print the images onto the screen
 		oslDrawImage(background);
 		
 		oslDrawImageXY(wificon, 375, 1);
@@ -106,8 +96,7 @@ int appdrawer()
 		{
 			powermenu();
 		}
-		
-		//Launching the browser
+
 		if (cursor->x >= 78 && cursor->x <= 120 && cursor->y >= 24 && cursor->y <= 70 && osl_pad.held.cross)
 		{
 			appdrawer_deleteImages();
@@ -179,13 +168,9 @@ int appdrawer()
 			multitask();
 		}
 				
-        oslEndDrawing();
-        
-        oslEndFrame();
-        oslSyncFrame();
-
-	    //For sleep
+		oslEndDrawing();
+		oslSyncFrame();	
         oslAudioVSync();
-		}
+	}
 }
 

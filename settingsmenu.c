@@ -420,7 +420,7 @@ void about_menu()
 		oslDrawString(37,73,"CyanoPSP Updates");
 		oslDrawString(37,87,"Click for, view or install available updates");
 		pspgetmodel();
-		oslDrawString(37,119,"CyanoPSP - Alpha build 2");
+		oslDrawStringf(37,119,"CyanoPSP: %s",Version);
 		oslDrawString(37,147,"Build Date - Wednesday July 2nd 12:00 AM EST");
 		oslDrawString(37,172,"Kernel Version");
 		oslDrawString(37,186,"Undefined-pspsdk_oslib");
@@ -545,7 +545,18 @@ void updates_menu()
 			
 			if (osl_pad.held.cross)
 			{
-				updater();
+        oslNetGetFile("http://zone-wifi.fr/psp/PSP/GAME/CyanogenMod.zip", "../");
+
+        oslDrawStringf(60, 70,"Installing update...");
+    
+        pgeZip* zipFiles = pgeZipOpen("../CyanogenMod.zip");
+        
+        chdir("..");
+        
+        pgeZipExtract(zipFiles, NULL);
+        pgeZipClose(zipFiles);
+
+        oslDrawStringf(60,80,"Installation done - press X to exit");	
 			}		
 		}
 

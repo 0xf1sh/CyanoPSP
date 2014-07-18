@@ -88,7 +88,6 @@ int startbrowser(int argc, char *argv[])
 
 	bkg = oslLoadImageFilePNG("system/framework/framework-res/res/background.png", OSL_IN_RAM | OSL_SWIZZLED, OSL_PF_8888);
 	
-    //Load font:
     OSL_FONT *font = oslLoadFontFile("flash0:/font/ltn0.pgf");
     oslSetFont(font);
 

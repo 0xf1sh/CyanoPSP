@@ -17,6 +17,7 @@ int dlimit = 248;
 void controls();
 void internet();
 void android_notif();
+void android_notif2();
 void battery();
 void appdrawericon();
 void loadicons();

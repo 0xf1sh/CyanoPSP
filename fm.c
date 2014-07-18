@@ -10,10 +10,8 @@
 #include <string.h>
 #include "fm.h"
 
-//declaration
 OSL_IMAGE *filemanagerbg, *cursor, *wificon, *diricon, *imageicon, *mp3icon, *txticon, *unknownicon;
 
-//Load fonts:
 OSL_FONT *pgfFont;
 
 char fileName;
@@ -165,6 +163,12 @@ int listFiles(void) {
 			goto end;
 		}	
 
+		if(sCurr > 5)
+		sCurr++;
+		
+		if (sCurr < 0)
+		sCurr--;
+		
 		// Print the file inside the directory
 		oslIntraFontSetStyle(pgfFont, 0.5, RGBA(0,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
 		oslDrawStringf(80, y+=46, "%s", dirent.d_name);
@@ -189,14 +193,12 @@ int filemanage(int argc, char *argv[])
 	imageicon = oslLoadImageFilePNG("system/app/filemanager/image.png", OSL_IN_RAM, OSL_PF_8888);
 	mp3icon = oslLoadImageFilePNG("system/app/filemanager/mp3.png", OSL_IN_RAM, OSL_PF_8888);
 	txticon = oslLoadImageFilePNG("system/app/filemanager/txt.png", OSL_IN_RAM, OSL_PF_8888);
-	unknownicon= oslLoadImageFilePNG("system/app/filemanager/unknownfile.png", OSL_IN_RAM, OSL_PF_8888);
+	unknownicon = oslLoadImageFilePNG("system/app/filemanager/unknownfile.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(0,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
-	//Set fonts
 	oslSetFont(pgfFont);
-	
-	//Debugger
+
 	if (!filemanagerbg || !cursor || !wificon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
@@ -214,23 +216,19 @@ int filemanage(int argc, char *argv[])
 	
 	while (!osl_quit)
   {
-		//Draws images onto the screen
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
 		
 		controls();	
-			
-		//Initiate the PSP's controls
+
 		oslReadKeys();
-		
-		//Print the images onto the screen
+
 		oslDrawImageXY(filemanagerbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 		
 		listFiles();
-		
-		//calls the functions
+
 		battery();
 		usb_icon();
 
@@ -275,11 +273,7 @@ int filemanage(int argc, char *argv[])
 		}
 		
 		oslEndDrawing();
-        
-        oslEndFrame();
-        oslSyncFrame();
-
-	    //For sleep
+		oslSyncFrame();	
         oslAudioVSync();
 	}
 }

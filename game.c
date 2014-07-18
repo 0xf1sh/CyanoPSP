@@ -27,11 +27,7 @@
 #define SIZE_DATA_AND_PADDING 8
 #define OFFSET_DATA_VALUE 12
 
-//declaration
 OSL_IMAGE *gamebg, *cursor, *icon, *noicon;
-
-//definition of our sounds
-OSL_SOUND *tone;
 
 //initially from eMenu--
 typedef struct
@@ -390,18 +386,14 @@ int gamemenu(int argc, char *argv[])
     sceKernelDelayThread(100000);
     do
 	{
-		//Draws images onto the screen
 		oslStartDrawing();
 		
 		controls();
-											
-		//Initiate the PSP's controls
+
 		oslReadKeys();
 
-		//Print the images onto the screen
 		oslDrawImageXY(gamebg, 0,0);
-		
-		//calls the functions
+
 		android_notif();
 		usb_icon();
 		
@@ -471,17 +463,12 @@ int gamemenu(int argc, char *argv[])
 			multitask();
 		}
 				
-		//Ends printing
 		oslEndDrawing();
-		
-		//Synchronizes the screen 
 		oslSyncFrame();	
-					   
-	    //For sleep
         oslAudioVSync();
+		
 } while (!isSet);
 
-    //This point is reached when the value is set
     sceKernelExitGame();
     return 0;
 }

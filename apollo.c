@@ -8,7 +8,6 @@
 #include <psputility.h>
 #include <oslib/oslib.h>
 
-//declaration
 OSL_IMAGE *mp3bg, *cursor, *wificon;
 
 #define MP3FILE "ms0:/MUSIC/Test.mp3"
@@ -89,17 +88,13 @@ int fillStreamBuffer( int fd, int handle )
 int mp3player()
 {	
 	SceCtrlData pad;
-	 
-	//loads our images into memory
+
 	mp3bg = oslLoadImageFilePNG("system/app/apollo/mp3bg.png", OSL_IN_RAM, OSL_PF_8888);
-	
-	//Load fonts:
+
 	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
-	//Set fonts
 	oslSetFont(pgfFont);
-	
-	//Debugger
+
 	if (!mp3bg || !cursor || !wificon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
@@ -181,11 +176,9 @@ int mp3player()
 		oslClearScreen(RGB(0,0,0));
 		
 		controls();	
-			
-		//Initiate the PSP's controls
+
 		oslReadKeys();
-		
-		//Print the images onto the screen
+
 		oslDrawImageXY(mp3bg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 		
@@ -200,8 +193,7 @@ int mp3player()
 		int playTime = samplingRate>0?numPlayed / samplingRate:0;
 		printf(" Playtime: %02i:%02i\n", playTime/60, playTime%60 );
 		printf("\n\n\nPress CIRCLE to Pause/Resume playback\nPress TRIANGLE to reset playback\nPress CROSS to switch loop mode\nPress SQUARE to stop playback and quit\n");
-		
-		//calls the functions
+
 		battery();
 		navbar_buttons();
 		android_notif();
@@ -350,11 +342,7 @@ int mp3player()
 		}
 		
 		oslEndDrawing();
-        
-        oslEndFrame();
-        oslSyncFrame();
-
-	    //For sleep
+		oslSyncFrame();	
         oslAudioVSync();
 		
 		sceKernelExitGame();
