@@ -30,7 +30,7 @@ What's working
 - Added the following options in recovery menu:
 [] Usb toggle
 [] Shutdown Device
-[] Stadby
+[] Standby
 
 
 What's yet to work
