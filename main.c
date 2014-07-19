@@ -33,8 +33,9 @@
 #include "recoverymenu.h"
 #include "mp3player.h"
 #include "game.h"
+#include "screenshot.h"
 
-#define screenshotpath "ms0:/PSP/GAME/CyanogenMod/screenshot"
+#define screenshotpath "ms0:/PSP/GAME/CyanogenMod/screenshots"
 #define downloadpath "ms0:/PSP/GAME/CyanogenMod/downloads"
 
 PSP_MODULE_INFO("CyanoPSP - C", 0x200, 2, 0);
@@ -156,13 +157,13 @@ void makescreenshotdir()
 {
 	SceUID dir = sceIoDopen(screenshotpath);
 	
-	if (dir >= 0)
+	if (dirExists(screenshotpath))
 	{
 		sceIoDclose(dir);
 	}
 	else 
 	{
-		sceIoMkdir("ms0:/PSP/GAME/CyanogenMod/screenshot",0777);
+		sceIoMkdir("ms0:/PSP/GAME/CyanogenMod/screenshots",0777);
 }
 }
 
@@ -170,7 +171,7 @@ void makedownloaddir()
 {
 	SceUID dir = sceIoDopen(downloadpath);
 	
-	if (dir >= 0)
+	if (dirExists(downloadpath))
 	{
 		sceIoDclose(dir);
 	}
@@ -216,7 +217,7 @@ void android_notif()
 {		
 		oslDrawImageXY(notif,0,notif_y);
 		
-		if ((osl_pad.held.cross && notif_y == 0 && cursor->y <= 1) || (osl_pad.held.cross && notif_y == 0 && cursor->y >= 246))
+		if ((osl_pad.held.cross && notif_y == 0 && cursor->x >= 0 && cursor->x <= 240 && cursor->y <= 1) || (osl_pad.held.cross && notif_y == 0 && cursor->y >= 246))
 		{
 			notif_up = 1;
 			notif_down = 0;
@@ -244,7 +245,7 @@ void android_notif()
 			notif_y = -272;
 		}
 		
-		if (osl_pad.held.cross && cursor->y <= 1 && notif_y == -272) 
+		if (osl_pad.held.cross && cursor->x >= 0 && cursor->x <= 240  && cursor->y <= 1 && notif_y == -272) 
 		{
 			notif_down = 1;
 			notif_up = 0;
@@ -269,41 +270,54 @@ void android_notif()
 }
 
 void android_notif2()
-{
-	setfont();
-	
-	while (!osl_quit)
-	{
+{		
+		oslDrawImageXY(notif2,0,notif_y);
 		
-		//Draws images onto the screen
-		oslStartDrawing();
-		
-		//Print the images onto the screen
-		oslDrawImageXY(notif2, 0, 19);
-		
-		pspTime time;
-	sceRtcGetCurrentClockLocalTime(&time);
-	
-	oslDrawStringf(82,6,"%s", time.day);	
-	oslDrawStringf(82,16,"%s %02d", time.month, time.day);	
-		
-		//calls the functions
-		battery();
-		navbar_buttons();
-		android_notif();
-		usb_icon();
-		oslDrawImage(cursor);
-		
-		if (osl_pad.held.square)
+		if ((osl_pad.held.cross && notif_y == 0 && cursor->x >= 240 && cursor->x <=480 && cursor->y <= 1) || (osl_pad.held.cross && notif_y == 0 && cursor->y >= 246))
 		{
-			powermenu();
+			notif_up = 1;
+			notif_down = 0;
+		}
+	
+		if (notif_up == 1) 
+		{
+			notif_y=notif_y-10;
 		}
 		
-		if (osl_pad.held.L)
+		if (notif_y <= -272) 
 		{
-			lockscreen();
-        }
-	}	
+			notif_y = -272;
+			notif_enable = 0;
+			notif_up = 0;
+		}
+
+		if (notif_y < -272)
+		{
+			notif_y = -272;
+		}
+		
+		if (osl_pad.held.cross && cursor->x >= 240 && cursor->x <=480 && cursor->y <= 1  && notif_y == -272) 
+		{
+			notif_down = 1;
+			notif_up = 0;
+			notif_enable = 1;
+		}
+		
+		if (notif_down == 1) 
+		{
+			notif_y = notif_y+10;
+		}
+		
+		if (notif_y == 0)
+		{
+			notif_down = 0;
+			notif_enable = 1;
+		}
+		
+		if (notif_y > 0) 
+		{
+			notif_y = 0;	
+		}
 }
 
 void __psp_free_heap(void); 
@@ -437,7 +451,6 @@ int main()
 	while (!osl_quit)
 	{	
 		makescreenshotdir();
-		makedownloaddir();
 		
 		//Draws images onto the screen
 		oslStartDrawing();
@@ -502,7 +515,11 @@ int main()
 			recoverymain();
         }
 		
-			
+		if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
+		}
+	
 		//Ends printing
 		oslEndDrawing();
 

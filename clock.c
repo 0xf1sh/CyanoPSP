@@ -105,6 +105,11 @@ int pspclock()
 			multitask();
 		}
 		
+		if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
+		}
+		
 		oslEndDrawing();
 		oslSyncFrame();	
         oslAudioVSync();

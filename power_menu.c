@@ -8,16 +8,6 @@ void power_off()
 	scePowerRequestStandby();
 }
 
-int screenshot = 0;
-
-void screencapture()
-{	
-	if (screenshot == 1)
-	{
-		oslWriteImageFilePNG(oslGetDrawBuffer(), "ms0:/PSP/GAME/CyanogenMod/screenshot/screenshot.PNG", 0);
-	}
-}
-
 int powermenu()
 {	
 	power = oslLoadImageFile("system/home/menu/power.png", OSL_IN_RAM, OSL_PF_8888);
@@ -50,9 +40,7 @@ int powermenu()
 		battery();
 		usb_icon();
 		oslDrawImage(cursor);
-		
-		screencapture();
-		
+
 		if (osl_pad.held.circle)
 		{
 			return;
@@ -68,12 +56,15 @@ int powermenu()
 			recoverymain();
 		}
 		
-		screencapture();
-		
 		if (cursor->x >= 128 && cursor->x <= 354 && cursor->y >= 192 && cursor->y <= 242 && osl_pad.held.cross)
 		{	
 			return;
-			screenshot = 1;
+			screenshot();
+		}
+		
+		if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
 		}
 		
 		oslEndDrawing();

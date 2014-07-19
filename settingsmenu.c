@@ -494,9 +494,13 @@ void about_menu()
 			disableUsb();
 			usb_debug = 0;
 		}
+		
+		if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
+		}
+		
 		oslEndDrawing();
-        
-        oslEndFrame();
         oslSyncFrame();
         oslAudioVSync();
 }
@@ -596,9 +600,12 @@ void updates_menu()
 			multitask();
 		}
 		
+		if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
+		}
+		
 		oslEndDrawing();
-        
-        oslEndFrame();
         oslSyncFrame();
         oslAudioVSync();
 }
@@ -684,10 +691,13 @@ void performance_menu()
 			oslDeleteImage(performancebg);
 			multitask();
 		}
+		
+		if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
+		}
 	
 		oslEndDrawing();
-        
-        oslEndFrame();
         oslSyncFrame();
         oslAudioVSync();
 }
@@ -843,9 +853,12 @@ void processor_menu()
 			multitask();	
 		}
 		
+		if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
+		}
+		
 		oslEndDrawing();
-        
-        oslEndFrame();
         oslSyncFrame();
         oslAudioVSync();
 }
@@ -1058,9 +1071,12 @@ void theme_menu()
 			multitask();
 		}
 		
+		if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
+		}
+		
 		oslEndDrawing();
-        
-        oslEndFrame();
         oslSyncFrame();
         oslAudioVSync();
 }
@@ -1168,9 +1184,12 @@ void wifi_menu()
 			multitask();
 		}
 		
+		if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
+		}
+		
 		oslEndDrawing();
-        
-        oslEndFrame();
         oslSyncFrame();
         oslAudioVSync();
 }	
@@ -1246,9 +1265,12 @@ void developer_menu()
 			multitask();
 		}
 		
+		if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
+		}
+		
 		oslEndDrawing();
-        
-        oslEndFrame();
         oslSyncFrame();
         oslAudioVSync();
 }	
@@ -1401,6 +1423,11 @@ int settingsmenu()
 		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 228 && cursor->y <= 250 && osl_pad.held.cross)
 		{
 			about_menu();
+		}
+		
+		if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
 		}
 		
         oslEndDrawing();

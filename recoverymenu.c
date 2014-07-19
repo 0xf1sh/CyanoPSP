@@ -863,5 +863,10 @@ int recoverymain(void)
 		
     ShowMainMenu();
 	
+	if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
+		}
+	
 	return 0;
 }

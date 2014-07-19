@@ -67,6 +67,11 @@ int multitask()
 			oslDeleteImage(multi_task);
 			multitask();
 		}
+		
+		if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
+		}
 				
 		oslEndDrawing();
 		oslSyncFrame();	

@@ -462,6 +462,11 @@ int gamemenu(int argc, char *argv[])
 			oslDeleteImage(gamebg);
 			multitask();
 		}
+		
+		if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
+		}
 				
 		oslEndDrawing();
 		oslSyncFrame();	

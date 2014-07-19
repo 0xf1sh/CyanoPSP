@@ -34,6 +34,8 @@ int home()
 		battery();
 		navbar_buttons();
 		android_notif();
+		android_notif2();
+		android_notif2();
 		usb_icon();
 		oslDrawImage(cursor);
 			
@@ -70,6 +72,11 @@ int home()
 			unloadicons();
 			recoverymain();
         }
+		
+		if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
+		}
 		
 		oslEndDrawing();
 		oslSyncFrame();	
