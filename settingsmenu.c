@@ -647,7 +647,7 @@ void performance_menu()
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 80 && cursor->y <= 138)
 		{
-			oslDrawImageXY(highlight, 16, 83);
+			oslDrawImageXY(highlight, 15, 83);
 			oslDrawString(40,98,"Processor");
 		}
 		
@@ -1218,8 +1218,8 @@ void developer_menu()
 		oslDrawImageXY(developerbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 
-		oslDrawString(35,76,"Launch Tools");
-		oslDrawString(35,128,"Take bug report");
+		oslDrawString(35,76,"Toggle Remote Joy Lite");
+		oslDrawString(35,128,"Toggle USB Debugging");
 		oslDrawString(35,184,"Advanced Reboot");
 		oslDrawString(35,236,"Backup Password");
 			
@@ -1229,6 +1229,19 @@ void developer_menu()
 		navbar_buttons();
 		android_notif();
 		usb_icon();
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 55 && cursor->y <= 108)
+		{
+			oslDrawImageXY(highlight, 15, 55);
+			oslDrawString(35,76,"Toggle Remote Joy Lite");
+		}
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 109 && cursor->y <= 165)
+		{
+			oslDrawImageXY(highlight, 15, 109);
+			oslDrawString(35,128,"Toggle USB Debugging");
+		}
+		
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)
@@ -1246,7 +1259,7 @@ void developer_menu()
 			oslDeleteImage(developerbg);
 			settingsmenu();
 		}
-
+		
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			oslDeleteImage(developerbg);
@@ -1268,6 +1281,26 @@ void developer_menu()
 		if (osl_pad.held.R && osl_pad.held.triangle)
 		{
 			screenshot();
+		}
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 109 && cursor->y <= 165 && osl_pad.held.cross)
+		{
+			LoadStartModule("modules/psplink.prx");
+		}
+		
+		else if(cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 109 && cursor->y <= 165 && osl_pad.held.cross)
+		{	
+			StopUnloadModule("modules/psplink.prx");			
+		}
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 55 && cursor->y <= 108 && osl_pad.held.cross)
+		{
+			LoadStartModule("modules/RemoteJoyLite.prx");
+		}
+		
+		else if(cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 55 && cursor->y <= 108 && osl_pad.held.cross)
+		{	
+			StopUnloadModule("modules/RemoteJoyLite.prx");
 		}
 		
 		oslEndDrawing();
