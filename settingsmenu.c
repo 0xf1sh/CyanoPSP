@@ -48,8 +48,7 @@
 #define FW_303 0x03000310
 #define FW_302 0x03000210
 
-#define configFile "Config.TXT"
-
+#define configFile "config.TXT"
 #define Address "www.google.com"
 
 //declaration
@@ -73,6 +72,8 @@ char name;
 int setclock;
 int setclockrlimit = 0;
 int setclockllimit = 9;
+int RJL = 0;
+int PSPDebug = 0;
 char Version[10] = "2.0 Alpha";
 char lang[12] = "Uk English";
 char theme_bootanim[10] = "";
@@ -1218,30 +1219,42 @@ void developer_menu()
 		oslDrawImageXY(developerbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 
-		oslDrawString(35,76,"Toggle Remote Joy Lite");
+		oslDrawString(35,62,"Toggle Remote Joy Lite");
+		oslDrawString(35,76,"Displays your PSP screen on your computer via USB.");
+		oslDrawString(35,90,"Press Triangle to disable or it may cause the program to crash");
 		oslDrawString(35,128,"Toggle USB Debugging");
+		oslDrawString(35,142,"Press Triangle to disable or it may cause the program to crash");
 		oslDrawString(35,184,"Advanced Reboot");
 		oslDrawString(35,236,"Backup Password");
 			
 		digitaltime();
 
 		battery();
-		navbar_buttons();
 		android_notif();
 		usb_icon();
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 55 && cursor->y <= 108)
 		{
 			oslDrawImageXY(highlight, 15, 55);
-			oslDrawString(35,76,"Toggle Remote Joy Lite");
+			oslDrawString(35,62,"Toggle Remote Joy Lite");
+			oslDrawString(35,76,"Displays your PSP screen on your computer via USB.");
+			oslDrawString(35,90,"Press Triangle to disable or it may cause the program to crash");
 		}
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 109 && cursor->y <= 165)
 		{
 			oslDrawImageXY(highlight, 15, 109);
 			oslDrawString(35,128,"Toggle USB Debugging");
+			oslDrawString(35,142,"Press Triangle to disable or it may cause the program to crash");
 		}
 		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 222 && cursor->y <= 278)
+		{
+			oslDrawImageXY(highlight, 15, 222);
+			oslDrawString(35,236,"Backup Password");
+		}
+		
+		navbar_buttons();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)
@@ -1286,21 +1299,27 @@ void developer_menu()
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 109 && cursor->y <= 165 && osl_pad.held.cross)
 		{
 			LoadStartModule("modules/psplink.prx");
-		}
-		
-		else if(cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 109 && cursor->y <= 165 && osl_pad.held.cross)
-		{	
-			StopUnloadModule("modules/psplink.prx");			
+			PSPDebug = 1;
+				if(PSPDebug == 1  && osl_pad.held.triangle)
+				{	
+				StopUnloadModule("modules/psplink.prx");			
+				}
 		}
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 55 && cursor->y <= 108 && osl_pad.held.cross)
-		{
+		{	
+			RJL = 1;
 			LoadStartModule("modules/RemoteJoyLite.prx");
+			
+				if(RJL == 1 && osl_pad.held.triangle)
+				{	
+				StopUnloadModule("modules/RemoteJoyLite.prx");
+				}
 		}
 		
-		else if(cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 55 && cursor->y <= 108 && osl_pad.held.cross)
-		{	
-			StopUnloadModule("modules/RemoteJoyLite.prx");
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 222 && cursor->y <= 278 && osl_pad.held.cross)
+		{
+			backupPassword();
 		}
 		
 		oslEndDrawing();

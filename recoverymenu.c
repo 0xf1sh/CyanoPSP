@@ -23,6 +23,7 @@
 #include "systemctrl_se.h"
 
 #define Version "flash0:/vsh/etc/version.txt"
+#define PWD "password.TXT"
 
 extern void CheckerPrintf(char *fmt, ...);
 
@@ -142,6 +143,17 @@ void ShowPage4()
 		
 		sceKernelDelayThread(10000);
 	}
+}
+
+void backupPassword()
+{	
+	char pass[5];
+		
+	memset(pass, 0, sizeof(pass));
+	
+	FILE * configtxt = fopen(PWD, "wb"); //create config file
+	fprintf("Password: %s\n", GetRegistryValue("/CONFIG/SYSTEM/LOCK", "password", &pass, sizeof(pass)));
+	fclose(PWD);	
 }
 
 //Based on raing3s CheckSysInfoP4 
