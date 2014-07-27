@@ -1,6 +1,6 @@
 TARGET = CyanogenMod
 OBJS = main.o appdrawer.o home.o calculator.o lock.o settingsmenu.o glib2d.o clock.o recoverymenu.o imports.o menu.o common.o multi.o power_menu.o \
-	   apollo.o fm.o game.o include/pgeZip.o screenshot.o
+	   apollo.o fm.o game.o include/pgeZip.o screenshot.o mp3player.o
 	   
 ifeq ($(CONFIG_620), 1)
 CFLAGS += -DCONFIG_620=1
@@ -32,7 +32,7 @@ LDFLAGS =
 STDLIBS= -losl -lpng -lz \
          -lpsphprm -lpspsdk -lpspctrl -lpspumd -lpsprtc -lpsppower -lpspgu -lpspgum  -lpspaudiolib -lpspaudio -lpsphttp -lpspssl -lpspwlan \
          -lpspnet_adhocmatching -lpspnet_adhoc -lpspnet_adhocctl -lm -ljpeg -lpspvram -lpsputility -lpspkubridge -lpspsystemctrl_user  -lpspreg \
-		 -lpspusb -lpspusbstor -lpspusbdevice -lpspmp3 -lmad -lpspaudiocodec 
+		 -lpspusb -lpspusbstor -lpspusbdevice -lpspmp3 -lmad -lpspaudiocodec -lpspsystemctrl_kernel -lpspvshctrl -lpsprtc_driver -lpspreg_driver
 		 
 LIBS=$(STDLIBS)$(YOURLIBS)
 
