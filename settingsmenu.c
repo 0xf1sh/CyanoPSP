@@ -1,4 +1,5 @@
 #include <pspkernel.h>
+#include <pspctrl.h>
 
 //PSP Net Stuff
 #include <pspnet.h>
@@ -50,10 +51,11 @@
 
 #define configFile "config.TXT"
 #define Address "www.google.com"
+#define MAX 8
 
 //declaration
 OSL_IMAGE *settingsbg, *cursor, *wificon, *usbdebug, *aboutbg, *offswitch, *onswitch, *themebg, *performancebg, *wifibg, *developerbg, *about, *highlight, 
-		  *developeroptions, *themes, *wifi, *processorbg, *background, *appicon1, *appicon2, *navbar, *apollo, *gmail, *message, *browser, *cpuset,
+		  *developeroptions, *themes, *wifi, *processorbg, *background, *appicon1, *appicon2, *navbar, *apollo, *gmail, *message, *browser, *cpuset, *check,
 		  *backicon, *homeicon, *multicon, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *isoloadericon, *fb, *settings, *updatesbg, *performance;
 
 //definition of our sounds
@@ -83,6 +85,10 @@ char theme_fonts[10] = "";
 static char Settings_message[100] = "";
 static char buffer[100] = "";
 
+const int cpu_list[] = { 20, 75, 100, 133, 166, 222, 266, 300, 333 };
+const int bus_list[] = { 10, 37, 50, 66, 83, 111, 133, 150, 166 };
+int current = 0;
+
 int connectAPCallback(int state){
     oslStartDrawing();
     oslDrawString(30, 200, "Connecting to AP...");
@@ -94,7 +100,6 @@ int connectAPCallback(int state){
 
     return 0;
 }
-
 
 int connectToAP(int config){
     oslStartDrawing();
@@ -214,6 +219,13 @@ void updater()
 	}
 }	
 
+void changer(int set) {
+	switch (set) {
+	case 0:
+	scePowerSetClockFrequency(cpu_list[set], cpu_list[set], bus_list[set]);
+	break;
+			}
+}
 
 int getCpuClock(){
     return scePowerGetCpuClockFrequency();
@@ -704,7 +716,7 @@ void performance_menu()
 }
 }
 
-void processor_menu()
+void processor_menu(int argc, char *argv[])
 {	
 	processorbg = oslLoadImageFilePNG("system/settings/processorbg.png", OSL_IN_RAM, OSL_PF_8888);
 	
@@ -713,58 +725,8 @@ void processor_menu()
 
 	setfont();
 	
-	setclock = 6;
+	SceCtrlData pad;
 	
-	if(setclock == 0)
-		{	
-			scePowerSetClockFrequency(20, 20, 10);
-		}
-   
-		else if(setclock == 1)
-		{	
-			scePowerSetClockFrequency(75, 75, 37);
-		}
-		
-		else if(setclock == 2)
-		{
-			scePowerSetClockFrequency(100, 100, 50);
-		}
-		
-		else if(setclock == 3)
-		{	
-			scePowerSetClockFrequency(133, 133, 66);
-		}
-		
-		else if(setclock == 4)
-		{	
-			scePowerSetClockFrequency(166, 166, 83);
-		}
-		
-		else if(setclock == 5)
-		{	
-			scePowerSetClockFrequency(200, 200, 100);
-		}
-		
-		else if(setclock == 6)
-		{
-			scePowerSetClockFrequency(222, 222, 111);
-		}
-		
-		else if(setclock == 7)
-		{
-			scePowerSetClockFrequency(266, 266, 133);
-		}
-		
-		else if(setclock == 8)
-		{
-			scePowerSetClockFrequency(300, 300, 150);
-		}
-		
-		else if(setclock == 9)
-		{
-			scePowerSetClockFrequency(333, 333, 166);
-		}
-
 	while (!osl_quit)
 	{
 
@@ -775,6 +737,8 @@ void processor_menu()
 		controls();	
 
 		oslReadKeys();
+		
+		sceCtrlPeekBufferPositive(&pad, 1);
 		
 		oslDrawImageXY(processorbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
@@ -801,28 +765,23 @@ void processor_menu()
 			oslDrawString(35,142,"Press R to increase frequency and L to decrease frequency");
 			oslDrawString(35,156,"Press triangle to reset to default, 222/111");
 		}
-		
-		if (osl_pad.held.R)
-		{
-		 setclock++;
-		}
-		
-		if (osl_pad.held.L)
-		{
-		 setclock--;
-		}
-		
-		if (setclock >= setclockrlimit)
-		{setclock = setclockrlimit;}
-		
-		else if (setclock <= setclockllimit)
-		{setclock = setclockllimit;}
-		
+
 		if (osl_pad.held.triangle)
 		{
 		 setclock = 6;
 		 scePowerSetClockFrequency(222, 222, 111);
 		}
+		
+		if (current < 0)
+		current = MAX;
+		if (current > MAX)
+		current = 0;
+		if (pad.Buttons & PSP_CTRL_LTRIGGER)
+		scePowerSetClockFrequency(cpu_list[current--], cpu_list[current--], bus_list[current--]);
+		if (pad.Buttons & PSP_CTRL_RTRIGGER)
+		scePowerSetClockFrequency(cpu_list[current++], cpu_list[current++], bus_list[current++]);
+
+		oslDrawStringf(35,87,"%d/%d",cpu_list[current],bus_list[current]);
 		
 		oslDrawImage(cursor);
 		
@@ -1200,8 +1159,9 @@ void wifi_menu()
 void developer_menu()
 {
 	developerbg = oslLoadImageFilePNG("system/settings/developerbg.png", OSL_IN_RAM, OSL_PF_8888);
+	check = oslLoadImageFilePNG("system/settings/check.png", OSL_IN_RAM, OSL_PF_8888);
 
-	if (!developerbg)
+	if (!developerbg || !check)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	setfont();
@@ -1218,13 +1178,16 @@ void developer_menu()
 
 		oslDrawImageXY(developerbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
+		oslDrawImageXY(check, 422, 177);
 
 		oslDrawString(35,62,"Toggle Remote Joy Lite");
 		oslDrawString(35,76,"Displays your PSP screen on your computer via USB.");
 		oslDrawString(35,90,"Press Triangle to disable or it may cause the program to crash");
 		oslDrawString(35,128,"Toggle USB Debugging");
 		oslDrawString(35,142,"Press Triangle to disable or it may cause the program to crash");
-		oslDrawString(35,184,"Advanced Reboot");
+		oslDrawString(35,174,"Advanced Reboot");
+		oslDrawString(35,188,"When unlocked, include option in the power menu for");
+		oslDrawString(35,202,"rebooting into recovery");
 		oslDrawString(35,236,"Backup Password");
 			
 		digitaltime();
@@ -1270,24 +1233,28 @@ void developer_menu()
 		if (osl_pad.held.circle)
 		{
 			oslDeleteImage(developerbg);
+			oslDeleteImage(check);
 			settingsmenu();
 		}
 		
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			oslDeleteImage(developerbg);
+			oslDeleteImage(check);
 			settingsmenu();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			oslDeleteImage(developerbg);
+			oslDeleteImage(check);
 			home();
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			oslDeleteImage(developerbg);
+			oslDeleteImage(check);
 			multitask();
 		}
 		
@@ -1298,6 +1265,7 @@ void developer_menu()
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 109 && cursor->y <= 165 && osl_pad.held.cross)
 		{
+
 			LoadStartModule("modules/psplink.prx");
 			PSPDebug = 1;
 				if(PSPDebug == 1  && osl_pad.held.triangle)
@@ -1369,7 +1337,6 @@ void settings_deleteImages()
 	oslDeleteImage(themes);
 	oslDeleteImage(developeroptions);
 	oslDeleteImage(wifi);
-	oslDeleteImage(highlight);
 }
 
 int settingsmenu()
@@ -1431,18 +1398,21 @@ int settingsmenu()
 		if (osl_pad.held.circle)
 		{	
 			settings_deleteImages();
+			oslDeleteImage(highlight);
 			appdrawer();
 		}
 			
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{	
 			settings_deleteImages();
+			oslDeleteImage(highlight);
 			appdrawer();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{	
 			settings_deleteImages();
+			oslDeleteImage(highlight);
 			home();
 		}
 
@@ -1453,27 +1423,31 @@ int settingsmenu()
 		}
 			
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 53 && cursor->y <= 98 && osl_pad.held.cross)
-		{
+		{	
+			settings_deleteImages();
 			wifi_menu();
 		}
 		
 		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 99 && cursor->y <= 141 && osl_pad.held.cross)
-		{
+		{	
 			developer_menu();
 		}
 		
 		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 142 && cursor->y <= 183 && osl_pad.held.cross)
-		{
+		{	
+			settings_deleteImages();
 			theme_menu();
 		}
 		
 		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 184 && cursor->y <= 227 && osl_pad.held.cross)
 		{
+			settings_deleteImages();
 			performance_menu();
 		}
 				
 		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 228 && cursor->y <= 250 && osl_pad.held.cross)
-		{
+		{	
+			settings_deleteImages();
 			about_menu();
 		}
 		
