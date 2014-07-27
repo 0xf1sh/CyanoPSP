@@ -35,7 +35,6 @@
 #include "game.h"
 #include "screenshot.h"
 
-#define screenshotpath "ms0:/PSP/GAME/CyanogenMod/screenshots"
 #define downloadpath "ms0:/PSP/GAME/CyanogenMod/downloads"
 
 PSP_MODULE_INFO("CyanoPSP - C", 0x200, 2, 0);
@@ -151,20 +150,6 @@ void battery()
 		if (scePowerIsBatteryCharging() == 1)
 			oslDrawImageXY(battcharge,batx,baty);
 		
-}
-
-void makescreenshotdir()
-{
-	SceUID dir = sceIoDopen(screenshotpath);
-	
-	if (dirExists(screenshotpath))
-	{
-		sceIoDclose(dir);
-	}
-	else 
-	{
-		sceIoMkdir("ms0:/PSP/GAME/CyanogenMod/screenshots",0777);
-}
 }
 
 void makedownloaddir()
@@ -447,11 +432,11 @@ int main()
 	
 	setfont();
 	
+	makedownloaddir();
+	
 	//Main loop to run the program
 	while (!osl_quit)
-	{	
-		makescreenshotdir();
-		
+	{		
 		//Draws images onto the screen
 		oslStartDrawing();
 		

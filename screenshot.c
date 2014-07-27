@@ -1,7 +1,23 @@
 #include <oslib/oslib.h>
 
+#define screenshotpath "ms0:/PSP/GAME/CyanogenMod/screenshots"
+
 char checkname[256];
 static int lastNumber = -1;
+
+void makescreenshotdir()
+{
+	SceUID dir = sceIoDopen(screenshotpath);
+	
+	if (dirExists(screenshotpath))
+	{
+		sceIoDclose(dir);
+	}
+	else 
+	{
+		sceIoMkdir("ms0:/PSP/GAME/CyanogenMod/screenshots",0777);
+}
+}
 
 int FileExists(const char *file) //Check if file exists
 {
@@ -34,6 +50,9 @@ sprintf(fileName, "ms0:/PSP/GAME/CyanogenMod/screenshots/screenshot%i%i%i%i%s", 
 
 void screenshot() //Takes screenshot
 {
+
+makescreenshotdir();
+
 sprintf(checkname, "%s", "screenshot"); 
 
 if(lastNumber == -1)
