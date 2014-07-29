@@ -32,8 +32,6 @@ int home()
 		battery();
 		navbar_buttons();
 		android_notif();
-		android_notif2();
-		android_notif2();
 		usb_icon();
 		oslDrawImage(cursor);
 			
