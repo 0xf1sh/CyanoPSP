@@ -222,8 +222,6 @@ int filemanage(int argc, char *argv[])
 		
 		controls();	
 
-		oslReadKeys();
-
 		oslDrawImageXY(filemanagerbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 		

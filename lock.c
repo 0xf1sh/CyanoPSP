@@ -46,8 +46,6 @@ int lockscreen()
 		
 		controls();	
 
-		oslReadKeys();
-
 		oslDrawImage(background);	
 		
 		oslDrawImageXY(wificon, 375, 1);

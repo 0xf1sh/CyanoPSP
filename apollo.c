@@ -44,6 +44,7 @@ int mp3player()
 		oslDrawImageXY(wificon, 375, 1);
 
 		battery();
+		digitaltime();
 		navbar_buttons();
 		android_notif();
 		usb_icon();
@@ -103,7 +104,6 @@ int mp3player()
 		
 		oslEndDrawing();
 		oslSyncFrame();	
-        oslAudioVSync();
         oslAudioVSync();
 		}
 	MP3_Stop();

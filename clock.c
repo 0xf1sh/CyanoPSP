@@ -4,11 +4,12 @@
 #include <psprtc.h>
 
 OSL_IMAGE *clockbg, *cursor, *wificon;
+OSL_FONT *clockFont;
 
 void centerclock()
 {
-	OSL_FONT *clockFont = oslLoadIntraFontFile("system/fonts/DroidSans.pgf", INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8);
-	oslIntraFontSetStyle(clockFont, 0.9f, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
+	clockFont = oslLoadIntraFontFile("system/fonts/DroidSans.pgf", INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8);
+	oslIntraFontSetStyle(clockFont, 0.9f, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
 	oslSetFont(clockFont);
 	
 	pspTime time;
@@ -56,9 +57,7 @@ int pspclock()
 		oslClearScreen(RGB(0,0,0));
 		
 		controls();	
-
-		oslReadKeys();
-
+		
 		oslDrawImageXY(clockbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 		

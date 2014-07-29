@@ -38,8 +38,6 @@ int calculator()
 		
 		controls();	
 
-		oslReadKeys();
-
 		oslDrawImageXY(calcbackground, 0, 19);		
 
 		oslDrawImageXY(wificon, 375, 1);

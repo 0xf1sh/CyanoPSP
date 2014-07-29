@@ -47,8 +47,6 @@ int appdrawer()
 
 		controls();	
 
-		oslReadKeys();
-
 		oslDrawImage(background);
 		
 		oslDrawImageXY(wificon, 375, 1);
@@ -136,6 +134,12 @@ int appdrawer()
 		{
 			appdrawer_deleteImages();
 			mp3player();
+		}
+		
+		if (cursor->x >= 210 && cursor->x <= 268 && cursor->y >= 118 && cursor->y <= 170 && osl_pad.held.cross)
+		{
+			appdrawer_deleteImages();
+			messenger();
 		}
 		
 		if (cursor->x >= 147 && cursor->x <= 191 && cursor->y >= 112 && cursor->y <= 154 && osl_pad.held.cross)

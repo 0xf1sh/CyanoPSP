@@ -1,6 +1,6 @@
 TARGET = CyanogenMod
 OBJS = main.o appdrawer.o home.o calculator.o lock.o settingsmenu.o glib2d.o clock.o recoverymenu.o imports.o menu.o common.o multi.o power_menu.o \
-	   apollo.o fm.o game.o include/pgeZip.o screenshot.o mp3player.o
+	   apollo.o fm.o game.o include/pgeZip.o screenshot.o mp3player.o messenger.o
 	   
 ifeq ($(CONFIG_620), 1)
 CFLAGS += -DCONFIG_620=1

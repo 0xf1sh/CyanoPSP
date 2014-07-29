@@ -18,8 +18,6 @@ int multitask()
 		
 		controls();
 
-		oslReadKeys();
-
 		oslDrawImageXY(background, 0,0);
 		oslDrawImageXY(wificon, 375, 1);
 		oslDrawImageXY(multi_task, 0,10);

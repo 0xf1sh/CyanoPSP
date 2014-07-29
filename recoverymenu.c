@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <oslib/oslib.h>
 
-#include "include/kubridge.h"
+#include <kubridge.h>
 
 #include "recoverymenu.h"
 #include "modules/ipl_update.h"
@@ -148,11 +148,10 @@ void ShowPage4()
 void backupPassword()
 {	
 	char pass[5];
-		
 	memset(pass, 0, sizeof(pass));
 	
 	FILE * configtxt = fopen(PWD, "wb"); //create config file
-	fprintf("Password: %s\n", GetRegistryValue("/CONFIG/SYSTEM/LOCK", "password", &pass, sizeof(pass)));
+	sprintf("Password: %s\n", GetRegistryValue("/CONFIG/SYSTEM/LOCK", "password", &pass, sizeof(pass)));
 	fclose(PWD);	
 }
 

@@ -23,8 +23,6 @@ int powermenu()
 
 		controls();	
 
-		oslReadKeys();
-
 		oslDrawImage(background);
 		oslDrawImageXY(wificon, 375, 1);
 		oslDrawImageXY(google, 22, 26);

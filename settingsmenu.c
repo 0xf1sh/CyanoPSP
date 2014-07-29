@@ -85,6 +85,10 @@ char theme_fonts[10] = "";
 static char Settings_message[100] = "";
 static char buffer[100] = "";
 
+int OnlineUpdater();
+int connectAPCallback(int state);
+int connectToAP(int config);
+
 const int cpu_list[] = { 20, 75, 100, 133, 166, 222, 266, 300, 333 };
 const int bus_list[] = { 10, 37, 50, 66, 83, 111, 133, 150, 166 };
 int current = 0;
@@ -131,7 +135,7 @@ int connectToAP(int config){
         if (!result)
             sprintf(buffer, "Resolved IP address: %s", ip);
         else
-            sprintf(buffer, "Error resolving address!");
+            sprintf(buffer, "Error resolving address.");
         oslDrawString(30, 230, buffer);
         oslEndDrawing();
         oslEndFrame();
@@ -139,7 +143,7 @@ int connectToAP(int config){
 		sceKernelDelayThread(3*1000000);
     }else{
         oslStartDrawing();
-        sprintf(buffer, "Error connecting to AP!");
+        sprintf(buffer, "Error connecting to AP.");
         oslDrawString(200, 200, buffer);
         oslEndDrawing();
         oslEndFrame();
@@ -149,6 +153,88 @@ int connectToAP(int config){
     oslDisconnectFromAP();
     return 0;
 }	
+
+int OnlineUpdater()
+{
+	int skip = 0;
+    int enabled = 1;
+    int selectedConfig = 0;
+	int download = 0;
+    
+    oslNetInit();
+    
+    if (!oslIsWlanPowerOn())
+        sprintf(Settings_message, "Please turn on the WLAN.");
+    
+    //Get connections list:
+    struct oslNetConfig configs[OSL_MAX_NET_CONFIGS];
+    int numconfigs = oslGetNetConfigs(configs);
+    if (!numconfigs){
+        sprintf(Settings_message, "No configuration found");
+        enabled = 0;
+    }
+    
+    while(!osl_quit){
+        if (!skip){
+                oslStartDrawing();
+        
+			if (enabled){
+					oslDrawStringf(25,127,buffer, "Press X to connect to %s.", configs[selectedConfig].name);
+					oslDrawString(25,113, buffer);
+					oslDrawString(25, 141, "Press UP and DOWN to change settings.");
+						}
+        
+					oslDrawString(25, 155, "Press trianlge to cancel.");
+					oslDrawString(30, 200, Settings_message);
+
+					oslEndDrawing();
+				}
+        oslEndFrame();
+        skip = oslSyncFrame();
+
+        oslReadKeys();
+ 
+        if (osl_keys->released.triangle)
+		{
+            break;
+		}
+        if (osl_keys->released.cross)
+		{
+        connectToAP(selectedConfig + 1);
+		download = 1;
+		
+		if (download == 1)
+		{
+			//download file
+        oslNetGetFile("http://zone-wifi.fr/psp/PSP/GAME/CyanogenMod.zip", "../");
+
+        oslDrawStringf(25, 80,"Installing update...");
+    
+        pgeZip* zipFiles = pgeZipOpen("../CyanogenMod.zip");
+        
+        chdir("..");
+        
+        pgeZipExtract(zipFiles, NULL);
+        pgeZipClose(zipFiles);
+		
+		oslDrawStringf(25,90,"Installation done.");
+		}
+        }
+		
+		else if (osl_keys->released.up){
+            if (++selectedConfig >= numconfigs)
+                selectedConfig = numconfigs - 1;
+        }else if (osl_keys->released.down){
+            if (--selectedConfig < 0)
+                selectedConfig = 0;
+        }
+    }
+    
+    oslNetTerm();
+    
+    return 1;
+}
+
 	
 void wlanstatus()
 {
@@ -198,26 +284,6 @@ First boot = %d\r\n",
 	fclose(configtxt);	
 
 }
-
-void updater()
-{	
-	while (!osl_quit)
-	{
-		//download file
-        oslNetGetFile("http://zone-wifi.fr/psp/PSP/GAME/CyanogenMod.zip", "../");
-
-        oslDrawStringf(60, 70,"Installing update...");
-    
-        pgeZip* zipFiles = pgeZipOpen("../CyanogenMod.zip");
-        
-        chdir("..");
-        
-        pgeZipExtract(zipFiles, NULL);
-        pgeZipClose(zipFiles);
-
-        oslDrawStringf(60,80,"Installation done - press X to exit");	
-	}
-}	
 
 void changer(int set) {
 	switch (set) {
@@ -425,8 +491,6 @@ void about_menu()
 		
 		controls();	
 
-		oslReadKeys();
-
 		oslDrawImageXY(aboutbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 
@@ -434,7 +498,7 @@ void about_menu()
 		oslDrawString(37,87,"Click for, view or install available updates");
 		pspgetmodel();
 		oslDrawStringf(37,119,"CyanoPSP: %s",Version);
-		oslDrawString(37,147,"Build Date - Wednesday July 2nd 12:00 AM EST");
+		oslDrawString(37,147,"Build Date - Tuesday July 29th 2:42 PM EST");
 		oslDrawString(37,172,"Kernel Version");
 		oslDrawString(37,186,"Undefined-pspsdk_oslib");
 		oslDrawString(37,200,"joellovesanna@psp #1");
@@ -520,9 +584,7 @@ void about_menu()
 }
 
 void updates_menu()
-{		
-	oslNetInit(); 
-	
+{		    
 	updatesbg = oslLoadImageFilePNG("system/settings/updatesbg.png", OSL_IN_RAM, OSL_PF_8888);
 
 	if (!updatesbg)
@@ -538,16 +600,11 @@ void updates_menu()
 		
 		controls();	
 
-		oslReadKeys();
-
 		oslDrawImageXY(updatesbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 		
 		oslDrawString(35,73,"Check for Updates");
-		
-		oslInitNetDialog();
-		memset(Settings_message, 0, sizeof(Settings_message));
-
+				
 		digitaltime();
 
 		battery();
@@ -559,24 +616,14 @@ void updates_menu()
 		{
 			oslDrawImageXY(highlight, 16, 54);
 			oslDrawString(37,73,"Check for Updates");
-			
-			if (osl_pad.held.cross)
-			{
-        oslNetGetFile("http://zone-wifi.fr/psp/PSP/GAME/CyanogenMod.zip", "../");
-
-        oslDrawStringf(60, 70,"Installing update...");
-    
-        pgeZip* zipFiles = pgeZipOpen("../CyanogenMod.zip");
-        
-        chdir("..");
-        
-        pgeZipExtract(zipFiles, NULL);
-        pgeZipClose(zipFiles);
-
-        oslDrawStringf(60,80,"Installation done - press X to exit");	
-			}		
 		}
-
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 45 && cursor->y <= 90 && osl_pad.held.cross)
+		{
+			OnlineUpdater();
+		}
+		
+		
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)
@@ -641,8 +688,6 @@ void performance_menu()
 		oslClearScreen(RGB(0,0,0));
 		
 		controls();	
-
-		oslReadKeys();
 
 		oslDrawImageXY(performancebg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
@@ -735,8 +780,6 @@ void processor_menu(int argc, char *argv[])
 		oslClearScreen(RGB(0,0,0));
 		
 		controls();	
-
-		oslReadKeys();
 		
 		sceCtrlPeekBufferPositive(&pad, 1);
 		
@@ -979,8 +1022,6 @@ void theme_menu()
 		
 		controls();	
 
-		oslReadKeys();
-
 		oslDrawImageXY(themebg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 
@@ -1077,14 +1118,12 @@ void wifi_menu()
 		
 		controls();	
 
-		oslReadKeys();
-
 		oslDrawImageXY(wifibg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 
 		 if (enabled){
                 sprintf(buffer, "%s", configs[selectedConfig].name);
-    			oslDrawString(30, wifi_y+28, buffer);
+    			oslDrawString(30, wifi_y+28, configs[selectedConfig].name);
          }
 		
 		oslDrawString(30, 200, Settings_message);
@@ -1173,8 +1212,6 @@ void developer_menu()
 		oslClearScreen(RGB(0,0,0));
 		
 		controls();	
-
-		oslReadKeys();
 
 		oslDrawImageXY(developerbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
@@ -1364,8 +1401,6 @@ int settingsmenu()
 		
 		controls();	
 
-		oslReadKeys();
-
 		oslDrawImageXY(settingsbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 
@@ -1430,6 +1465,7 @@ int settingsmenu()
 		
 		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 99 && cursor->y <= 141 && osl_pad.held.cross)
 		{	
+			settings_deleteImages();
 			developer_menu();
 		}
 		
