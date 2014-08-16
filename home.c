@@ -45,6 +45,18 @@ int home()
 			unloadicons();
 			internet();
 		}
+		
+		if (cursor->x >= 100 && cursor->x <= 154 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
+		{
+			unloadicons();
+			mp3player();
+		}
+		
+		if (cursor->x >= 155 && cursor->x <= 210 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
+		{
+			unloadicons();
+			messenger();
+		}
 			
 		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
 		{

@@ -1,6 +1,7 @@
 #include <pspkernel.h>
 #include <pspdebug.h>
 #include <pspsdk.h>
+#include <malloc.h> 
 
 //PSP Net 
 #include <pspnet.h>
@@ -93,22 +94,21 @@ int initOSLib(){
  
 void controls()
 {
-		//Cursor movement
-		//Enable default analog handler
-		oslSetKeyAnalogToDPad(80);
 		
 		//Read keys
 		oslReadKeys();
 		
-		//The stick is upwards OR the D-pad's up direction is held
-		if (osl_pad.held.up)
-        {cursor->y -= 4;}
-		if (osl_pad.held.down)
-        {cursor->y += 4;}
-		if (osl_pad.held.left)
-        {cursor->x -= 4;}
-		if (osl_pad.held.right)
-        {cursor->x += 4;}
+		if(osl_keys->analogX >= 50)
+		cursor->x+= osl_keys->analogX/30;
+		
+		if(osl_keys->analogX <= -50)
+		cursor->x+=osl_keys->analogX/30;
+
+		if(osl_keys->analogY >= 50)
+		cursor->y+= osl_keys->analogY/30;
+		
+		if(osl_keys->analogY <= -50)
+		cursor->y+= osl_keys->analogY/30;
 		
 		if (cursor->x <= llimit)
 		{cursor->x = llimit;}
@@ -340,10 +340,42 @@ int browser = 0;
     oslNetTerm();
 }
 
+int firstBoot;
+int num = 0;
+
+void firstBootLoad(){
+
+	FILE * firstboottxt;
+
+	fopen("firstboot.txt", "r");
+
+	if(!firstboottxt) 
+	return firstBootSave();
+
+	fclose(firstboottxt);	
+}
+
+void firstBootSave(){
+
+	FILE * firstboottxt;
+
+	fopen("firstboot.txt", "w");
+
+	firstBoot = 1;	
+	num= fprintf(firstboottxt, "%d", firstBoot);
+	
+	fclose(firstboottxt);	
+
+}
+
 //First Boot Message
 void firstBootMessage(){
+
+	FILE * firstboottxt;
+
+	fopen("firstboot.txt", "r");
 	
-	if (loadConfig() && firstBoot == 1)
+	if(firstBoot==1)
 	{
 	oslDrawImageXY(transbackground, 0, 0);
 	oslDrawImageXY(welcome, 140, 40);
@@ -355,9 +387,11 @@ void firstBootMessage(){
 		oslDeleteImage(welcome);
 		oslDeleteImage(ok);
 		oslDeleteImage(transbackground);
-		return firstBoot=0;
-		saveConfig();
 		home();
+		fopen("firstboot.txt", "w"); 
+		firstBoot = 0;	
+		num= fprintf(firstboottxt, "%d", firstBoot);
+		fclose(firstboottxt);
 	}
 }
 
@@ -378,6 +412,36 @@ void unloadicons()
 {
 	oslDeleteImage(appicon);
 	oslDeleteImage(appicon2);
+}
+
+void loadEboot(const char *path)
+{
+	struct SceKernelLoadExecParam execParam;
+
+	execParam.size = sizeof(execParam);
+	execParam.argp = path;
+	execParam.args = strlen(path);
+	execParam.key = NULL;
+
+	sceKernelLoadExec(path, &execParam);
+}
+
+int __freemem() 
+{ 
+ void *ptrs[480]; 
+ int mem, x, i; 
+ for (x = 0; x < 480; x++) 
+ { 
+    void *ptr = malloc(51200); 
+    if (!ptr) break; 
+  
+    ptrs[x] = ptr; 
+ } 
+ mem = x * 51200; 
+ for (i = 0; i < x; i++) 
+  free(ptrs[i]); 
+
+ return mem; 
 }
 
 int main()
@@ -424,8 +488,6 @@ int main()
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	loadConfig();
-
-	firstBoot = 1;
 	
 	//Sets the cursor's original position on the screen
 	cursor->x = 240;
@@ -441,10 +503,8 @@ int main()
 		//Draws images onto the screen
 		oslStartDrawing();
 		
-		controls();
-													
 		//Initiate the PSP's controls
-		oslReadKeys();
+		controls();
 			
 		//Print the images onto the screen
 		oslDrawImage(background);		
@@ -459,11 +519,11 @@ int main()
 		digitaltime();
 		
 		//calls the functions	
+		firstBootMessage();
 		appdrawericon();
 		battery();
 		navbar_buttons();
 		android_notif();
-		firstBootMessage();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)
@@ -475,6 +535,7 @@ int main()
 		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
 		{
 			unloadicons();
+			__freemem();
 			internet();
 		}
 		
