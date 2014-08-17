@@ -76,7 +76,7 @@ int setclockrlimit = 0;
 int setclockllimit = 9;
 int RJL = 0;
 int PSPDebug = 0;
-char Version[10] = "2.0 Alpha";
+char Version[10] = "2.1 Alpha";
 char lang[12] = "Uk English";
 char theme_bootanim[10] = "";
 char theme_icons[10] = "";
@@ -277,9 +277,8 @@ ClockFrequency =  %d\r\n\
 BootAnimation = %s\r\n\
 Fonts = %s\r\n\
 Style =  %s\r\n\
-Icons = %s\r\n\
-First boot = %d\r\n",
-	Version,lang,setclock,theme_bootanim,theme_fonts,theme_style,theme_icons,firstBoot);
+Icons = %s\r\n",
+	Version,lang,setclock,theme_bootanim,theme_fonts,theme_style,theme_icons);
 
 	fclose(configtxt);	
 
@@ -498,7 +497,7 @@ void about_menu()
 		oslDrawString(37,87,"Click for, view or install available updates");
 		pspgetmodel();
 		oslDrawStringf(37,119,"CyanoPSP: %s",Version);
-		oslDrawString(37,147,"Build Date - Tuesday July 29th 2:42 PM EST");
+		oslDrawString(37,147,"Build Date - Sun Aug 17 12:06 PM EST 2014");
 		oslDrawString(37,172,"Kernel Version");
 		oslDrawString(37,186,"Undefined-pspsdk_oslib");
 		oslDrawString(37,200,"joellovesanna@psp #1");

@@ -141,13 +141,13 @@ void stopWatch()
 		if (osl_pad.held.circle)
 		{
 			oslDeleteImage(stop_watch);
-			pspclock();
+			appdrawer();
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{	
 			oslDeleteImage(stop_watch);
-			pspclock();
+			appdrawer();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
@@ -160,6 +160,12 @@ void stopWatch()
 		{
 			oslDeleteImage(stop_watch);
 			multitask();
+		}
+		
+		if (cursor->x >= 114 && cursor->x <= 150  && cursor->y >= 19 && cursor->y <= 50 && osl_pad.held.cross)
+		{
+			oslDeleteImage(stop_watch);
+			pspclock();
 		}
 		
 		if (osl_pad.held.R && osl_pad.held.triangle)
@@ -186,7 +192,7 @@ void stopWatch()
 				minute = 0;
 				second = 0;
 				milisec = 0;
-				oslDrawStringf(230,210, "0:0:0.00       ");
+				oslDrawStringf(211,175, "0:0:0.00       ");
 				counter = 0;
 			}
 		}

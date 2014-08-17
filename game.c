@@ -27,7 +27,7 @@
 #define SIZE_DATA_AND_PADDING 8
 #define OFFSET_DATA_VALUE 12
 
-OSL_IMAGE *gamebg, *cursor, *icon, *noicon;
+OSL_IMAGE *gamebg, *cursor, *icon, *noicon, *icon0;
 
 //initially from eMenu--
 typedef struct
@@ -338,6 +338,35 @@ static int xstrtoi(char *str, int len) {
 		val += c;
 	}
 	return (val);
+}
+
+void getIcon0(char* filename){
+    //unsigned char _header[40];
+    int icon0Offset, icon1Offset;
+    char file[256];
+    sprintf(file,"%s/eboot.pbp",filename);
+    SceUID fd = sceIoOpen(file, 0x0001/*O_RDONLY*/, 0777);
+	if(fd < 0){
+		icon0 = oslLoadImageFilePNG("ram:/Media/icon0.png", OSL_IN_RAM | OSL_SWIZZLED, OSL_PF_8888);
+		return;
+	}
+    //sceIoRead(fd, _header, 40);
+    //printf("letto header\n");
+    sceIoLseek(fd, 12, SEEK_SET);
+    sceIoRead(fd, &icon0Offset, 4);
+    //sceIoLseek(fd, 23, SEEK_SET);
+    sceIoRead(fd, &icon1Offset, 4);
+    int icon0_size = icon1Offset - icon0Offset;
+    sceIoLseek(fd, icon0Offset, SEEK_SET);
+    unsigned char icon[icon0_size];
+    if(icon0_size){
+        sceIoRead(fd, icon, icon0_size);
+        oslSetTempFileData(icon, icon0_size, &VF_MEMORY);
+        icon0 = oslLoadImageFilePNG(oslGetTempFileName(), OSL_IN_RAM | OSL_SWIZZLED, OSL_PF_8888);
+    }else{
+        icon0 = oslLoadImageFilePNG("ram:/Media/icon0.png", OSL_IN_RAM | OSL_SWIZZLED, OSL_PF_8888);
+    }
+    sceIoClose(fd);
 }
 
 int gamemenu(int argc, char *argv[])
