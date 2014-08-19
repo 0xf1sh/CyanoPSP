@@ -25,4 +25,6 @@ make
 pause
 
 :close
+ECHO Delete objects not needed...
+DEL *.o
 cls
