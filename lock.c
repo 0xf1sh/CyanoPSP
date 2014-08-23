@@ -3,11 +3,6 @@
 
 OSL_IMAGE *background, *cursor, *wificon, *lock, *unlock, *circle, *messenger, *music, *circles, *music2, *messenger2;
 
-int click = 0;
-int ending = 0;
-int batteryLife;
-int style = 0;
-
 void lockscreen_deleteimages()
 {
 	oslDeleteImage(lock);
@@ -22,6 +17,10 @@ void lockscreen_deleteimages()
 
 int lockscreen()
 {	
+	int click = 0;
+	int ending = 0;
+	int style = 0;
+	
 	setfont();
 	
 	lock = oslLoadImageFilePNG("System/Lockscreen/lock.png", OSL_IN_RAM, OSL_PF_8888);

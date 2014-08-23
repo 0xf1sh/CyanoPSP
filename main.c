@@ -39,39 +39,9 @@
 
 #define downloadpath "ms0:/PSP/GAME/CyanogenMod/downloads"
 
-PSP_MODULE_INFO("CyanoPSP - C", 0x200, 2, 0);
+PSP_MODULE_INFO("CyanoPSP - C", 1, 2, 1);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(-128);
-
-// Globals:
-int runningFlag = 1;
-
-// Callbacks:
-
-/* Exit callback */
-int exit_callback(int arg1, int arg2, void *common) {
-    runningFlag = 0;
-    return 0;
-}
- 
-/* Callback thread */
-int CallbackThread(SceSize args, void *argp) {
-    int cbid;
- 
-    cbid = sceKernelCreateCallback("Exit Callback", exit_callback, NULL);
-    sceKernelRegisterExitCallback(cbid);
-    sceKernelSleepThreadCB();
-    return 0;
-}
- 
-/* Sets up the callback thread and returns its thread id */
-int SetupCallbacks(void) {
-    int thid = 0;
-    thid = sceKernelCreateThread("update_thread", CallbackThread, 0x11, 0xFA0, PSP_THREAD_ATTR_USER, 0);
-    if(thid >= 0)
-        sceKernelStartThread(thid, 0, 0);
-    return thid;
-}
 
 //declaration
 OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, 
@@ -94,6 +64,10 @@ int initOSLib(){
  
 void controls()
 {
+		int llimit = 0;
+		int rlimit = 460;
+		int ulimit = 0;
+		int dlimit = 252;
 		
 		//Read keys
 		oslReadKeys();
@@ -131,6 +105,10 @@ void controls()
 
 void battery()
 {
+		int batx = 400;
+		int baty = 2;
+		int batteryLife;
+	
 		batteryLife = scePowerGetBatteryLifePercent();
  
 		if (batteryLife == 100)
@@ -208,11 +186,6 @@ void android_notif()
 			notif_up = 1;
 			notif_down = 0;
 		}
-
-		if (cursor->x >= 437 && cursor->x <= 466 && cursor->y >= 12 && cursor->y <= 37 && osl_pad.held.cross)
-		{
-			android_notif2();
-		}
 		
 		if (notif_up == 1) 
 		{
@@ -259,7 +232,7 @@ void android_notif2()
 {		
 		oslDrawImageXY(notif2,0,notif_y);
 		
-		if ((osl_pad.held.cross && notif_y == 0 && cursor->x >= 240 && cursor->x <=480 && cursor->y <= 1) || (osl_pad.held.cross && notif_y == 0 && cursor->y >= 246))
+		if ((osl_pad.held.cross && notif_y == 0 && cursor->x >= 241 && cursor->x <=480 && cursor->y <= 1) || (osl_pad.held.cross && notif_y == 0 && cursor->y >= 246))
 		{
 			notif_up = 1;
 			notif_down = 0;
@@ -526,7 +499,7 @@ int main()
 		android_notif();
 		oslDrawImage(cursor);
 		
-		if (osl_pad.held.square)
+		if (osl_pad.held.home)
 		{
 			 powermenu();
 		}
