@@ -39,7 +39,7 @@
 
 #define downloadpath "ms0:/PSP/GAME/CyanogenMod/downloads"
 
-PSP_MODULE_INFO("CyanoPSP - C", 0x1000, 2, 1);
+PSP_MODULE_INFO("CyanoPSP - C", 1, 2, 1);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU); 
 PSP_HEAP_SIZE_KB(-128);
 

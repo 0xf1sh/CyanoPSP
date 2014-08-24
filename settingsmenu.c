@@ -277,7 +277,7 @@ ro.product.locale.language = %s\r\n\
 ro.build.user = Joel16\r\n\
 ro.product.cpu.frequency =  %d\r\n\
 ro.build.date = Sun Aug 24 12:06 PM EST 2014",
-	Version, sceKernelGetModel(),lang,setclock);
+	Version, kuKernelGetModel(),lang,setclock);
 
 	fclose(configtxt);	
 
