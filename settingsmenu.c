@@ -49,7 +49,7 @@
 #define FW_303 0x03000310
 #define FW_302 0x03000210
 
-#define configFile "config.TXT"
+#define configFile "system/build.prop"
 #define Address "www.google.com"
 #define MAX 8
 
@@ -62,7 +62,6 @@ OSL_IMAGE *settingsbg, *cursor, *wificon, *usbdebug, *aboutbg, *offswitch, *onsw
 OSL_SOUND *tone;
 
 int usb_debug = 0;
-char pspmodel;
 char usbStatus = 0;
 char usbModuleStatus = 0;
 char defaultTheme;
@@ -269,20 +268,21 @@ void loadConfig()
 
 void saveConfig()
 {
+	
 	FILE * configtxt = fopen(configFile, "wb"); //create config file
 	fprintf(configtxt,
-"\r\Version= %s\r\n\
-Language = %s\r\n\
-ClockFrequency =  %d\r\n\
-BootAnimation = %s\r\n\
-Fonts = %s\r\n\
-Style =  %s\r\n\
-Icons = %s\r\n",
-	Version,lang,setclock,theme_bootanim,theme_fonts,theme_style,theme_icons);
+"ro.build.version.release = %s\r\n\
+ro.product.model = %d\r\n\
+ro.product.locale.language = %s\r\n\
+ro.build.user = Joel16\r\n\
+ro.product.cpu.frequency =  %d\r\n\
+ro.build.date = Sun Aug 24 12:06 PM EST 2014",
+	Version, sceKernelGetModel(),lang,setclock);
 
 	fclose(configtxt);	
 
 }
+
 
 void changer(int set) {
 	switch (set) {
@@ -440,7 +440,7 @@ void usb_icon()
 
 void pspgetmodel()
 {
-		pspmodel = kuKernelGetModel();
+		char pspmodel = kuKernelGetModel();
 	
 		if(pspmodel == 0)
 		{
@@ -497,7 +497,7 @@ void about_menu()
 		oslDrawString(37,87,"Click for, view or install available updates");
 		pspgetmodel();
 		oslDrawStringf(37,119,"CyanoPSP: %s",Version);
-		oslDrawString(37,147,"Build Date - Sun Aug 17 12:06 PM EST 2014");
+		oslDrawString(37,147,"Build Date - Sun Aug 24 12:06 PM EST 2014");
 		oslDrawString(37,172,"Kernel Version");
 		oslDrawString(37,186,"Undefined-pspsdk_oslib");
 		oslDrawString(37,200,"joellovesanna@psp #1");

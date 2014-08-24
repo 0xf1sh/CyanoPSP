@@ -130,8 +130,7 @@ void centerText(int centerX, int centerY, char * centerText, int centerLength)
 void dirVars()
 {
 	sprintf(lastDir, "ms0:");
-	sprintf(returnMe, "blah");
-	returnMe[5] = '\0';
+	sprintf(returnMe, "blah\0");
 	current = 1;
 	curScroll = 1;
 	timer = 0;

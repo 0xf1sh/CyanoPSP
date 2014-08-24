@@ -39,12 +39,12 @@
 
 #define downloadpath "ms0:/PSP/GAME/CyanogenMod/downloads"
 
-PSP_MODULE_INFO("CyanoPSP - C", 1, 2, 1);
-PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
+PSP_MODULE_INFO("CyanoPSP - C", 0x1000, 2, 1);
+PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU); 
 PSP_HEAP_SIZE_KB(-128);
 
 //declaration
-OSL_IMAGE *background, *cursor, *appicon, *appicon2, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, 
+OSL_IMAGE *background, *cursor, *ic_allapps, *ic_allapps_pressed, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, 
 		  *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon, *usbdebug, 
 		  *recoverybg, *welcome, *ok, *transbackground, *notif2;
 
@@ -148,10 +148,10 @@ void makedownloaddir()
 void appdrawericon()
 {
 		if (cursor->x  >= 215 && cursor->x  <= 243 && cursor->y >= 195 && cursor->y <= 230)
-		oslDrawImageXY(appicon2,223,200);
+		oslDrawImageXY(ic_allapps_pressed,223,200);
 	
 		else
-		oslDrawImageXY(appicon,223,200);
+		oslDrawImageXY(ic_allapps,223,200);
 }
 
 void navbar_buttons()
@@ -377,14 +377,14 @@ void setfont()
 
 void loadicons()
 {
-	appicon = oslLoadImageFilePNG("system/home/icons/appicon1.png", OSL_IN_RAM, OSL_PF_8888);
-	appicon2 = oslLoadImageFile("system/home/icons/appicon2.png", OSL_IN_RAM, OSL_PF_8888);
+	ic_allapps = oslLoadImageFilePNG("system/framework/framework-res/res/drawable-hdpi/ic_allapps.png", OSL_IN_RAM, OSL_PF_8888);
+	ic_allapps_pressed = oslLoadImageFile("system/framework/framework-res/res/drawable-hdpi/ic_allapps_pressed.png", OSL_IN_RAM, OSL_PF_8888);
 }
 
 void unloadicons()
 {
-	oslDeleteImage(appicon);
-	oslDeleteImage(appicon2);
+	oslDeleteImage(ic_allapps);
+	oslDeleteImage(ic_allapps_pressed);
 }
 
 void loadEboot(const char *path)
@@ -457,7 +457,7 @@ int main()
 	transbackground = oslLoadImageFilePNG("system/home/icons/transbackground.png", OSL_IN_RAM, OSL_PF_8888);
 
 	//Debugger
-	if (!background || !cursor || !appicon || !appicon2 || !navbar || !wificon || !apollo || !gmail || !message || !browser || !google || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
+	if (!background || !cursor || !ic_allapps || !ic_allapps_pressed || !navbar || !wificon || !apollo || !gmail || !message || !browser || !google || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	loadConfig();
