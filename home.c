@@ -7,7 +7,7 @@ int home()
 {	
 	loadicons();
 
-	if (!background || !cursor || !appicon || !appicon2 || !wificon || !apollo || !gmail || !message || !browser || !google || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
+	if (!background || !cursor || !wificon || !apollo || !gmail || !message || !browser || !google|| !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
 	setfont();
@@ -32,7 +32,6 @@ int home()
 		battery();
 		navbar_buttons();
 		android_notif();
-		usb_icon();
 		oslDrawImage(cursor);
 			
 		if (osl_pad.held.square)
