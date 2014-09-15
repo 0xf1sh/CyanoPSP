@@ -36,11 +36,13 @@
 #include "mp3player.h"
 #include "game.h"
 #include "screenshot.h"
+#include "ram.h"
 
 #define downloadpath "ms0:/PSP/GAME/CyanogenMod/downloads"
 
-PSP_MODULE_INFO("CyanoPSP - C", 1, 2, 1);
+PSP_MODULE_INFO("CyanoPSP - C",  1, 2, 2);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU); 
+PSP_MAIN_THREAD_STACK_SIZE_KB(1024);
 PSP_HEAP_SIZE_KB(-128);
 
 //declaration
@@ -181,7 +183,24 @@ void android_notif()
 {		
 		oslDrawImageXY(notif,0,notif_y);
 		
-		if ((osl_pad.held.cross && notif_y == 0 && cursor->x >= 0 && cursor->x <= 240 && cursor->y <= 1) || (osl_pad.held.cross && notif_y == 0 && cursor->y >= 246))
+		getDayOfWeek(65,yPos1);
+		getMonthOfYear(65,yPos2+5);
+		
+		oslDrawStringf(1,yLine1, "BRIGHTNESS");
+		oslDrawStringf(90,yLine1, "SETTINGS");
+		oslDrawStringf(185,yLine1, "Wi-Fi");
+		oslDrawStringf(268,yLine1, "%d%%",scePowerGetBatteryLifePercent());
+		oslDrawStringf(340,yLine1, "ROTATE");
+		oslDrawStringf(428,yLine1, "SLEEP");
+		
+		oslDrawStringf(25,yLine2, "LOCK-");
+		oslDrawStringf(20,yLine2+10, "SCREEN");
+		oslDrawStringf(90,yLine2, "HEADS UP");
+		oslDrawStringf(95,yLine2+10, "ENABLED");
+		
+		digitaltime(2,yPos1,40);
+				
+		if ((osl_pad.held.cross && notif_y == 0 && cursor->x >= 0 && cursor->x <= 480 && cursor->y <= 1) || (osl_pad.held.cross && notif_y == 0 && cursor->y >= 246))
 		{
 			notif_up = 1;
 			notif_down = 0;
@@ -189,12 +208,20 @@ void android_notif()
 		
 		if (notif_up == 1) 
 		{
-			notif_y=notif_y-10;
+			notif_y = notif_y-10;
+			yPos1 = yPos1-10;
+			yPos2 = yPos2-10;
+			yLine1 = yLine1-10;
+			yLine2 = yLine2-10;
 		}
 		
 		if (notif_y <= -272) 
 		{
 			notif_y = -272;
+			yPos1 = -272;
+			yPos2 = -272;
+			yLine1 = -272;
+			yLine2 = -272;
 			notif_enable = 0;
 			notif_up = 0;
 		}
@@ -202,9 +229,13 @@ void android_notif()
 		if (notif_y < -272)
 		{
 			notif_y = -272;
+			yPos1 = -272;
+			yPos2 = -272;
+			yLine1 = -272;
+			yLine2 = -272;
 		}
 		
-		if (osl_pad.held.cross && cursor->x >= 0 && cursor->x <= 240  && cursor->y <= 1 && notif_y == -272) 
+		if (osl_pad.held.cross && cursor->x >= 0 && cursor->x <= 480  && cursor->y <= 1 && notif_y == -272) 
 		{
 			notif_down = 1;
 			notif_up = 0;
@@ -214,6 +245,10 @@ void android_notif()
 		if (notif_down == 1) 
 		{
 			notif_y = notif_y+10;
+			yPos1 = yPos1+10;
+			yPos2 = yPos2+10;
+			yLine1 = yLine1+10;
+			yLine2 = yLine2+10;
 		}
 		
 		if (notif_y == 0)
@@ -224,7 +259,35 @@ void android_notif()
 		
 		if (notif_y > 0) 
 		{
-			notif_y = 0;	
+			notif_y = 0;
+			yPos1 = 10;
+			yPos2 = 20;
+			yLine1 = 110;
+			yLine2 = 200;
+			if (cursor->x >= 80 && cursor->x <= 158 && cursor->y >= 41 && cursor->y <= 135 && osl_pad.held.cross)
+			{	
+				notif_up = 1;
+				notif_down = 0;
+				settingsmenu();
+			}
+			if (cursor->x >= 162 && cursor->x <= 239 && cursor->y >= 41 && cursor->y <= 135 && osl_pad.held.cross)
+			{	
+				notif_up = 1;
+				notif_down = 0;
+				wifi_menu();
+			}
+			if (cursor->x >= 405 && cursor->x <= 480 && cursor->y >= 41 && cursor->y <= 135 && osl_pad.held.cross)
+			{	
+				notif_up = 1;
+				notif_down = 0;
+				standby_device();
+			}
+			if (cursor->x >= 1 && cursor->x <= 78 && cursor->y >= 138 && cursor->y <= 232 && osl_pad.held.cross)
+			{	
+				notif_up = 1;
+				notif_down = 0;
+				lockscreen();
+			}
 		}
 }
 
@@ -278,8 +341,6 @@ void android_notif2()
 			notif_y = 0;	
 		}
 }
-
-void __psp_free_heap(void); 
 
 void internet()
 {
@@ -387,36 +448,6 @@ void unloadicons()
 	oslDeleteImage(ic_allapps_pressed);
 }
 
-void loadEboot(const char *path)
-{
-	struct SceKernelLoadExecParam execParam;
-
-	execParam.size = sizeof(execParam);
-	execParam.argp = path;
-	execParam.args = strlen(path);
-	execParam.key = NULL;
-
-	sceKernelLoadExec(path, &execParam);
-}
-
-int __freemem() 
-{ 
- void *ptrs[480]; 
- int mem, x, i; 
- for (x = 0; x < 480; x++) 
- { 
-    void *ptr = malloc(51200); 
-    if (!ptr) break; 
-  
-    ptrs[x] = ptr; 
- } 
- mem = x * 51200; 
- for (i = 0; i < x; i++) 
-  free(ptrs[i]); 
-
- return mem; 
-}
-
 int main()
 {
 	initOSLib();
@@ -436,7 +467,7 @@ int main()
 	message = oslLoadImageFilePNG("system/home/icons/message.png", OSL_IN_RAM, OSL_PF_8888);
 	browser = oslLoadImageFile("system/home/icons/browser.png", OSL_IN_RAM, OSL_PF_8888);
 	google = oslLoadImageFile("system/home/icons/google.png", OSL_IN_RAM, OSL_PF_8888);
-	notif = oslLoadImageFile("system/home/menu/notif.png", OSL_IN_RAM, OSL_PF_8888);
+	notif = oslLoadImageFile("system/home/menu/notif2.png", OSL_IN_RAM, OSL_PF_8888);
 	notif2 = oslLoadImageFile("system/home/menu/notif2.png", OSL_IN_RAM, OSL_PF_8888);
 	batt100 = oslLoadImageFile("system/home/icons/100.png", OSL_IN_RAM, OSL_PF_8888);
 	batt80 = oslLoadImageFile("system/home/icons/80.png", OSL_IN_RAM, OSL_PF_8888);
@@ -489,7 +520,7 @@ int main()
 		oslDrawImageXY(message, 160, 190);
 		oslDrawImageXY(pointer, 231, 180);
 		
-		digitaltime();
+		digitaltime(420,4,458);
 		
 		//calls the functions	
 		firstBootMessage();
@@ -504,11 +535,15 @@ int main()
 			 powermenu();
 		}
 		
+		if (sceUsbGetState() & PSP_USB_ACTIVATED)
+		{
+			oslDrawImageXY(usbdebug, 10, 1);
+		}
+				
 		//Launching the browser
 		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
 		{
 			unloadicons();
-			__freemem();
 			internet();
 		}
 		

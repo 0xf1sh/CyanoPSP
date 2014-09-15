@@ -4,7 +4,11 @@ int notif_y = -272;
 int notif_up;
 int notif_down;
 int notif_enable;
- 
+int yPos1 = -272;
+int yPos2 = -272;
+int yLine1 = -272;
+int yLine2 = -272;
+
 //function declarations
 void controls();
 void internet();
