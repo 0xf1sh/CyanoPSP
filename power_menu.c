@@ -33,10 +33,9 @@ int powermenu()
 		oslDrawImageXY(pointer, 231, 180);
 		oslDrawImageXY(power, 114, 10);	
 		
-		digitaltime();
+		digitaltime(420,4,458);
 
 		battery();
-		usb_icon();
 		oslDrawImage(cursor);
 
 		if (osl_pad.held.circle)

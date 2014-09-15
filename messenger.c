@@ -264,12 +264,11 @@ void newmessage()
 		
 		oslDrawString(30, 200, message);
 		
-		digitaltime();
+		digitaltime(420,4,458);
 
 		battery();
 		navbar_buttons();
 		android_notif();
-		usb_icon();
 		oslDrawImage(cursor);
 		
 		if (cursor->x >= 12 && cursor->x <= 415 && cursor->y >= 233 && cursor->y <= 270 && osl_pad.held.cross)
@@ -353,10 +352,9 @@ int messenger()
 		oslDrawImageXY(wificon, 375, 1);
 
 		battery();
-		digitaltime();
+		digitaltime(420,4,458);
 		navbar_buttons();
 		android_notif();
-		usb_icon();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)

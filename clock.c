@@ -44,31 +44,31 @@ void getDayOfWeek(int x, int y) //Outputs the Day of the Week
 	
 	if (sceRtcGetDayOfWeek(time.year, time.month, time.day)==1)
 	{
-		oslDrawStringf(x,y,"Monday");
+		oslDrawStringf(x,y,"MONDAY");
 	}
 	else if (sceRtcGetDayOfWeek(time.year, time.month, time.day)==2)
 	{
-		oslDrawStringf(x,y,"Tuesday");
+		oslDrawStringf(x,y,"TUESDAY");
 	}
 	else if (sceRtcGetDayOfWeek(time.year, time.month, time.day)==3)
 	{
-		oslDrawStringf(x,y,"Wednesday");
+		oslDrawStringf(x,y,"WEDNESDAY");
 	}
 	else if (sceRtcGetDayOfWeek(time.year, time.month, time.day)==4)
 	{
-		oslDrawStringf(x,y,"Thursday");
+		oslDrawStringf(x,y,"THURSDAY");
 	}
 	else if (sceRtcGetDayOfWeek(time.year, time.month, time.day)==5)
 	{
-		oslDrawStringf(x,y,"Friday");
+		oslDrawStringf(x,y,"FRIDAY");
 	}
 	else if (sceRtcGetDayOfWeek(time.year, time.month, time.day)==6)
 	{
-		oslDrawStringf(x,y,"Saturday");
+		oslDrawStringf(x,y,"SATURDAY");
 	}
 	else
 	{
-		oslDrawStringf(x,y,"Sunday");
+		oslDrawStringf(x,y,"SUNDAY");
 	}
 }
 
@@ -79,50 +79,50 @@ void getMonthOfYear(int x, int y) //Outputs the Month of the Year
 
 	if (time.month == 1)
 	{
-		oslDrawStringf(x,y,"January");
+		oslDrawStringf(x,y,"%d JANUARY", time.day);
 	}
 	else if (time.month == 2)
 	{
-		oslDrawStringf(x,y,"February");
+		oslDrawStringf(x,y,"%d FEBRUARY", time.day);
 	}
 	else if (time.month == 3)
 	{
-		oslDrawStringf(x,y,"March");
+		oslDrawStringf(x,y,"%d MARCH", time.day);
 	}
 	else if (time.month == 4)
 	{
-		oslDrawStringf(x,y,"April");
+		oslDrawStringf(x,y,"%d APRIL", time.day);
 	}
 	else if (time.month == 5)
 	{
-		oslDrawStringf(x,y,"May");
+		oslDrawStringf(x,y,"%d MAY", time.day);
 	}
 	else if (time.month == 6)
 	{
-		oslDrawStringf(x,y,"June");
+		oslDrawStringf(x,y,"%d JUNE", time.day);
 	}
 	else if (time.month == 7)
 	{
-		oslDrawStringf(x,y,"July");
+		oslDrawStringf(x,y,"%d JULY", time.day);
 	}
 	else if (time.month == 8)
 	{
-		oslDrawStringf(x,y,"August");
+		oslDrawStringf(x,y,"%d AUGUST", time.day);
 	}
 	else if (time.month == 9)
 	{
-		oslDrawStringf(x,y,"September");
+		oslDrawStringf(x,y,"%d SEPTEMBER", time.day);
 	}
 	else if (time.month == 10)
 	{
-		oslDrawStringf(x,y,"October");
+		oslDrawStringf(x,y,"%d OCTOBER", time.day);
 	}
 	else if (time.month == 11)
 	{
-		oslDrawStringf(x,y,"November");
+		oslDrawStringf(x,y,"%d NOVEMBER", time.day);
 	}
 	else
-	oslDrawStringf(x,y,"December");
+	oslDrawStringf(x,y,"%d DECEMBER", time.day);
 }
 
 /*Default x = 420, x2 = 458  
@@ -138,9 +138,9 @@ void digitaltime(int x, int y, int x2)
 	sceRtcGetCurrentClockLocalTime(&time);
 
 	if(time.hour >= 12) 
-		oslDrawString(458,4,"PM"); 
+		oslDrawString(x2,y,"PM"); 
 	else 
-		oslDrawString(458,4,"AM");   
+		oslDrawString(x2,y,"AM");   
 		
 	if (time.hour > 12)
 		time.hour -= 12;
@@ -148,7 +148,7 @@ void digitaltime(int x, int y, int x2)
 	if (time.hour == 00)
 	time.hour = 12;
 	
-	oslDrawStringf(420,4,"%02d:%02d", time.hour, time.minutes);	
+	oslDrawStringf(x,y,"%2d:%02d", time.hour, time.minutes);	
 
 }
 

@@ -15,39 +15,12 @@
 #include <pspiofilemgr_dirent.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h> 
+#include <stdlib.h> 
 
 #include "include/pgeZip.h"
 #include "fm.h"
 #include "settingsmenu.h"
-
-#define FW_660 0x06060010
-#define FW_639 0x06030910
-#define FW_635 0x06030510
-#define FW_620 0x06020010
-#define FW_610 0x06010010
-#define FW_600 0x06000010
-#define FW_551 0x05050110
-#define FW_550 0x05050010
-#define FW_503 0x05000310
-#define FW_501 0x05000110
-#define FW_500 0x05000010
-#define FW_401 0x04000110
-#define FW_396 0x03090610
-#define FW_395 0x03090510
-#define FW_393 0x03090310
-#define FW_390 0x03090010
-#define FW_380 0x03080010
-#define FW_372 0x03070210
-#define FW_371 0x03070110
-#define FW_352 0x03050210
-#define FW_351 0x03050110
-#define FW_350 0x03050010
-#define FW_340 0x03040010
-#define FW_330 0x03030010
-#define FW_311 0x03010110
-#define FW_310 0x03010010
-#define FW_303 0x03000310
-#define FW_302 0x03000210
 
 #define configFile "system/build.prop"
 #define Address "www.google.com"
@@ -61,7 +34,6 @@ OSL_IMAGE *settingsbg, *cursor, *wificon, *usbdebug, *aboutbg, *offswitch, *onsw
 //definition of our sounds
 OSL_SOUND *tone;
 
-int usb_debug = 0;
 char usbStatus = 0;
 char usbModuleStatus = 0;
 char defaultTheme;
@@ -430,12 +402,8 @@ int enableUsbEx(u32 device)
    return 1;
 }
 
-void usb_icon()
-{
-	if (usb_debug == 1)
-	{
-		oslDrawImageXY(usbdebug, 10, 1);
-	}
+void isUSBCableConnected(){
+    return (sceUsbGetState() & PSP_USB_CABLE_CONNECTED);
 }
 
 void pspgetmodel()
@@ -502,12 +470,8 @@ void about_menu()
 		oslDrawString(37,186,"Undefined-pspsdk_oslib");
 		oslDrawString(37,200,"joellovesanna@psp #1");
 		
-		digitaltime();
-
+		digitaltime(420,4,458);
 		battery();
-		navbar_buttons();
-		android_notif();
-		usb_icon();
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 45 && cursor->y <= 90)
 		{
@@ -516,6 +480,8 @@ void about_menu()
 			oslDrawString(37,87,"Click for, view or install available updates");
 		}
 		
+		navbar_buttons();
+		android_notif();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)
@@ -561,14 +527,12 @@ void about_menu()
 		{
 			LoadStartModule("modules/RemoteJoyLite.prx");
 			enableUsb();
-			usb_debug = 1;
 		}
 		
 		else if(osl_pad.held.select)
 		{	
 			StopUnloadModule("modules/RemoteJoyLite.prx");
 			disableUsb();
-			usb_debug = 0;
 		}
 		
 		if (osl_pad.held.R && osl_pad.held.triangle)
@@ -604,12 +568,8 @@ void updates_menu()
 		
 		oslDrawString(35,73,"Check for Updates");
 				
-		digitaltime();
-
+		digitaltime(420,4,458);
 		battery();
-		navbar_buttons();
-		android_notif();
-		usb_icon();
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 45 && cursor->y <= 90)
 		{
@@ -622,7 +582,8 @@ void updates_menu()
 			OnlineUpdater();
 		}
 		
-		
+		navbar_buttons();
+		android_notif();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)
@@ -695,12 +656,8 @@ void performance_menu()
 		oslDrawString(40,161,"Ram Management");
 		oslDrawString(40,215,"Memory Management");
 		
-		digitaltime();
-
+		digitaltime(420,4,458);
 		battery();
-		navbar_buttons();
-		android_notif();
-		usb_icon();
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 80 && cursor->y <= 138)
 		{
@@ -708,6 +665,8 @@ void performance_menu()
 			oslDrawString(40,98,"Processor");
 		}
 		
+		navbar_buttons();
+		android_notif();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)
@@ -760,6 +719,34 @@ void performance_menu()
 }
 }
 
+void wait_release(unsigned int buttons) 
+{ 
+    SceCtrlData pad; 
+
+    sceCtrlReadBufferPositive(&pad, 1); 
+    while (pad.Buttons & buttons) 
+    { 
+        sceKernelDelayThread(100000); 
+        sceCtrlReadBufferPositive(&pad, 1); 
+    } 
+} 
+
+
+unsigned int wait_press(unsigned int buttons) 
+{ 
+    SceCtrlData pad; 
+
+    sceCtrlReadBufferPositive(&pad, 1); 
+    while (1) 
+    { 
+        if (pad.Buttons & buttons) 
+            return pad.Buttons & buttons; 
+        sceKernelDelayThread(100000); 
+        sceCtrlReadBufferPositive(&pad, 1); 
+    } 
+    return 0;   /* never reaches here, again, just to suppress warning */ 
+} 
+
 void processor_menu(int argc, char *argv[])
 {	
 	processorbg = oslLoadImageFilePNG("system/settings/processorbg.png", OSL_IN_RAM, OSL_PF_8888);
@@ -769,7 +756,11 @@ void processor_menu(int argc, char *argv[])
 
 	setfont();
 	
-	SceCtrlData pad;
+	u32 b; 
+	int cpu, bus, bmark; 
+
+	sceCtrlSetSamplingCycle(0); 
+    sceCtrlSetSamplingMode(PSP_CTRL_MODE_DIGITAL); 
 	
 	while (!osl_quit)
 	{
@@ -793,12 +784,8 @@ void processor_menu(int argc, char *argv[])
 		oslDrawString(35,236,"Maximum CPU Frequency");
 		oslDrawString(35,249,"333 MHz");
 	
-		digitaltime();
-
+		digitaltime(420,4,458);
 		battery();
-		navbar_buttons();
-		android_notif();
-		usb_icon();
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 118 && cursor->y <= 174)
 		{
@@ -814,17 +801,27 @@ void processor_menu(int argc, char *argv[])
 		 scePowerSetClockFrequency(222, 222, 111);
 		}
 		
-		if (current < 0)
-		current = MAX;
-		if (current > MAX)
-		current = 0;
-		if (pad.Buttons & PSP_CTRL_LTRIGGER)
-		scePowerSetClockFrequency(cpu_list[current--], cpu_list[current--], bus_list[current--]);
-		if (pad.Buttons & PSP_CTRL_RTRIGGER)
-		scePowerSetClockFrequency(cpu_list[current++], cpu_list[current++], bus_list[current++]);
-
+		cpu = scePowerGetCpuClockFrequency(); 
+		bus = scePowerGetBusClockFrequency(); 
+		
+		 b = wait_press(0xffff); 
+		 wait_release(b);
+		
+		if (b & PSP_CTRL_RIGHT) 
+      { 
+         cpu++; 
+         scePowerSetClockFrequency(cpu, cpu, cpu/2); 
+      } 
+      if (b & PSP_CTRL_LEFT) 
+      { 
+         cpu--; 
+         scePowerSetClockFrequency(cpu, cpu, cpu/2); 
+      } 
+		
 		oslDrawStringf(35,87,"%d/%d",cpu_list[current],bus_list[current]);
 		
+		navbar_buttons();
+		android_notif();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)
@@ -1029,12 +1026,11 @@ void theme_menu()
 		oslDrawString(65,184,"Icons");
 		oslDrawString(65,236,"Fonts");
 		
-		digitaltime();
+		digitaltime(420,4,458);
 
 		battery();
 		navbar_buttons();
 		android_notif();
-		usb_icon();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)
@@ -1128,12 +1124,11 @@ void wifi_menu()
 		oslDrawString(30, 200, Settings_message);
 		
 		wlanstatus1();
-		digitaltime();
+		digitaltime(420,4,458);
 
 		battery();
 		navbar_buttons();
 		android_notif();
-		usb_icon();
 		
 		 if (osl_keys->released.cross){
             connectToAP(selectedConfig + 1);
@@ -1226,11 +1221,8 @@ void developer_menu()
 		oslDrawString(35,202,"rebooting into recovery");
 		oslDrawString(35,236,"Backup Password");
 			
-		digitaltime();
-
+		digitaltime(420,4,458);
 		battery();
-		android_notif();
-		usb_icon();
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 55 && cursor->y <= 108)
 		{
@@ -1253,6 +1245,7 @@ void developer_menu()
 			oslDrawString(35,236,"Backup Password");
 		}
 		
+		android_notif();
 		navbar_buttons();
 		oslDrawImage(cursor);
 		
@@ -1410,12 +1403,10 @@ int settingsmenu()
 		oslDrawString(55,204,"Performance");
 		oslDrawString(55,246,"About PSP");
 		
-		digitaltime();
-
+		digitaltime(420,4,458);
 		battery();
-		android_notif();
-		usb_icon();
 		settings_highlight();
+		android_notif();
 		navbar_buttons();
 		oslDrawImage(cursor);
 		
@@ -1428,6 +1419,15 @@ int settingsmenu()
 		{
 			lockscreen();
         }
+		
+		if (osl_pad.held.select)
+		{
+		enableUsb();
+		}
+		else if (osl_pad.held.select)
+		{
+		disableUsb();
+		}
 		
 		if (osl_pad.held.circle)
 		{	

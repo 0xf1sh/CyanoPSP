@@ -424,7 +424,6 @@ int gamemenu(int argc, char *argv[])
 		oslDrawImageXY(gamebg, 0,0);
 
 		android_notif();
-		usb_icon();
 		
 		 if ((osl_pad.held.cross) ||  (osl_pad.held.circle))
 		{ // if the cross or circle button is pressed

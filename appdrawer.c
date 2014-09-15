@@ -82,12 +82,11 @@ int appdrawer()
 		oslDrawImageXY(pointer1, 234, 222);
 		oslDrawImageXY(pointer1, 244, 222);
 		
-		digitaltime();
+		digitaltime(420,4,458);
 		
 		battery();
 		navbar_buttons();
 		android_notif();
-		usb_icon();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)

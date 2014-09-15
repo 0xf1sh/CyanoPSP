@@ -27,7 +27,7 @@ int home()
 		oslDrawImageXY(message, 160, 190);
 		oslDrawImageXY(pointer, 231, 180);
 		
-		digitaltime();
+		digitaltime(420,4,458);
 		appdrawericon();
 		battery();
 		navbar_buttons();

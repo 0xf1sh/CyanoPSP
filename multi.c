@@ -24,12 +24,10 @@ int multitask()
 		
 		oslDrawString(200,136,"No recent apps");
 
-		digitaltime();
-
+		digitaltime(420,4,458);
 		battery();
 		navbar_buttons();
 		android_notif();
-		usb_icon();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)
@@ -51,7 +49,7 @@ int multitask()
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			oslDeleteImage(multi_task);
-			home();
+			return;
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)

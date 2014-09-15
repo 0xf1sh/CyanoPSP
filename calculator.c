@@ -78,7 +78,6 @@ int calculator()
 		battery();
 		navbar_buttons();
 		android_notif();
-		usb_icon();
 		oslDrawImage(cursor);
 	
 		if (osl_pad.pressed.left)

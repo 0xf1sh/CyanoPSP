@@ -6,8 +6,10 @@
 #include <psppower.h>
 #include <oslib/oslib.h>
 #include "mp3player.h"
+#include "fm.h"
 
 #define MP3file "ms0:/MUSIC/test.mp3"
+
 
 OSL_IMAGE *mp3bg, *cursor, *wificon;
 
@@ -44,10 +46,9 @@ int mp3player()
 		oslDrawImageXY(wificon, 375, 1);
 
 		battery();
-		digitaltime();
+		digitaltime(420,4,458);
 		navbar_buttons();
 		android_notif();
-		usb_icon();
 		oslDrawImage(cursor);
 		
 		if(osl_pad.held.triangle) {

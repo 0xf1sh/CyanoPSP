@@ -49,10 +49,9 @@ int lockscreen()
 		
 		oslDrawImageXY(wificon, 375, 1);
 		oslDrawImageXY(circles, 223, 240);
-		battery();
-		usb_icon();
 		
-		digitaltime();
+		battery();
+		digitaltime(420,4,458);
 		
 		oslDrawImage(cursor);
 		
