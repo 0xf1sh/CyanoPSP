@@ -37,11 +37,106 @@ void centerclock()
 	
 }
 
-void digitaltime()
+void getDayOfWeek(int x, int y) //Outputs the Day of the Week
 {
 	pspTime time;
 	sceRtcGetCurrentClockLocalTime(&time);
 	
+	if (sceRtcGetDayOfWeek(time.year, time.month, time.day)==1)
+	{
+		oslDrawStringf(x,y,"Monday");
+	}
+	else if (sceRtcGetDayOfWeek(time.year, time.month, time.day)==2)
+	{
+		oslDrawStringf(x,y,"Tuesday");
+	}
+	else if (sceRtcGetDayOfWeek(time.year, time.month, time.day)==3)
+	{
+		oslDrawStringf(x,y,"Wednesday");
+	}
+	else if (sceRtcGetDayOfWeek(time.year, time.month, time.day)==4)
+	{
+		oslDrawStringf(x,y,"Thursday");
+	}
+	else if (sceRtcGetDayOfWeek(time.year, time.month, time.day)==5)
+	{
+		oslDrawStringf(x,y,"Friday");
+	}
+	else if (sceRtcGetDayOfWeek(time.year, time.month, time.day)==6)
+	{
+		oslDrawStringf(x,y,"Saturday");
+	}
+	else
+	{
+		oslDrawStringf(x,y,"Sunday");
+	}
+}
+
+void getMonthOfYear(int x, int y) //Outputs the Month of the Year
+{ 
+	pspTime time;
+	sceRtcGetCurrentClockLocalTime(&time);
+
+	if (time.month == 1)
+	{
+		oslDrawStringf(x,y,"January");
+	}
+	else if (time.month == 2)
+	{
+		oslDrawStringf(x,y,"February");
+	}
+	else if (time.month == 3)
+	{
+		oslDrawStringf(x,y,"March");
+	}
+	else if (time.month == 4)
+	{
+		oslDrawStringf(x,y,"April");
+	}
+	else if (time.month == 5)
+	{
+		oslDrawStringf(x,y,"May");
+	}
+	else if (time.month == 6)
+	{
+		oslDrawStringf(x,y,"June");
+	}
+	else if (time.month == 7)
+	{
+		oslDrawStringf(x,y,"July");
+	}
+	else if (time.month == 8)
+	{
+		oslDrawStringf(x,y,"August");
+	}
+	else if (time.month == 9)
+	{
+		oslDrawStringf(x,y,"September");
+	}
+	else if (time.month == 10)
+	{
+		oslDrawStringf(x,y,"October");
+	}
+	else if (time.month == 11)
+	{
+		oslDrawStringf(x,y,"November");
+	}
+	else
+	oslDrawStringf(x,y,"December");
+}
+
+/*Default x = 420, x2 = 458  
+  Default y = 4
+  x is the location of the Time string on the X axis
+  y is the location of the Time string on th Y axis
+  x2 is the location of the characters "PM/AM" on the X axis
+*/	
+
+void digitaltime(int x, int y, int x2) 
+{					
+	pspTime time;
+	sceRtcGetCurrentClockLocalTime(&time);
+
 	if(time.hour >= 12) 
 		oslDrawString(458,4,"PM"); 
 	else 
@@ -52,15 +147,16 @@ void digitaltime()
 	
 	if (time.hour == 00)
 	time.hour = 12;
-		
+	
 	oslDrawStringf(420,4,"%02d:%02d", time.hour, time.minutes);	
+
 }
 
 void startCounter()
 {
 	SceCtrlData newPad, oldPad;
 
-	while (1)
+	while (!osl_quit)
 	{
 		oldPad = newPad;
 		sceCtrlReadBufferPositive(&newPad, 1);
@@ -118,14 +214,11 @@ void stopWatch()
 		
 		oslDrawImageXY(stop_watch, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
-		
-		digitaltime();
 
 		battery();
 		navbar_buttons();
 		android_notif();
-		usb_icon();
-		digitaltime();
+		digitaltime(420,4,458);
 		oslDrawImage(cursor);
 
 		if (osl_pad.held.square)
@@ -222,14 +315,11 @@ int pspclock()
 		
 		oslDrawImageXY(clockbg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
-		
-		digitaltime();
 
 		battery();
 		navbar_buttons();
 		android_notif();
-		usb_icon();
-		digitaltime();
+		digitaltime(420,4,458);
 		oslDrawImage(cursor);
 
 		if (osl_pad.held.square)
