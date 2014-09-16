@@ -12,11 +12,6 @@ int suppression = 1;
 int Number = 0;
 
 OSL_COLOR black = RGB(0,0,0),red = RGB(255,0,0), white = RGB(255,255,255);
-
-void oslPrintText(int x, int y, char * text, OSL_COLOR color) {
-	oslSetTextColor(color);
-	oslDrawStringf(x,y,text);
-}
  
 int calculator()
 {

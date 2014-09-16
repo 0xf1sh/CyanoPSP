@@ -5,6 +5,7 @@
 #define DISPLAY_X			85 // X value of where the filebrowser is displayed.
 #define DISPLAY_Y			70 // Y value of the filebrowser is displayed.
 #define ICON_DISPLAY_Y      56 
+#define CURR_DISPLAY_Y     	54 
 
 /* Globals */
 
@@ -40,8 +41,6 @@ File dirScan[MAX_FILES];
 
 SceIoDirent g_dir;
 
-static int dispBufferNumber;
-static int initialized = 0;
 int i;
 int current;
 int curScroll;
@@ -50,13 +49,13 @@ int timer;
 char returnMe[512];
 SceCtrlData pad, oldpad;
 
-int folderScan(char* path);
-int runFile( char* path, char* type );
+int folderScan(const char* path);
+int runFile(const char* path, char* type );
 void centerText(int centerX, int centerY, char * centerText, int centerLength);
 void dirVars();
 void dirBack();
 void dirUp();
 void dirDown();
 void dirControls();
-char * dirBrowse(char * path);
+char * dirBrowse(const char * path);
 int filemanage();
