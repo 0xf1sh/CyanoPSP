@@ -11,11 +11,11 @@
 #include <oslib/oslib.h>
 #include "fm.h"
 
-OSL_IMAGE *filemanagerbg, *diricon, *imageicon, *mp3icon, *txticon, *unknownicon;
+OSL_IMAGE  *filemanagerbg, *diricon, *imageicon, *mp3icon, *txticon, *unknownicon, *documenticon, *binaryicon, *videoicon, *archiveicon, *bar, *deletion, *action, *nowplaying;
 
 OSL_FONT *pgfFont;
 
-int folderScan( char* path )
+int folderScan(const char* path )
 {
 	curScroll = 1;
 	sprintf(lastDir, path);
@@ -29,7 +29,7 @@ int folderScan( char* path )
 		folderIcons[x].active = 0;
 	}
 
-	int fd = sceIoDopen( path );
+	int fd = sceIoDopen(path);
 
 	i = 1;
 	
@@ -91,24 +91,236 @@ int folderScan( char* path )
 	return 1;
 }
 
-int runFile( char* path, char* type )
+int runFile(const char* path, char* type)
 {
 	// Folders
 	if (strcmp(type, "fld")==0) {
+		current = 1;
 		folderScan(path);
 	}
 	// '..' or 'dotdot'
 	else if (strcmp(type, "dotdot")==0){
+		current = 1;
 		dirBack();
-	}
-	// Other
-	else if (strcmp(type, "none")==0){
-		sprintf(returnMe, path);
-	}
-
+	}		
 	return 1;
 }
 
+void refresh()
+{
+	folderScan(lastDir);
+	current = 1;
+	dirBrowse(lastDir);
+}
+
+void DeleteFile(const char * path)
+{
+	deletion = oslLoadImageFilePNG("system/app/filemanager/deletion.png", OSL_IN_RAM, OSL_PF_8888);
+	
+	while (!osl_quit) {
+	oslStartDrawing();	
+	oslDrawImageXY(deletion, 96,59);
+	oslDrawStringf(116,125,"This action cannot be undone. Do you");
+	oslDrawStringf(116,135,"want to continue?");
+	
+	oslDrawStringf(130,180,"Press circle");
+	oslDrawStringf(130,190,"to cancel");
+	oslDrawStringf(270,180,"Press cross");
+	oslDrawStringf(270,190,"to confirm");
+	
+	oslReadKeys();
+	
+	if (osl_keys->pressed.cross) {
+			sceIoRemove(path);
+			oslDeleteImage(deletion);
+			refresh();
+		}
+
+	else if (osl_keys->pressed.circle) {
+			oslDeleteImage(deletion);
+			return;
+		}
+	oslEndDrawing();
+	oslSyncFrame();	
+	}
+};
+
+void OptionMenu()
+{
+	action = oslLoadImageFilePNG("system/app/filemanager/actions.png", OSL_IN_RAM, OSL_PF_8888);
+	
+	while (!osl_quit) {
+	oslStartDrawing();	
+	oslDrawImageXY(action, 98,47);
+	oslDrawStringf(120,105,"Press X");
+	oslDrawStringf(120,115,"to Copy");
+	oslDrawStringf(260,105,"Press Triangle");
+	oslDrawStringf(260,115,"to Cut");
+	
+	oslDrawStringf(120,150,"Press Square");
+	oslDrawStringf(120,160,"to Delete");
+	oslDrawStringf(260,150,"Press Circle");
+	oslDrawStringf(260,160,"to Rename");
+	oslDrawStringf(165,200,"Press Select to Cancel");
+	
+	oslReadKeys();
+	
+	if (osl_keys->pressed.cross) 
+	{
+			refresh();
+	}
+
+	else if (osl_keys->pressed.triangle) 
+	{
+			refresh();
+	}
+
+	else if (osl_keys->pressed.square) 
+	{
+			DeleteFile(folderIcons[current].filePath);
+	}
+	
+	
+	else if (osl_keys->pressed.circle) 
+	{
+			refresh();
+	}
+	
+	else if (osl_keys->pressed.select) 
+	{
+			return;
+	}
+	
+	oslEndDrawing();
+	oslSyncFrame();	
+	}
+};
+
+void recursiveDelete(const char *dir) 
+{ 
+ int fd; 
+ SceIoDirent dirent; 
+ fd = sceIoDopen(dir); 
+ char fullname[512]; 
+
+  memset(&dirent, 0, sizeof dirent);
+ 
+ while (!osl_quit) // && sceIoDread(fd, &dirent) > 0
+ { 
+  sprintf(fullname, "%s/%s", dir, dirent.d_name); 
+ 
+   if ((FIO_S_IFREG & (dirent.d_stat.st_mode & FIO_S_IFMT)) == 0) 
+      { 
+             recursiveDelete(fullname); 
+             printf("Deleting directory: %s\n", fullname); 
+             sceIoRmdir(fullname); 
+         } 
+  else 
+      { 
+      printf("Deleting file: %s %i\n", fullname, FIO_S_IFREG & (dirent.d_stat.st_mode & FIO_S_IFMT)); 
+      sceIoRemove(fullname); 
+      } 
+  } 
+ sceIoDclose(fd); 
+ sceIoRmdir(dir); 
+}
+
+void showImage(const char * path)
+{
+	 OSL_IMAGE * image = oslLoadImageFile(path, OSL_IN_RAM, OSL_PF_8888);
+	 
+	 if(!image)
+		return 0;
+		
+	while (!osl_quit) {
+
+		oslReadKeys();
+		oslClearScreen(RGB(0,0,0));
+		oslStartDrawing();	
+		
+		oslDrawFillRect(0,0,480,272,RGB(255,255,255));
+		oslDrawImageXY(image, 240 - oslGetImageWidth(image) / 2, 136 - oslGetImageHeight(image) / 2);//draw image
+		
+		oslEndDrawing();
+		oslSyncFrame();	
+		
+		if (osl_keys->pressed.circle) {
+			return;
+		}
+		
+	}
+	//delete image
+	oslDeleteImage(image);	
+	return 1;
+}
+    
+void oslPrintText(int x, int y, float size, char * text, OSL_COLOR color) {
+   oslIntraFontSetStyle(pgfFont, size, color, RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
+   oslDrawStringf(x,y,text);
+}	
+
+void MP3Play(char * path)
+{	
+	nowplaying = oslLoadImageFilePNG("system/app/apollo/nowplaying.png", OSL_IN_RAM, OSL_PF_8888);
+
+	if (!nowplaying)
+		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	
+	scePowerSetClockFrequency(333, 333, 166);
+	
+	pspAudioInit();
+	
+	int i;
+	MP3_Init(1);
+	MP3_Load(path);
+	MP3_Play();
+	
+	while (!osl_quit)
+  {
+		//Draws images onto the screen
+		oslStartDrawing();		
+		
+		oslClearScreen(RGB(0,0,0));
+
+		oslReadKeys();
+		
+		oslDrawImageXY(nowplaying, 0, 19);
+		oslPrintText(250,71,0.5,folderIcons[current].name,RGB(255,255,255));
+		
+		if(osl_pad.held.triangle) {
+		break;
+		}
+		
+		else if(osl_pad.held.cross) 
+		{
+		MP3_Pause();
+		for(i=0; i<10; i++) {
+		sceDisplayWaitVblankStart();
+		}
+		}
+		
+		if (MP3_EndOfStream() == 1) 
+		{
+		MP3_Stop();
+		}
+		
+		if(osl_keys->pressed.circle)
+		{
+		MP3_Pause();
+		MP3_Stop();
+		MP3_FreeTune();
+		return;
+		}
+		
+		oslEndDrawing();
+		oslSyncFrame();	
+        oslAudioVSync();
+		}
+	MP3_Pause();
+	MP3_Stop();
+	MP3_FreeTune();
+}
+	
 void centerText(int centerX, int centerY, char * centerText, int centerLength)
 {
 	if (strlen(centerText) <= centerLength) {
@@ -129,8 +341,9 @@ void centerText(int centerX, int centerY, char * centerText, int centerLength)
 
 void dirVars()
 {
-	sprintf(lastDir, "ms0:");
-	sprintf(returnMe, "blah\0");
+	sprintf(lastDir, "ms0:/");
+	sprintf(returnMe, "blah");
+	returnMe[5] = '\0';
 	current = 1;
 	curScroll = 1;
 	timer = 0;
@@ -156,14 +369,17 @@ void dirDisplay()
 {	
 	oslDrawImageXY(filemanagerbg, 0, 19);
 	oslDrawStringf(66, 29, lastDir); // Displays the current directory.
-	
+	oslDrawImageXY(bar,0,(current - curScroll)*44+CURR_DISPLAY_Y);
+
 	// Displays the directories, while also incorporating the scrolling
 	for(i=curScroll;i<MAX_DISPLAY+curScroll;i++) {
+	
+		char * ext = strrchr(dirScan[i].name, '.'); //For file extension.
 	
 		// Handles the cursor and the display to not move past the MAX_DISPLAY.
 		// For moving down
 		//if ((folderIcons[i].active == 0) && (current >= i-1)) {
-				
+	
 		if ((folderIcons[i].active == 0) && (current >= i-1)) {
 			current = i-1;
 			break;
@@ -174,27 +390,73 @@ void dirDisplay()
 			break;
 		}
 		
-		if (dirScan[i].directory == 1 && (!dirScan[i].directory == 0)) // if it's a directory
-		{    
-			oslDrawImageXY(diricon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
-		}
-			
 		if (dirScan[i].directory == 0)
 		{  
 			oslDrawImageXY(unknownicon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
 		}
-			
+		
+		if(((ext) != NULL) && ((strcmp(ext ,".mp3") == 0) || (strcmp(ext ,".mov") == 0) || (strcmp(ext ,".m4a") == 0) || (strcmp(ext ,".wav") == 0) || (strcmp(ext ,".ogg") == 0)))
+		{
+			//Checks if the file is a music file.
+			oslDrawImageXY(mp3icon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
+		}
+		
+		if(((ext) != NULL) && ((strcmp(ext ,".mp4") == 0) || (strcmp(ext ,".mpg") == 0) || (strcmp(ext ,".flv") == 0) || (strcmp(ext ,".mpeg") == 0))) 
+		{
+			//Checks if the file is a video.
+			oslDrawImageXY(videoicon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
+		}
+		
+		if(((ext) != NULL) && ((strcmp(ext ,".png") == 0) || (strcmp(ext ,".jpg") == 0) || (strcmp(ext ,".jpeg") == 0) || (strcmp(ext ,".gif") == 0))) 
+		{
+			//Checks if the file is an image.
+			oslDrawImageXY(imageicon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
+		}
+		
+		if(((ext) != NULL) && ((strcmp(ext ,".PBP") == 0) || (strcmp(ext ,".prx") == 0) || (strcmp(ext ,".PRX") == 0) || (strcmp(ext ,".elf") == 0))) 
+		{
+			//Checks if the file is a binary file.
+			oslDrawImageXY(binaryicon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
+		}
+		
+		if(((ext) != NULL) && ((strcmp(ext ,".txt") == 0) || (strcmp(ext ,".TXT") == 0) || (strcmp(ext ,".log") == 0) || (strcmp(ext ,".prop") == 0) || (strcmp(ext ,".lua") == 0)))
+		{
+			//Checks if the file is a text document.
+			oslDrawImageXY(txticon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
+		}
+		
+		if(((ext) != NULL) && ((strcmp(ext ,".doc") == 0) || (strcmp(ext ,".docx") == 0) || (strcmp(ext ,".pdf") == 0) || (strcmp(ext ,".ppt") == 0))) 
+		{
+			//Checks if the file is a document.
+			oslDrawImageXY(documenticon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
+		}
+		
+		if(((ext) != NULL) && ((strcmp(ext ,".rar") == 0) || (strcmp(ext ,".zip") == 0) || (strcmp(ext ,".7z") == 0))) 
+		{
+			//Checks if the file is an archive.
+			oslDrawImageXY(archiveicon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
+		}
+		
+		if (dirScan[i].directory == 1 && (!dirScan[i].directory == 0))
+		{      
+			// if it's a directory
+			oslDrawImageXY(diricon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
+		}
+		
 		// If the currently selected item is active, then display the name
 		if (folderIcons[i].active == 1) {
+			
 			oslDrawStringf(DISPLAY_X, (i - curScroll)*44+DISPLAY_Y, folderIcons[i].name);	// change the X & Y value accordingly if you want to move it (for Y, just change the +10)		
 		}
 	}
-	oslDrawStringf(DISPLAY_X-50, (current - curScroll)*44+DISPLAY_Y, ">");	
 }
 
-void dirControls()
+void dirControls() //Controls
 {
+	oslReadKeys();	
+
 	if (pad.Buttons != oldpad.Buttons) {
+	
 		if ((pad.Buttons & PSP_CTRL_DOWN) && (!(oldpad.Buttons & PSP_CTRL_DOWN))) {
 			dirDown();
 			timer = 0;
@@ -206,22 +468,58 @@ void dirControls()
 		if ((pad.Buttons & PSP_CTRL_CROSS) && (!(oldpad.Buttons & PSP_CTRL_CROSS))) {
 			runFile(folderIcons[current].filePath, folderIcons[current].fileType);
 		}
-		if ((pad.Buttons & PSP_CTRL_CROSS) && (!(oldpad.Buttons & PSP_CTRL_CROSS))) {
-			runFile(folderIcons[current].filePath, folderIcons[current].fileType);
-		}
-		
 		if ((pad.Buttons & PSP_CTRL_TRIANGLE) && (!(oldpad.Buttons & PSP_CTRL_TRIANGLE))) {
+			if (!(stricmp(lastDir, "ms0:")==0) || (stricmp(lastDir, "ms0:/")==0)) {
+				curScroll = 1;
+				current = 1;
+			}
+		}
+		if ((pad.Buttons & PSP_CTRL_CIRCLE) && (!(oldpad.Buttons & PSP_CTRL_CIRCLE))) {
+		if(!strcmp("ms0:/", lastDir)) //pressed circle in root folder
+			{
 			dirBack();
+			}
 		}
-		
-		if ((pad.Buttons & PSP_CTRL_CIRCLE) && (!(oldpad.Buttons & PSP_CTRL_CIRCLE)))
-		{	
-			filemanager_unload();
-			appdrawer();
-		}
-		
 	}
-		
+	
+	char * ext = strrchr(folderIcons[current].filePath, '.'); 
+	
+	if (osl_keys->pressed.select)
+	{
+			OptionMenu();
+	}
+	
+	if (((ext) != NULL) && ((strcmp(ext ,".png") == 0) || (strcmp(ext ,".jpg") == 0) || (strcmp(ext ,".jpeg") == 0) || (strcmp(ext ,".gif") == 0)) && (osl_keys->pressed.cross))
+	{
+			showImage(folderIcons[current].filePath);
+	}
+	
+	if (((ext) != NULL) && ((strcmp(ext ,".PBP") == 0) || ((strcmp(ext ,".pbp") == 0))) && (osl_keys->pressed.cross))
+	{
+			struct SceKernelLoadExecParam param;
+
+			memset(&param, 0, sizeof(param));
+			
+			param.size = sizeof(param);
+			param.args = strlen(folderIcons[current].filePath)+1;
+			param.argp = folderIcons[current].filePath;
+			param.key = "updater";
+
+			printf("Starting program...\n");
+
+			sceKernelLoadExec(folderIcons[current].filePath, &param);
+	}
+	
+	if (((ext) != NULL) && ((strcmp(ext ,".mp3") == 0) || ((strcmp(ext ,".MP3") == 0))) && (osl_keys->pressed.cross))
+	{
+		MP3Play(folderIcons[current].filePath);
+	}
+	
+	if((!strcmp(lastDir, "ms0:") || !strcmp(lastDir, "ms0:/"))&&(osl_keys->pressed.circle))
+	{
+		appdrawer();
+	}
+	
 	timer++;
 	if ((timer > 30) && (pad.Buttons & PSP_CTRL_UP)) {
 		dirUp();
@@ -233,23 +531,7 @@ void dirControls()
 
 	if (current < 1) current = 1; // Stop the ">" from moving past the minimum files
 	if (current > MAX_FILES) current = MAX_FILES; // Stop the ">" from moving past the max files
-	
-	oslReadKeys();
-	
-	if (osl_pad.held.square)
-		{
-			powermenu();
-		}
-		
-	if (osl_pad.held.L)
-		{
-			lockscreen();
-        }
-		
-	if (osl_pad.held.R && osl_pad.held.triangle)
-		{
-			screenshot();
-		}
+
 }
 
 void dirBack()
@@ -266,12 +548,12 @@ void dirBack()
 				break;
 			}
 		}
-		curScroll = 1;
 		folderScan(lastDir);
 	} 
 }
 
-char * dirBrowse(char * path)
+// Just call 'path' with whichever path you want it to start off in
+char * dirBrowse(const char * path)
 {
 	folderScan(path);
 	dirVars();
@@ -342,6 +624,11 @@ int filemanage(int argc, char *argv[])
 	mp3icon = oslLoadImageFilePNG("system/app/filemanager/mp3.png", OSL_IN_RAM, OSL_PF_8888);
 	txticon = oslLoadImageFilePNG("system/app/filemanager/txt.png", OSL_IN_RAM, OSL_PF_8888);
 	unknownicon = oslLoadImageFilePNG("system/app/filemanager/unknownfile.png", OSL_IN_RAM, OSL_PF_8888);
+	bar = oslLoadImageFilePNG("system/app/filemanager/bar.png", OSL_IN_RAM, OSL_PF_8888);
+	documenticon = oslLoadImageFilePNG("system/app/filemanager/documenticon.png", OSL_IN_RAM, OSL_PF_8888);
+	binaryicon = oslLoadImageFilePNG("system/app/filemanager/binaryicon.png", OSL_IN_RAM, OSL_PF_8888);
+	videoicon = oslLoadImageFilePNG("system/app/filemanager/videoicon.png", OSL_IN_RAM, OSL_PF_8888);
+	archiveicon = oslLoadImageFilePNG("system/app/filemanager/archiveicon.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(0,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);

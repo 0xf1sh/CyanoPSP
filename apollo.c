@@ -11,15 +11,16 @@
 #define MP3file "ms0:/MUSIC/test.mp3"
 
 
-OSL_IMAGE *mp3bg, *cursor, *wificon;
+OSL_IMAGE *mp3bg, *cursor, *wificon, *nowplaying;
 
 
 int mp3player()
 {	
 
 	mp3bg = oslLoadImageFilePNG("system/app/apollo/mp3bg.png", OSL_IN_RAM, OSL_PF_8888);
+	nowplaying = oslLoadImageFilePNG("system/app/apollo/nowplaying.png", OSL_IN_RAM, OSL_PF_8888);
 
-	if (!mp3bg || !cursor || !wificon)
+	if (!mp3bg || !cursor || !wificon || !nowplaying)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	scePowerSetClockFrequency(333, 333, 166);
