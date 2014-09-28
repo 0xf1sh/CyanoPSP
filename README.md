@@ -1,14 +1,14 @@
 CyanoPSP
 =================
 
-This is a program that allows you to do everything a PSP can do with a little more handy features, but with a whole different UI. This isn't a port of cyanogenmod from android, it's a project created from scratch. It's purpose is similar to that of "iR Shell", but has a UI inspired by CyanogenMod. It will never allow you to run android apps, the psp system doesn't have the hardware capabilities to run android. If developers are intrested, feel free to contact me through my email: sauskethunderkid@gmail.com 
+This is a program that allows you to do everything a PSP can do with a little more handy features, but with a whole different UI. This isn't a port of cyanogenmod from android, it's a project created from scratch. It's purpose is similar to that of "iR Shell", but has a UI inspired by CyanogenMod, Android. It will never allow you to run android apps, the psp system doesn't have the hardware capabilities to run android. If developers are intrested, feel free to contact me through my email: sauskethunderkid@gmail.com 
 
 This is not ready for release. Kindly wait for more updates.
 
 
 What's working
 =================
-- Cursor (using directional and analog buttons)
+- Cursor (analog buttons)
 - Home Menu
 - Touch tones, when pressing the cross button on an app/widget.
 - App drawer highlighting effect. 
@@ -31,15 +31,21 @@ What's working
 [] Usb toggle
 [] Shutdown Device
 [] Standby
-
+- Apollo music player
+- App drawer pane navigation
+- Quick toggles
+- File Manager
 
 What's yet to work
 =================
 - Internet
-- App drawer (More functional)
-- Apollo music player
-- Fully functional calculator app
+- Fully functional calculator
 - Boot animation (I'll use a set of 20 images in a zip file probably - These images can be replaced by using another zip with the same file names and format)
+- Game (Homebrew and Backups) Launcher
+- More settings and tweaks.
+- Theme Manager
+- Gallery App
+- Contacts storing application. (PSP)
 
 What's not working
 =================
