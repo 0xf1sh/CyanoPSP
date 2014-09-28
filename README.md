@@ -45,11 +45,11 @@ What's yet to work
 - More settings and tweaks.
 - Theme Manager
 - Gallery App
-- Contacts storing application. (PSP)
+- Contacts storing application. (People App)
 
 What's not working
 =================
-- Everything else
+- Everything else that isn't on the working list.
 
 Compiling it yourself 
 =================
