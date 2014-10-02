@@ -6,6 +6,7 @@
 #define DISPLAY_Y			70 // Y value of the filebrowser is displayed.
 #define ICON_DISPLAY_Y      56 
 #define CURR_DISPLAY_Y     	54 
+#define MP3DISPLAY_X        20
 
 /* Globals */
 
@@ -41,6 +42,7 @@ File dirScan[MAX_FILES];
 
 SceIoDirent g_dir;
 
+char *file;
 int i;
 int current;
 int curScroll;

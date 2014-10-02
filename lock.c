@@ -1,15 +1,14 @@
-#include <pspkernel.h>
-#include <oslib/oslib.h>
-
-OSL_IMAGE *background, *cursor, *wificon, *lock, *unlock, *circle, *messenger, *music, *circles, *music2, *messenger2;
+#include "clock.h"
+#include "lock.h"
+#include "include/screenshot.h"
 
 void lockscreen_deleteimages()
 {
 	oslDeleteImage(lock);
 	oslDeleteImage(unlock);
-	oslDeleteImage(messenger);
+	oslDeleteImage(messengericon1);
     oslDeleteImage(circle);
-	oslDeleteImage(messenger2);
+	oslDeleteImage(messengericon2);
 	oslDeleteImage(music);
 	oslDeleteImage(music2);	
 	oslDeleteImage(circles);
@@ -26,13 +25,13 @@ int lockscreen()
 	lock = oslLoadImageFilePNG("System/Lockscreen/lock.png", OSL_IN_RAM, OSL_PF_8888);
 	unlock = oslLoadImageFilePNG("System/Lockscreen/unlock.png", OSL_IN_RAM, OSL_PF_8888);
 	circle = oslLoadImageFilePNG("System/Lockscreen/circle.png", OSL_IN_RAM, OSL_PF_8888);
-	messenger = oslLoadImageFilePNG("System/Lockscreen/messenger.png", OSL_IN_RAM, OSL_PF_8888);
-	messenger2 = oslLoadImageFilePNG("System/Lockscreen/messenger2.png", OSL_IN_RAM, OSL_PF_8888);
+	messengericon1 = oslLoadImageFilePNG("System/Lockscreen/messenger.png", OSL_IN_RAM, OSL_PF_8888);
+	messengericon2 = oslLoadImageFilePNG("System/Lockscreen/messenger2.png", OSL_IN_RAM, OSL_PF_8888);
 	music = oslLoadImageFilePNG("System/Lockscreen/music.png", OSL_IN_RAM, OSL_PF_8888);
 	circles = oslLoadImageFilePNG("System/Lockscreen/circles.png", OSL_IN_RAM, OSL_PF_8888);
 	music2 = oslLoadImageFilePNG("System/Lockscreen/music2.png", OSL_IN_RAM, OSL_PF_8888);
 
-	if (!background || !cursor || !lock || !unlock || !circle || !messenger || !music || !circles)
+	if (!background || !cursor || !lock || !unlock || !circle || !messengericon1 || !music || !circles)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 		
 	style = 0;
@@ -70,7 +69,7 @@ int lockscreen()
 		}
 		
 		if (click == 1) {
-			oslDrawImageXY(messenger, 115,160);
+			oslDrawImageXY(messengericon1, 115,160);
 			oslDrawImageXY(music, 216,76);
 			oslDrawImageXY(circle, cursor->x - 50, cursor->y - 50);
 			}
@@ -106,7 +105,7 @@ int lockscreen()
 		if (cursor->x >= 90 && cursor->x <= 150 && cursor->y >= 125 && cursor->y <= 195 && click == 1) 
 		{
 			ending = 0;
-			oslDrawImageXY(messenger2, 85,130);
+			oslDrawImageXY(messengericon2, 85,130);
 		}
 
 		if (click == 0)

@@ -8,12 +8,6 @@
 #include <pspnet_inet.h>
 #include <pspnet_apctl.h>
 
-//PSP USB
-#include <pspusb.h>
-#include <pspusbstor.h>
-#include <pspmodulemgr.h>
-#include "include/pspusbdevice.h"
-
 //OSLib
 #include <oslib/oslib.h>
 
@@ -21,24 +15,23 @@
 #include <psprtc.h>
 
 //Parts of the Shell
-#include "main.h"
+#include "apollo.h"
 #include "appdrawer.h"
+#include "calculator.h"
+#include "clock.h"
+#include "fm.h"
+#include "game.h"
 #include "home.h"
 #include "lock.h"
-#include "clock.h"
-#include "calculator.h"
-#include "settingsmenu.h"
+#include "main.h"
 #include "multi.h"
-#include "power_menu.h"
-#include "apollo.h"
-#include "fm.h"
-#include "recoverymenu.h"
 #include "mp3player.h"
-#include "game.h"
-#include "screenshot.h"
-#include "ram.h"
+#include "power_menu.h"
+#include "recoverymenu.h"
+#include "settingsmenu.h"
 
-#define downloadpath "ms0:/PSP/GAME/CyanogenMod/downloads"
+#include "include/screenshot.h"
+#include "include/ram.h"
 
 PSP_MODULE_INFO("CyanoPSP - C",  1, 2, 2);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU); 
@@ -46,7 +39,7 @@ PSP_MAIN_THREAD_STACK_SIZE_KB(1024);
 PSP_HEAP_SIZE_KB(-128);
 
 //declaration
-OSL_IMAGE *background, *cursor, *ic_allapps, *ic_allapps_pressed, *navbar, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, 
+OSL_IMAGE *background, *cursor, *ic_allapps, *ic_allapps_pressed, *navbar, *wificon, *apollo, *gmail, *messengericon, *browser, *google, *notif, *batt100, 
 		  *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon, *usbdebug, 
 		  *recoverybg, *welcome, *ok, *transbackground, *notif2;
 
@@ -131,20 +124,6 @@ void battery()
 		if (scePowerIsBatteryCharging() == 1)
 			oslDrawImageXY(battcharge,batx,baty);
 		
-}
-
-void makedownloaddir()
-{
-	SceUID dir = sceIoDopen(downloadpath);
-	
-	if (dirExists(downloadpath))
-	{
-		sceIoDclose(dir);
-	}
-	else 
-	{
-		sceIoMkdir("ms0:/PSP/GAME/CyanogenMod/downloads",0777);
-}
 }
 
 void appdrawericon()
@@ -464,7 +443,7 @@ int main()
 	wificon = oslLoadImageFile("system/home/icons/wificon.png", OSL_IN_RAM, OSL_PF_8888);
 	apollo = oslLoadImageFilePNG("system/home/icons/apollo.png", OSL_IN_RAM, OSL_PF_8888);
 	gmail = oslLoadImageFilePNG("system/home/icons/gmail.png", OSL_IN_RAM, OSL_PF_8888);
-	message = oslLoadImageFilePNG("system/home/icons/message.png", OSL_IN_RAM, OSL_PF_8888);
+	messengericon = oslLoadImageFilePNG("system/home/icons/message.png", OSL_IN_RAM, OSL_PF_8888);
 	browser = oslLoadImageFile("system/home/icons/browser.png", OSL_IN_RAM, OSL_PF_8888);
 	google = oslLoadImageFile("system/home/icons/google.png", OSL_IN_RAM, OSL_PF_8888);
 	notif = oslLoadImageFile("system/home/menu/notif2.png", OSL_IN_RAM, OSL_PF_8888);
@@ -488,7 +467,7 @@ int main()
 	transbackground = oslLoadImageFilePNG("system/home/icons/transbackground.png", OSL_IN_RAM, OSL_PF_8888);
 
 	//Debugger
-	if (!background || !cursor || !ic_allapps || !ic_allapps_pressed || !navbar || !wificon || !apollo || !gmail || !message || !browser || !google || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
+	if (!background || !cursor || !ic_allapps || !ic_allapps_pressed || !navbar || !wificon || !apollo || !gmail || !messengericon || !browser || !google || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	loadConfig();
@@ -517,14 +496,21 @@ int main()
 		oslDrawImageXY(apollo, 105, 190);
 		oslDrawImageXY(browser, 276, 190);
 		oslDrawImageXY(gmail, 331, 190);
-		oslDrawImageXY(message, 160, 190);
+		oslDrawImageXY(messengericon, 160, 190);
 		oslDrawImageXY(pointer, 231, 180);
 		
 		digitaltime(420,4,458);
 		
 		//calls the functions	
-		firstBootMessage();
+		
+		//Sets the transparency color (black)
+		oslSetTransparentColor(RGB(0,0,0));
+		
 		appdrawericon();
+		
+		//Disables the transparent color
+		oslDisableTransparentColor();
+		
 		battery();
 		navbar_buttons();
 		android_notif();

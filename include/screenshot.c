@@ -1,9 +1,4 @@
-#include <oslib/oslib.h>
-
-#define screenshotpath "ms0:/PSP/GAME/CyanogenMod/screenshots"
-
-char checkname[256];
-static int lastNumber = -1;
+#include "screenshot.h"
 
 void makescreenshotdir()
 {

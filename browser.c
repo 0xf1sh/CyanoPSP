@@ -5,7 +5,7 @@
 
 static int runningFlag = 1;
 static OSL_IMAGE *bkg = NULL;
-static char message[100] = "";
+static char browser_message[100] = "";
 static char buffer[100] = "";
 
 int connectAPCallback(int state){
@@ -92,13 +92,13 @@ int startbrowser(int argc, char *argv[])
     oslSetFont(font);
 
     if (!oslIsWlanPowerOn())
-        sprintf(message, "Please turn on the WLAN.");
+        sprintf(browser_message, "Please turn on the WLAN.");
 
     //Get connections list:
     struct oslNetConfig configs[OSL_MAX_NET_CONFIGS];
     int numconfigs = oslGetNetConfigs(configs);
     if (!numconfigs){
-        sprintf(message, "No configuration found!");
+        sprintf(browser_message, "No configuration found!");
         enabled = 0;
     }
 
@@ -112,7 +112,7 @@ int startbrowser(int argc, char *argv[])
     			oslDrawString(30, 80, "Press UP and DOWN to change settings.");
             }
             oslDrawString(30, 150, "Press /\\ to quit.");
-			oslDrawString(30, 200, message);
+			oslDrawString(30, 200, browser_message);
 
 			oslEndDrawing();
 		}

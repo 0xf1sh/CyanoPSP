@@ -8,6 +8,11 @@
 #include <stdio.h>
 #include <oslib/oslib.h>
 #include "game.h"
+#include "clock.h"
+#include "lock.h"
+#include "multi.h"
+#include "power_menu.h"
+#include "include/screenshot.h"
 
 /* Part of HBL */
 

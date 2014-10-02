@@ -10,8 +10,16 @@
 #include <stdlib.h>
 #include <oslib/oslib.h>
 #include "fm.h"
+#include "clock.h"
+#include "lock.h"
+#include "multi.h"
+#include "power_menu.h"
+#include "include/screenshot.h"
+#include "include/utils.h"
+#include "id3.h"
+#include "file_struct.h"
 
-OSL_IMAGE  *filemanagerbg, *diricon, *imageicon, *mp3icon, *txticon, *unknownicon, *documenticon, *binaryicon, *videoicon, *archiveicon, *bar, *deletion, *action, *nowplaying;
+OSL_IMAGE  *filemanagerbg, *diricon, *imageicon, *mp3icon, *txticon, *unknownicon, *documenticon, *binaryicon, *videoicon, *archiveicon, *bar, *deletion, *action, *nowplaying,  *textview;
 
 OSL_FONT *pgfFont;
 
@@ -52,6 +60,13 @@ int folderScan(const char* path )
 		while ( sceIoDread(fd, &g_dir) && i<=MAX_FILES ) {
 			sprintf( dirScan[i].name, g_dir.d_name );
 			sprintf( dirScan[i].path, "%s/%s", path, dirScan[i].name );
+			
+			//skip . entries
+			if (!strcmp(".", g_dir.d_name)) 
+			{
+				memset(&g_dir, 0, sizeof(SceIoDirent));
+				continue;
+			};
 
 			if (g_dir.d_stat.st_attr & FIO_SO_IFDIR) {
 				dirScan[i].directory = 1;
@@ -235,10 +250,9 @@ void showImage(const char * path)
 	while (!osl_quit) {
 
 		oslReadKeys();
-		oslClearScreen(RGB(0,0,0));
 		oslStartDrawing();	
 		
-		oslDrawFillRect(0,0,480,272,RGB(255,255,255));
+		oslClearScreen(RGB(255,255,255));
 		oslDrawImageXY(image, 240 - oslGetImageWidth(image) / 2, 136 - oslGetImageHeight(image) / 2);//draw image
 		
 		oslEndDrawing();
@@ -258,6 +272,107 @@ void oslPrintText(int x, int y, float size, char * text, OSL_COLOR color) {
    oslIntraFontSetStyle(pgfFont, size, color, RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
    oslDrawStringf(x,y,text);
 }	
+
+int checkTextFile(char *textfile)
+{
+	SceUID fd = sceIoOpen(textfile, PSP_O_RDONLY, 0777);
+	
+	if(fd < 0)
+	   return -1;
+
+	sceIoClose(fd);
+	
+	file = textfile;
+
+	return 0;
+}
+
+char *getTextFromFile()
+{
+	char text_File[1000];
+
+	memset(text_File, 0, sizeof(text_File));
+	SceUID fd = sceIoOpen(file, PSP_O_RDONLY, 0777);
+	
+	sceIoRead(fd, text_File, 255);
+
+	sceIoClose(fd);
+
+	return text_File;
+}
+
+void displayTextFromFile()
+{
+	while (!osl_quit)
+  {
+
+	oslStartDrawing();	
+	oslReadKeys();
+	
+	oslClearScreen(RGB(0,0,0));
+	oslDrawImageXY(textview,0,19);
+	
+	if(checkTextFile(folderIcons[current].filePath) == -1)
+	   oslDrawStringf(40,33,"Unable to Open");
+
+	oslDrawStringf(40,33,folderIcons[current].name);	
+    oslDrawStringf(10,55," \n%s", getTextFromFile());	
+
+	if(osl_keys->pressed.circle)
+	{
+		return;
+	}
+				
+	oslEndDrawing();
+	oslSyncFrame();	
+    oslAudioVSync();
+	}
+}
+
+char *compact_str(char *s, int max_length) {
+	char *suffix;
+	char t[max_length+1];
+ 
+	if(strlen(s) > max_length) {
+		suffix = strrchr(s, '.');
+			if(suffix != NULL) {			
+				strncpy(t, s, max_length-4);
+				t[max_length-4] = '\0';
+				s = strcat(t, suffix);   	
+			} else {
+				strncpy(t, s, max_length-1);
+				t[max_length] = '\0';
+				strcpy(s, t);
+			}
+	}
+
+	return s;
+}
+
+int display_mp3_info(struct FILE_INFO *file) {
+	
+	int y_start = 25; //210
+
+	/*
+	if(file->cover != NULL)
+		blitImageToScreen(0, 0, file->cover->imageWidth, file->cover->imageHeight, file->cover, 305, 23);  
+   	*/
+
+	oslDrawStringf(MP3DISPLAY_X, 190, "ID3Tag: %s", file->mp3Info.ID3.versionfound);	 	
+
+	oslDrawStringf(MP3DISPLAY_X, 200, "Title : %s", compact_str(file->mp3Info.ID3.ID3Title, 28));			 
+
+	oslDrawStringf(MP3DISPLAY_X, 210, "Album : %s", compact_str(file->mp3Info.ID3.ID3Album, 28));			 
+
+	oslDrawStringf(MP3DISPLAY_X, 220, "Year  : %s", file->mp3Info.ID3.ID3Year);			 
+
+	oslDrawStringf(MP3DISPLAY_X, 230, "Artist: %s", compact_str(file->mp3Info.ID3.ID3Artist, 28));			 
+
+	oslDrawStringf(MP3DISPLAY_X, 240, "Genre : %s", compact_str(file->mp3Info.ID3.ID3GenreText, 28));			 	
+		 	
+	
+	return 0;
+}
 
 void MP3Play(char * path)
 {	
@@ -286,6 +401,7 @@ void MP3Play(char * path)
 		
 		oslDrawImageXY(nowplaying, 0, 19);
 		oslPrintText(250,71,0.5,folderIcons[current].name,RGB(255,255,255));
+		display_mp3_info(folderIcons[current].name);
 		
 		if(osl_pad.held.triangle) {
 		break;
@@ -474,12 +590,6 @@ void dirControls() //Controls
 				current = 1;
 			}
 		}
-		if ((pad.Buttons & PSP_CTRL_CIRCLE) && (!(oldpad.Buttons & PSP_CTRL_CIRCLE))) {
-		if(!strcmp("ms0:/", lastDir)) //pressed circle in root folder
-			{
-			dirBack();
-			}
-		}
 	}
 	
 	char * ext = strrchr(folderIcons[current].filePath, '.'); 
@@ -489,7 +599,16 @@ void dirControls() //Controls
 			OptionMenu();
 	}
 	
-	if (((ext) != NULL) && ((strcmp(ext ,".png") == 0) || (strcmp(ext ,".jpg") == 0) || (strcmp(ext ,".jpeg") == 0) || (strcmp(ext ,".gif") == 0)) && (osl_keys->pressed.cross))
+	if (osl_keys->pressed.circle)
+	{
+			dirBack();
+			if (!(stricmp(lastDir, "ms0:")==0) || (stricmp(lastDir, "ms0:/")==0)) 
+			{
+			appdrawer();
+			}
+	}
+	
+	if (((ext) != NULL) && ((strcmp(ext ,".png") == 0) || (strcmp(ext ,".jpg") == 0) || (strcmp(ext ,".jpeg") == 0) || (strcmp(ext ,".gif") == 0) || (strcmp(ext ,".PNG") == 0) || (strcmp(ext ,".JPG") == 0) || (strcmp(ext ,".JPEG") == 0) || (strcmp(ext ,".GIF") == 0)) && (osl_keys->pressed.cross))
 	{
 			showImage(folderIcons[current].filePath);
 	}
@@ -513,6 +632,11 @@ void dirControls() //Controls
 	if (((ext) != NULL) && ((strcmp(ext ,".mp3") == 0) || ((strcmp(ext ,".MP3") == 0))) && (osl_keys->pressed.cross))
 	{
 		MP3Play(folderIcons[current].filePath);
+	}
+	
+	if (((ext) != NULL) && ((strcmp(ext ,".txt") == 0) || ((strcmp(ext ,".TXT") == 0)) || ((strcmp(ext ,".c") == 0)) || ((strcmp(ext ,".h") == 0)) || ((strcmp(ext ,".cpp") == 0))) && (osl_keys->pressed.cross))
+	{
+		displayTextFromFile(folderIcons[current].filePath);
 	}
 	
 	if((!strcmp(lastDir, "ms0:") || !strcmp(lastDir, "ms0:/"))&&(osl_keys->pressed.circle))
@@ -557,7 +681,6 @@ char * dirBrowse(const char * path)
 {
 	folderScan(path);
 	dirVars();
-
 	
 	while (!osl_quit)
 	{		
@@ -592,30 +715,6 @@ void filemanager_unload()
 	oslDeleteImage(unknownicon);
 }
 
-int fileExists(const char* path)
-{
-	SceUID dir = sceIoOpen(path, PSP_O_RDONLY, 0777);
-	if (dir >= 0){
-		sceIoClose(dir);
-		return 1;
-	}
-	else {
-		return 0;
-	}
-}
-
-int dirExists(const char* path)
-{
-	SceUID dir = sceIoDopen(path);
-	if (dir >= 0){
-		sceIoDclose(dir);
-		return 1;
-	}
-	else {
-		return 0;
-	}
-}
-
 int filemanage(int argc, char *argv[])
 {
 	filemanagerbg = oslLoadImageFilePNG("system/app/filemanager/filemanagerbg.png", OSL_IN_RAM, OSL_PF_8888);
@@ -624,6 +723,7 @@ int filemanage(int argc, char *argv[])
 	mp3icon = oslLoadImageFilePNG("system/app/filemanager/mp3.png", OSL_IN_RAM, OSL_PF_8888);
 	txticon = oslLoadImageFilePNG("system/app/filemanager/txt.png", OSL_IN_RAM, OSL_PF_8888);
 	unknownicon = oslLoadImageFilePNG("system/app/filemanager/unknownfile.png", OSL_IN_RAM, OSL_PF_8888);
+	textview = oslLoadImageFilePNG("system/app/filemanager/textview.png", OSL_IN_RAM, OSL_PF_8888);
 	bar = oslLoadImageFilePNG("system/app/filemanager/bar.png", OSL_IN_RAM, OSL_PF_8888);
 	documenticon = oslLoadImageFilePNG("system/app/filemanager/documenticon.png", OSL_IN_RAM, OSL_PF_8888);
 	binaryicon = oslLoadImageFilePNG("system/app/filemanager/binaryicon.png", OSL_IN_RAM, OSL_PF_8888);

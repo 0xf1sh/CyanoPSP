@@ -19,8 +19,14 @@
 #include <stdlib.h> 
 
 #include "include/pgeZip.h"
+#include "include/utils.h"
 #include "fm.h"
 #include "settingsmenu.h"
+#include "clock.h"
+#include "lock.h"
+#include "multi.h"
+#include "power_menu.h"
+#include "include/screenshot.h"
 
 #define configFile "system/build.prop"
 #define Address "www.google.com"
@@ -28,14 +34,12 @@
 
 //declaration
 OSL_IMAGE *settingsbg, *cursor, *wificon, *usbdebug, *aboutbg, *offswitch, *onswitch, *themebg, *performancebg, *wifibg, *developerbg, *about, *highlight, 
-		  *developeroptions, *themes, *wifi, *processorbg, *background, *appicon1, *appicon2, *navbar, *apollo, *gmail, *message, *browser, *cpuset, *check,
+		  *developeroptions, *themes, *wifi, *processorbg, *background, *appicon1, *appicon2, *navbar, *apollo, *gmail, *messengericon, *browser, *cpuset, *check,
 		  *backicon, *homeicon, *multicon, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *isoloadericon, *fb, *settings, *updatesbg, *performance;
 
 //definition of our sounds
 OSL_SOUND *tone;
 
-char usbStatus = 0;
-char usbModuleStatus = 0;
 char defaultTheme;
 char defaultZip;
 char InputTheme;
@@ -47,7 +51,7 @@ int setclockrlimit = 0;
 int setclockllimit = 9;
 int RJL = 0;
 int PSPDebug = 0;
-char Version[10] = "2.1 Alpha";
+char Version[10] = "2.2 Alpha 1";
 char lang[12] = "Uk English";
 char theme_bootanim[10] = "";
 char theme_icons[10] = "";
@@ -325,87 +329,6 @@ void pspgetcpu_bus()
 		}
 }
 
-int disableUsb(void)
-{
-   if(usbStatus)
-   {
-      sceUsbDeactivate(0);
-      pspUsbDeviceFinishDevice();
-      sceUsbStop(PSP_USBSTOR_DRIVERNAME, 0, 0);
-      sceUsbStop(PSP_USBBUS_DRIVERNAME, 0, 0);
-      usbStatus = 0;
-      sceKernelDelayThread(300000);
-   }
-   return 0;
-}
-
-int enableUsb()
-{
-   if (usbStatus == 1)
-   {
-      disableUsb();
-      return 0;
-   }
-
-   if(!usbModuleStatus)
-   {
-      pspSdkLoadStartModule("flash0:/kd/semawm.prx", PSP_MEMORY_PARTITION_KERNEL);
-      pspSdkLoadStartModule("flash0:/kd/usbstor.prx", PSP_MEMORY_PARTITION_KERNEL);
-      pspSdkLoadStartModule("flash0:/kd/usbstormgr.prx", PSP_MEMORY_PARTITION_KERNEL);
-      pspSdkLoadStartModule("flash0:/kd/usbstorms.prx", PSP_MEMORY_PARTITION_KERNEL);
-      pspSdkLoadStartModule("flash0:/kd/usbstorboot.prx", PSP_MEMORY_PARTITION_KERNEL);
-      pspSdkLoadStartModule("flash0:/kd/usbdevice.prx", PSP_MEMORY_PARTITION_KERNEL);
-      usbModuleStatus = 1;
-   }
-
-   if (!usbStatus)
-   {
-   sceUsbStart(PSP_USBBUS_DRIVERNAME, 0, 0);
-   sceUsbStart(PSP_USBSTOR_DRIVERNAME, 0, 0);
-   sceUsbstorBootSetCapacity(0x800000);
-   sceUsbActivate(0x1c8);
-   usbStatus = 1;
-   sceKernelDelayThread(300000);
-   }
-   return 1;
-}
-
-int enableUsbEx(u32 device)
-{
-
-   if (usbStatus == 1)
-   {
-      disableUsb();
-      return 0;
-   }
-
-   if(!usbModuleStatus)
-   {
-      pspSdkLoadStartModule("flash0:/kd/usbdevice.prx", PSP_MEMORY_PARTITION_KERNEL);
-      pspSdkLoadStartModule("flash0:/kd/semawm.prx", PSP_MEMORY_PARTITION_KERNEL);
-      pspSdkLoadStartModule("flash0:/kd/usbstor.prx", PSP_MEMORY_PARTITION_KERNEL);
-      pspSdkLoadStartModule("flash0:/kd/usbstormgr.prx", PSP_MEMORY_PARTITION_KERNEL);
-      pspSdkLoadStartModule("flash0:/kd/usbstorms.prx", PSP_MEMORY_PARTITION_KERNEL);
-      pspSdkLoadStartModule("flash0:/kd/usbstorboot.prx", PSP_MEMORY_PARTITION_KERNEL);
-      pspSdkLoadStartModule("flash0:/kd/usbdevice.prx", PSP_MEMORY_PARTITION_KERNEL);
-      usbModuleStatus = 1;
-   }
-   if (!usbStatus)
-   {
-   pspUsbDeviceSetDevice(device, 0, 0);
-   sceUsbStart(PSP_USBBUS_DRIVERNAME, 0, 0);
-   sceUsbStart(PSP_USBSTOR_DRIVERNAME, 0, 0);
-   sceUsbActivate(0x1c8);
-   usbStatus = 1;
-   sceKernelDelayThread(300000);
-   }
-   return 1;
-}
-
-void isUSBCableConnected(){
-    return (sceUsbGetState() & PSP_USB_CABLE_CONNECTED);
-}
-
 void pspgetmodel()
 {
 		char pspmodel = kuKernelGetModel();
@@ -465,7 +388,7 @@ void about_menu()
 		oslDrawString(37,87,"Click for, view or install available updates");
 		pspgetmodel();
 		oslDrawStringf(37,119,"CyanoPSP: %s",Version);
-		oslDrawString(37,147,"Build Date - Sun Aug 24 12:06 PM EST 2014");
+		oslDrawString(37,147,"Build Date - Mon Sept 15 12:06 PM EST 2014");
 		oslDrawString(37,172,"Kernel Version");
 		oslDrawString(37,186,"Undefined-pspsdk_oslib");
 		oslDrawString(37,200,"joellovesanna@psp #1");
@@ -962,9 +885,9 @@ void GetTheme()
                         return GetTextureFromZip("isoloadericon.png");
                 }
                 break;
-				case message:
+				case messengericon:
                 {
-                        return GetTextureFromZip("message.png");
+                        return GetTextureFromZip("messengericon.png");
                 }
                 break;
                 case people:

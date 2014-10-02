@@ -1,5 +1,10 @@
 #include <pspkernel.h>
 #include <oslib/oslib.h>
+#include "clock.h"
+#include "lock.h"
+#include "multi.h"
+#include "power_menu.h"
+#include "include/screenshot.h"
 
 OSL_IMAGE *background, *cursor, *multi_task, *wificon;
 

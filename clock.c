@@ -3,6 +3,11 @@
 #include <oslib/oslib.h>
 #include <pspctrl.h>
 #include <psprtc.h>
+#include "clock.h"
+#include "lock.h"
+#include "multi.h"
+#include "power_menu.h"
+#include "include/screenshot.h"
 
 OSL_IMAGE *clockbg, *cursor, *wificon, *stop_watch;
 OSL_FONT *clockFont;

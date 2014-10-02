@@ -1,13 +1,18 @@
 #include <pspkernel.h>
 #include <oslib/oslib.h>
+#include "clock.h"
+#include "lock.h"
+#include "multi.h"
+#include "power_menu.h"
+#include "include/screenshot.h"
 
-OSL_IMAGE *background, *cursor, *appicon, *appicon2, *wificon, *apollo, *gmail, *message, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon;
+OSL_IMAGE *background, *cursor, *appicon, *appicon2, *wificon, *apollo, *gmail, *messengericon, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon;
 
 int home()
 {	
 	loadicons();
 
-	if (!background || !cursor || !wificon || !apollo || !gmail || !message || !browser || !google|| !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
+	if (!background || !cursor || !wificon || !apollo || !gmail || !messengericon || !browser || !google|| !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
 	setfont();
@@ -24,7 +29,7 @@ int home()
 		oslDrawImageXY(apollo, 105, 190);
 		oslDrawImageXY(browser, 276, 190);
 		oslDrawImageXY(gmail, 331, 190);
-		oslDrawImageXY(message, 160, 190);
+		oslDrawImageXY(messengericon, 160, 190);
 		oslDrawImageXY(pointer, 231, 180);
 		
 		digitaltime(420,4,458);

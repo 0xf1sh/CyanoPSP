@@ -14,6 +14,7 @@
 #include <pspreg.h>
 
 #include "home.h"
+#include "include/utils.h"
 
 char version_txt[256];
 char *file;

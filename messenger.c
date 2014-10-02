@@ -1,14 +1,14 @@
-#include <pspkernel.h>
-#include <oslib/oslib.h>
+#include "power_menu.h"
+#include "lock.h"
+#include "clock.h"
+#include "lock.h"
+#include "messenger.h"
+#include "multi.h"
+#include "power_menu.h"
+#include "include/screenshot.h"
 
 OSL_IMAGE *messengerbg, *new_message, *cursor, *wificon;
 OSL_FONT *pgfFont;
-
-int InitAdhocMessenger();
-void joinServer();
-void createServer();
-
-char message[500] = "";	
 
 //Prints some info:
 void printInfo()

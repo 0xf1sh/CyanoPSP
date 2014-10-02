@@ -92,4 +92,13 @@ u32 ramAvailable (void)
  return size;
 }
 
+void freemem()
+{
+    int i=0;
+	for (i=0;i<100;i++)
+	{
+		sceKernelFreePartitionMemory(i);
+	}
+}
+
 

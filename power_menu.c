@@ -1,7 +1,7 @@
-#include <pspkernel.h>
-#include <oslib/oslib.h>
+#include "power_menu.h"
+#include "lock.h"
 
-OSL_IMAGE *background, *cursor, *wificon, *power, *apollo, *gmail, *message, *browser, *google, *pointer;
+OSL_IMAGE *background, *cursor, *wificon, *power, *apollo, *gmail, *messengericon, *browser, *google, *pointer;
 
 void power_off()
 {
@@ -17,8 +17,6 @@ int powermenu()
 
 	while (!osl_quit)
 	{
-		 __psp_free_heap();
-
 		oslStartDrawing();
 
 		controls();	
@@ -29,7 +27,7 @@ int powermenu()
 		oslDrawImageXY(apollo, 105, 190);
 		oslDrawImageXY(browser, 276, 190);
 		oslDrawImageXY(gmail, 331, 190);
-		oslDrawImageXY(message, 160, 190);
+		oslDrawImageXY(messengericon, 160, 190);
 		oslDrawImageXY(pointer, 231, 180);
 		oslDrawImageXY(power, 114, 10);	
 		
