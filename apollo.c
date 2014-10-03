@@ -12,6 +12,7 @@
 #include "multi.h"
 #include "power_menu.h"
 #include "include/screenshot.h"
+#include "include/utils.h"
 
 #define MAX_MP3_DISPLAY			3 // max amount of files displayed on-screen.
 #define MP3_DISPLAY_X			20 // X value of where the filebrowser is displayed.
@@ -159,7 +160,6 @@ char * mp3Browse(const char * path)
 {
 	folderScan(path);
 	dirVars();
-
 	
 	while (!osl_quit)
 	{		
@@ -192,7 +192,6 @@ char * mp3Browse(const char * path)
 
 int mp3player()
 {	
-
 	nowplaying = oslLoadImageFilePNG("system/app/apollo/nowplaying.png", OSL_IN_RAM, OSL_PF_8888);
 	mp3bg = oslLoadImageFilePNG("system/app/apollo/mp3bg.png", OSL_IN_RAM, OSL_PF_8888);
 	mp3_select = oslLoadImageFilePNG("system/app/apollo/mp3_select.png", OSL_IN_RAM, OSL_PF_8888);
@@ -203,9 +202,11 @@ int mp3player()
 	pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
 	oslSetFont(pgfFont);
+	
+	makeMusicDir();
 		
-	char * Directory = mp3Browse("ms0:/");
-
+	char * Directory = mp3Browse("ms0:/MUSIC");
+	
 	while (!osl_quit)
 	{	
 		oslReadKeys();

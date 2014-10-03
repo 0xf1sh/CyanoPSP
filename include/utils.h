@@ -7,11 +7,13 @@
 #include <pspmodulemgr.h>
 #include "pspusbdevice.h"
 
-#define downloadpath "ms0:/PSP/GAME/CyanogenMod/downloads"
+#define downloadPath "ms0:/PSP/GAME/CyanogenMod/downloads"
+#define musicPath "ms0:/MUSIC"
 
 int fileExists(const char* path);
 int dirExists(const char* path);
-void makedownloaddir();
+void makeDownloadDir();
+void makeMusicDir();
 void fadeOut(OSL_IMAGE* bg,int x, int y);
 void fadeIn(OSL_IMAGE* bg, int x, int y);
 int disableUsb(void);

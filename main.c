@@ -478,7 +478,7 @@ int main()
 	
 	setfont();
 	
-	makedownloaddir();
+	makeDownloadDir();
 	
 	//Main loop to run the program
 	while (!osl_quit)

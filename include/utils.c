@@ -30,17 +30,31 @@ int dirExists(const char* path)
 	}
 }
 
-void makedownloaddir()
+void makeDownloadDir()
 {
-	SceUID dir = sceIoDopen(downloadpath);
+	SceUID dir = sceIoDopen(downloadPath);
 	
-	if (dirExists(downloadpath))
+	if (dirExists(downloadPath))
 	{
 		sceIoDclose(dir);
 	}
 	else 
 	{
 		sceIoMkdir("ms0:/PSP/GAME/CyanogenMod/downloads",0777);
+}
+}
+
+void makeMusicDir()
+{
+	SceUID dir = sceIoDopen(musicPath);
+	
+	if (dirExists(musicPath))
+	{
+		sceIoDclose(dir);
+	}
+	else 
+	{
+		sceIoMkdir("ms0:/MUSIC",0777);
 }
 }
 

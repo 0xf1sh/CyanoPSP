@@ -238,21 +238,14 @@ void doServer()
 	oslAdhocTerm();
 }
 
-void activateOSK()
-{
-	int enabled = 1;
-	while(1)
-	if (enabled){
-		oslDrawOsk();
-		oslInitOsk("Type Message", "", 128, 1, -1);
-		memset(message, 0, sizeof(message));
-	}
-}
-
 void newmessage()
 {	
+	int skip = 0;
+    char message[250] = "";
+
 	while (!osl_quit)
 	{
+		if (!skip){
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
@@ -270,21 +263,6 @@ void newmessage()
 		navbar_buttons();
 		android_notif();
 		oslDrawImage(cursor);
-		
-		if (cursor->x >= 12 && cursor->x <= 415 && cursor->y >= 233 && cursor->y <= 270 && osl_pad.held.cross)
-		{
-		activateOSK();
-		}
-		
-		if (oslOskGetResult() == OSL_OSK_CANCEL)
-		{
-						oslDrawStringf(40,40,message, "Cancel");
-		}
-					else{
-						char userText[100] = "";
-						oslOskGetText(userText);
-						oslDrawStringf(17,238, message, "%s", userText);
-					}
 		
 		if (osl_pad.held.square)
 		{
@@ -321,10 +299,37 @@ void newmessage()
 			screenshot();
 		}
 		
-		oslEndDrawing();
-        oslSyncFrame();
+		oslDrawString(12, 230, message);
+		
+		if (oslOskIsActive()){
+				oslDrawOsk();
+				if (oslGetOskStatus() == PSP_UTILITY_DIALOG_NONE){
+					if (oslOskGetResult() == OSL_OSK_CANCEL)
+						return;
+					else{
+						char userText[100] = "";
+						oslOskGetText(userText);
+						sprintf(message, "%s", userText);
+					}
+					oslEndOsk();
+				}
+			}
+			oslEndDrawing();
+		}
+		
+		if (!oslOskIsActive()){
+			oslReadKeys();
+			if (osl_keys->pressed.circle){
+				return;
+			}else if (cursor->x >= 12 && cursor->x <= 415 && cursor->y >= 233 && cursor->y <= 270 && osl_pad.held.cross){
+				oslInitOsk("Type Message", "", 128, 1, -1);
+				memset(message, 0, sizeof(message));
+			}
+		}
+        oslEndFrame();
+        skip = oslSyncFrame();
+		}
         oslAudioVSync();
-}
 }
 
 int messenger()
