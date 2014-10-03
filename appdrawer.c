@@ -36,6 +36,8 @@ void appdrawer_deleteImages()
 	oslDeleteImage(isoloadericon);
 }
 
+int appdrawer()
+{	
 	int apollo_x = 30;
 	int browser_x = 95;
 	int browser_text_x = 90;
@@ -63,8 +65,6 @@ void appdrawer_deleteImages()
 	int settings_x = 396;
 	int settings_text_x = 397;
 
-int appdrawer()
-{	
 	//loads appdrawer icons memory
 	appdrawer_loadImages();
 	setfont();
