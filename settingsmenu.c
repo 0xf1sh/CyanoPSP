@@ -181,62 +181,58 @@ int OnlineUpdater()
 		if (download == 1)
 		{
 			//download file
-        oslNetGetFile("http://zone-wifi.fr/psp/PSP/GAME/CyanogenMod.zip", "../");
-
-        oslDrawStringf(25, 80,"Installing update...");
-    
-        pgeZip* zipFiles = pgeZipOpen("../CyanogenMod.zip");
-        
-        chdir("..");
-        
-        pgeZipExtract(zipFiles, NULL);
-        pgeZipClose(zipFiles);
-		
-		oslDrawStringf(25,90,"Installation done.");
+			oslNetGetFile("http://zone-wifi.fr/psp/PSP/GAME/CyanogenMod.zip", "../");
+			oslDrawStringf(25, 80,"Installing update...");
+			pgeZip* zipFiles = pgeZipOpen("../CyanogenMod.zip");
+			chdir("..");
+			pgeZipExtract(zipFiles, NULL);
+			pgeZipClose(zipFiles);
+			oslDrawStringf(25,90,"Installation done.");
 		}
         }
 		
-		else if (osl_keys->released.up){
+		else if (osl_keys->released.up)
+		{
             if (++selectedConfig >= numconfigs)
-                selectedConfig = numconfigs - 1;
-        }else if (osl_keys->released.down){
-            if (--selectedConfig < 0)
-                selectedConfig = 0;
+				selectedConfig = numconfigs - 1;
+        }
+		else if (osl_keys->released.down)
+		{
+			if (--selectedConfig < 0)
+				selectedConfig = 0;
         }
     }
-    
     oslNetTerm();
-    
     return 1;
 }
-
 	
 void wlanstatus()
 {
 	if (sceWlanGetSwitchState() == 0)
-	oslDrawImageXY(offswitch, 370, 62);
+		oslDrawImageXY(offswitch, 370, 62);
 	
 	else
-	oslDrawImageXY(onswitch, 370, 62);
+		oslDrawImageXY(onswitch, 370, 62);
 	
 }
 
 void wlanstatus1()
 {
 	if (sceWlanGetSwitchState() == 0)
-	oslDrawImageXY(offswitch, 222, 14);
+		oslDrawImageXY(offswitch, 222, 14);
 	
 	else
-	oslDrawImageXY(onswitch, 222, 14);
+		oslDrawImageXY(onswitch, 222, 14);
 	
 }
 
 void loadConfig()
 {	
+	//load/open file
 	FILE * configtxt = fopen(configFile, "rb");
 
 	if(!configtxt) 
-	return saveConfig();
+		return saveConfig();
 	
 	//close file
 	fclose(configtxt);
@@ -244,124 +240,124 @@ void loadConfig()
 
 void saveConfig()
 {
-	
-	FILE * configtxt = fopen(configFile, "wb"); //create config file
+	FILE * configtxt = fopen(configFile, "wb"); //create config file if it doesn't exist.
 	fprintf(configtxt,
-"ro.build.version.release = %s\r\n\
-ro.product.model = %d\r\n\
-ro.product.locale.language = %s\r\n\
-ro.build.user = Joel16\r\n\
-ro.product.cpu.frequency =  %d\r\n\
-ro.build.date = Sun Aug 24 12:06 PM EST 2014",
+	"ro.build.version.release = %s\r\n\
+	ro.product.model = %d\r\n\
+	ro.product.locale.language = %s\r\n\
+	ro.build.user = Joel16\r\n\
+	ro.product.cpu.frequency =  %d\r\n\
+	ro.build.date = Sun Aug 24 12:06 PM EST 2014",
 	Version, kuKernelGetModel(),lang,setclock);
-
 	fclose(configtxt);	
-
 }
 
-
-void changer(int set) {
-	switch (set) {
-	case 0:
-	scePowerSetClockFrequency(cpu_list[set], cpu_list[set], bus_list[set]);
-	break;
-			}
+void changer(int set) 
+{
+	switch (set) 
+	{
+		case 0:
+		scePowerSetClockFrequency(cpu_list[set], cpu_list[set], bus_list[set]);
+		break;
+	}
 }
 
-int getCpuClock(){
+int getCpuClock()
+{
     return scePowerGetCpuClockFrequency();
 }
 
-int getBusClock(){
+int getBusClock()
+{
     return scePowerGetBusClockFrequency();
 }
 
 void pspgetcpu_bus()
 {	
-		if(getCpuClock() == 20 && getBusClock() == 10)
-		{
-			oslDrawString(35,87,"20/10");
-		}
+	if(getCpuClock() == 20 && getBusClock() == 10)
+	{
+		oslDrawString(35,87,"20/10");
+	}
    
-		else if(getCpuClock() == 75 && getBusClock() == 37)
-		{
-			oslDrawString(35,87,"75/37");
-		}
+	else if(getCpuClock() == 75 && getBusClock() == 37)
+	{
+		oslDrawString(35,87,"75/37");
+	}
 		
-		else if(getCpuClock() == 100 && getBusClock() == 50)
-		{
-			oslDrawString(35,87,"100/50");
-		}
+	else if(getCpuClock() == 100 && getBusClock() == 50)
+	{
+		oslDrawString(35,87,"100/50");
+	}
 		
-		else if(getCpuClock() == 133 && getBusClock() == 66)
-		{
-			oslDrawString(35,87,"133/66");
-		}
+	else if(getCpuClock() == 133 && getBusClock() == 66)
+	{
+		oslDrawString(35,87,"133/66");
+	}
 		
-		else if(getCpuClock() == 166 && getBusClock() == 83)
-		{
-			oslDrawString(35,87,"166/83");
-		}
+	else if(getCpuClock() == 166 && getBusClock() == 83)
+	{
+		oslDrawString(35,87,"166/83");
+	}
 		
-		else if(getCpuClock() == 200 && getBusClock() == 100)
-		{
-			oslDrawString(35,87,"200/100");
-		}
+	else if(getCpuClock() == 200 && getBusClock() == 100)
+	{
+		oslDrawString(35,87,"200/100");
+	}
 		
-		else if(getCpuClock() == 222 && getBusClock() == 111)
-		{
-			oslDrawString(35,87,"222/111");
-		}
+	else if(getCpuClock() == 222 && getBusClock() == 111)
+	{
+		oslDrawString(35,87,"222/111");
+	}
 		
-		else if(getCpuClock() == 266 && getBusClock() == 133)
-		{
-			oslDrawString(35,87,"266/133");
-		}
+	else if(getCpuClock() == 266 && getBusClock() == 133)
+	{
+		oslDrawString(35,87,"266/133");
+	}
 		
-		else if(getCpuClock() == 300 && getBusClock() == 150)
-		{
-			oslDrawString(35,87,"300/150");
-		}
+	else if(getCpuClock() == 300 && getBusClock() == 150)
+	{
+		oslDrawString(35,87,"300/150");
+	}
 		
-		else if(getCpuClock() == 333 && getBusClock() == 166)
-		{
-			oslDrawString(35,87,"333/166");
-		}
+	else if(getCpuClock() == 333 && getBusClock() == 166)
+	{
+		oslDrawString(35,87,"333/166");
+	}
 }
 
 void pspgetmodel()
 {
-		char pspmodel = kuKernelGetModel();
+	char pspmodel = kuKernelGetModel();
 	
-		if(pspmodel == 0)
-		{
-			oslDrawString(37,133,"Model: PSP 1000");
-		}
+	if(pspmodel == 0)
+	{
+		oslDrawString(37,133,"Model: PSP 1000");
+	}
    
-		else if(pspmodel == 1)
-		{
-			oslDrawString(37,133,"Model: PSP 2000");
-		}
+	else if(pspmodel == 1)
+	{
+		oslDrawString(37,133,"Model: PSP 2000");
+	}
    
-		else if (pspmodel == 2)
-		{
-			oslDrawString(37,133,"Model: PSP 3000");
-		}
+	else if (pspmodel == 2)
+	{
+		oslDrawString(37,133,"Model: PSP 3000");
+	}
    
-		else if(pspmodel == 3)
-		{
-			oslDrawString(37,133,"Model: PSP 3000");
-		}
+	else if(pspmodel == 3)
+	{
+		oslDrawString(37,133,"Model: PSP 3000");
+	}
 		
-		else if (pspmodel == 4)
-		{
-			oslDrawString(37,133,"Model: PSP Go N1000");
-		}
+	else if (pspmodel == 4)
+	{
+		oslDrawString(37,133,"Model: PSP Go N1000");
+	}
    
-		else
-		{
-			oslDrawString(37,133,"Model: PS Vita");
-		}
+	else
+	{
+		oslDrawString(37,133,"Model: PS Vita");
+	}
 }
 
 void about_menu()
@@ -462,10 +458,9 @@ void about_menu()
 		{
 			screenshot();
 		}
-		
-		oslEndDrawing();
-        oslSyncFrame();
-        oslAudioVSync();
+	oslEndDrawing();
+    oslSyncFrame();
+    oslAudioVSync();
 }
 }
 
@@ -547,10 +542,9 @@ void updates_menu()
 		{
 			screenshot();
 		}
-		
-		oslEndDrawing();
-        oslSyncFrame();
-        oslAudioVSync();
+	oslEndDrawing();
+    oslSyncFrame();
+    oslAudioVSync();
 }
 	oslNetTerm();
 }
@@ -635,18 +629,17 @@ void performance_menu()
 		{
 			screenshot();
 		}
-	
-		oslEndDrawing();
-        oslSyncFrame();
-        oslAudioVSync();
+	oslEndDrawing();
+    oslSyncFrame();
+    oslAudioVSync();
 }
 }
 
 void wait_release(unsigned int buttons) 
 { 
     SceCtrlData pad; 
-
     sceCtrlReadBufferPositive(&pad, 1); 
+	
     while (pad.Buttons & buttons) 
     { 
         sceKernelDelayThread(100000); 
@@ -654,13 +647,12 @@ void wait_release(unsigned int buttons)
     } 
 } 
 
-
 unsigned int wait_press(unsigned int buttons) 
 { 
     SceCtrlData pad; 
-
-    sceCtrlReadBufferPositive(&pad, 1); 
-    while (1) 
+	sceCtrlReadBufferPositive(&pad, 1); 
+    
+	while (1) 
     { 
         if (pad.Buttons & buttons) 
             return pad.Buttons & buttons; 
@@ -779,10 +771,9 @@ void processor_menu(int argc, char *argv[])
 		{
 			screenshot();
 		}
-		
-		oslEndDrawing();
-        oslSyncFrame();
-        oslAudioVSync();
+	oslEndDrawing();
+    oslSyncFrame();
+    oslAudioVSync();
 }
 }
 
@@ -994,10 +985,9 @@ void theme_menu()
 		{
 			screenshot();
 		}
-		
-		oslEndDrawing();
-        oslSyncFrame();
-        oslAudioVSync();
+	oslEndDrawing();
+    oslSyncFrame();
+    oslAudioVSync();
 }
 }
 
@@ -1019,7 +1009,7 @@ void wifi_menu()
     int numconfigs = oslGetNetConfigs(configs);
 	if (!numconfigs)
 	{
-        sprintf(Settings_message, "No configuration found!");
+        sprintf(Settings_message, "No WiFi configuration found");
         enabled = 0;
     }
 	
@@ -1039,7 +1029,8 @@ void wifi_menu()
 		oslDrawImageXY(wifibg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 
-		 if (enabled){
+		 if (enabled)
+		 {
                 sprintf(buffer, "%s", configs[selectedConfig].name);
     			oslDrawString(30, wifi_y+28, configs[selectedConfig].name);
          }
@@ -1053,15 +1044,20 @@ void wifi_menu()
 		navbar_buttons();
 		android_notif();
 		
-		 if (osl_keys->released.cross){
+		 if (osl_keys->released.cross)
+		 {
             connectToAP(selectedConfig + 1);
-        }else if (osl_keys->released.up){
-            if (++selectedConfig >= numconfigs)
-                selectedConfig = numconfigs - 1;
-        }else if (osl_keys->released.down){
-            if (--selectedConfig < 0)
-                selectedConfig = 0;
-        }
+         }
+		 else if (osl_keys->released.up)
+		 {
+		 	 if (++selectedConfig >= numconfigs)
+				selectedConfig = numconfigs - 1;
+         } 
+		 else if (osl_keys->released.down)
+		 {
+			 if (--selectedConfig < 0)
+				selectedConfig = 0;
+         }
 		
 		oslDrawImage(cursor);
 		
@@ -1103,12 +1099,11 @@ void wifi_menu()
 		if (osl_pad.held.R && osl_pad.held.triangle)
 		{
 			screenshot();
-		}
-		
-		oslEndDrawing();
-        oslSyncFrame();
-        oslAudioVSync();
-}	
+		}	
+	oslEndDrawing();
+    oslSyncFrame();
+    oslAudioVSync();
+}
 	oslNetTerm();
 }
 
@@ -1220,21 +1215,22 @@ void developer_menu()
 
 			LoadStartModule("modules/psplink.prx");
 			PSPDebug = 1;
-				if(PSPDebug == 1  && osl_pad.held.triangle)
-				{	
+			
+			if(PSPDebug == 1  && osl_pad.held.triangle)
+			{	
 				StopUnloadModule("modules/psplink.prx");			
-				}
+			}
 		}
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 55 && cursor->y <= 108 && osl_pad.held.cross)
 		{	
 			RJL = 1;
 			LoadStartModule("modules/RemoteJoyLite.prx");
-			
-				if(RJL == 1 && osl_pad.held.triangle)
-				{	
+
+			if(RJL == 1 && osl_pad.held.triangle)
+			{	
 				StopUnloadModule("modules/RemoteJoyLite.prx");
-				}
+			}
 		}
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 222 && cursor->y <= 278 && osl_pad.held.cross)
@@ -1345,11 +1341,11 @@ int settingsmenu()
 		
 		if (osl_pad.held.select)
 		{
-		enableUsb();
+			enableUsb();
 		}
 		else if (osl_pad.held.select)
 		{
-		disableUsb();
+			disableUsb();
 		}
 		
 		if (osl_pad.held.circle)
@@ -1413,12 +1409,8 @@ int settingsmenu()
 		{
 			screenshot();
 		}
-		
-        oslEndDrawing();
-        
-        oslEndFrame();
-        oslSyncFrame();
-        oslAudioVSync();
-		}
+	oslEndDrawing();
+    oslSyncFrame();
+    oslAudioVSync();
 }
-
+}
