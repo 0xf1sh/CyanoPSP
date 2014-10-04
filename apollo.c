@@ -23,10 +23,94 @@
 OSL_IMAGE *mp3bg, *cursor, *wificon, *nowplaying, *mp3_select;
 OSL_FONT *pgfFont;
 
+int MP3Scan(const char* path);
 void mp3Up();
 void mp3Down();
 void mp3Controls();
 char * mp3Browse(const char * path);
+
+int MP3Scan(const char* path )
+{
+	curScroll = 1;
+	sprintf(lastDir, path);
+
+	int i;
+	for (i=0; i<=MAX_FILES; i++)	// erase old folders
+		dirScan[i].exist = 0;
+
+	int x;
+	for (x=0; x<=MAX_FILES; x++) {
+		folderIcons[x].active = 0;
+	}
+
+	int fd = sceIoDopen(path);
+
+	i = 1;
+	
+	if (fd) {
+		if (!(stricmp(path, "ms0:")==0 || (stricmp(path, "ms0:/")==0))) {
+
+			sceIoDread(fd, &g_dir);		// get rid of '.' and '..'
+			sceIoDread(fd, &g_dir);
+
+			// Create our own '..'
+			folderIcons[1].active = 1; 
+			sprintf(folderIcons[1].filePath, "doesn't matter");
+			sprintf(folderIcons[1].name, "..");
+			sprintf(folderIcons[1].fileType, "dotdot");
+
+			x = 2;
+		} else {
+			x = 1;
+		}
+		while ( sceIoDread(fd, &g_dir) && i<=MAX_FILES ) {
+			sprintf( dirScan[i].name, g_dir.d_name );
+			sprintf( dirScan[i].path, "%s/%s", path, dirScan[i].name );
+			
+			//skip . and .. entries
+			if (!strcmp(".", g_dir.d_name) || !strcmp("..", g_dir.d_name)) 
+			{
+				memset(&g_dir, 0, sizeof(SceIoDirent));
+				continue;
+			};
+
+			if (g_dir.d_stat.st_attr & FIO_SO_IFDIR) {
+				dirScan[i].directory = 1;
+				dirScan[i].exist = 1;
+			} else {
+				dirScan[i].directory = 0;
+				dirScan[i].exist = 1;
+			}
+
+			dirScan[i].size = g_dir.d_stat.st_size;
+			i++;
+		}
+	}
+
+	sceIoDclose(fd);
+
+	for (i=1; i<MAX_FILES; i++) {
+		if (dirScan[i].exist == 0) break;
+		folderIcons[x].active = 1;
+		sprintf(folderIcons[x].filePath, dirScan[i].path);
+		sprintf(folderIcons[x].name, dirScan[i].name);
+
+		char *suffix = strrchr(dirScan[i].name, '.');
+		
+		if (dirScan[i].directory == 1) {      // if it's a directory
+			sprintf(folderIcons[x].fileType, "fld");
+		} 
+		else if ((dirScan[i].directory == 0) && (suffix)) {		// if it's not a directory
+			sprintf(folderIcons[x].fileType, "none");
+		}
+		else if (!(suffix)) {
+			sprintf(folderIcons[x].fileType, "none");
+		}
+		x++;
+	}
+
+	return 1;
+}
 
 void mp3Up()
 {
@@ -93,19 +177,10 @@ void mp3Controls() //Controls
 			mp3Up();
 			timer = 0;
 		}
-		if ((pad.Buttons & PSP_CTRL_CROSS) && (!(oldpad.Buttons & PSP_CTRL_CROSS))) {
-			runFile(folderIcons[current].filePath, folderIcons[current].fileType);
-		}
 		if ((pad.Buttons & PSP_CTRL_TRIANGLE) && (!(oldpad.Buttons & PSP_CTRL_TRIANGLE))) {
 			if (!(stricmp(lastDir, "ms0:")==0) || (stricmp(lastDir, "ms0:/")==0)) {
 				curScroll = 1;
 				current = 1;
-			}
-		}
-		if ((pad.Buttons & PSP_CTRL_CIRCLE) && (!(oldpad.Buttons & PSP_CTRL_CIRCLE))) {
-		if(!strcmp("ms0:/", lastDir)) //pressed circle in root folder
-			{
-			dirBack();
 			}
 		}
 	}
@@ -158,7 +233,7 @@ void mp3Controls() //Controls
 
 char * mp3Browse(const char * path)
 {
-	folderScan(path);
+	MP3Scan(path);
 	dirVars();
 	
 	while (!osl_quit)
