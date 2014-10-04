@@ -59,272 +59,230 @@ int initOSLib(){
  
 void controls()
 {
-		int llimit = 0;
-		int rlimit = 460;
-		int ulimit = 0;
-		int dlimit = 252;
+	int llimit = 0;
+	int rlimit = 460;
+	int ulimit = 0;
+	int dlimit = 252;
 		
-		//Read keys
-		oslReadKeys();
+	//Read keys
+	oslReadKeys();
 		
-		if(osl_keys->analogX >= 50)
+	if(osl_keys->analogX >= 50)
 		cursor->x+= osl_keys->analogX/30;
 		
-		if(osl_keys->analogX <= -50)
+	if(osl_keys->analogX <= -50)
 		cursor->x+=osl_keys->analogX/30;
 
-		if(osl_keys->analogY >= 50)
+	if(osl_keys->analogY >= 50)
 		cursor->y+= osl_keys->analogY/30;
 		
-		if(osl_keys->analogY <= -50)
+	if(osl_keys->analogY <= -50)
 		cursor->y+= osl_keys->analogY/30;
 		
-		if (cursor->x <= llimit)
-		{cursor->x = llimit;}
+	if (cursor->x <= llimit)
+	{
+		cursor->x = llimit;
+	}
 		
-		else if (cursor->x >= rlimit)
-		{cursor->x = rlimit;}
+	else if (cursor->x >= rlimit)
+	{
+		cursor->x = rlimit;
+	}
 		
-		if (cursor->y <= ulimit)
-		{cursor->y = ulimit;}
+	if (cursor->y <= ulimit)
+	{	
+		cursor->y = ulimit;
+	}
 		
-		else if (cursor->y >= dlimit)
-		{cursor->y = dlimit;}
+	else if (cursor->y >= dlimit)
+	{
+		cursor->y = dlimit;
+	}
 		
-		//Touch tones
-        if (osl_keys->pressed.cross) oslPlaySound(tone, 1);         
-        // It loads the sound file defined in the tones variable  when the
-        //  cross button is pressed, in channel 1. 
-			
+	//Touch tones
+	if (osl_keys->pressed.cross) oslPlaySound(tone, 1);         
+	// It loads the sound file defined in the tones variable  when the cross button is pressed, in channel 1.
 }
 
 void battery()
 {
-		int batx = 400;
-		int baty = 2;
-		int batteryLife;
+	int batx = 400;
+	int baty = 2;
+	int batteryLife;
 	
-		batteryLife = scePowerGetBatteryLifePercent();
+	batteryLife = scePowerGetBatteryLifePercent();
  
-		if (batteryLife == 100)
-			oslDrawImageXY(batt100,batx,baty);
-		else if (batteryLife >80 && batteryLife <= 100) 
-			oslDrawImageXY(batt80,batx,baty);
-		else if (batteryLife >60 && batteryLife <= 80)
-			oslDrawImageXY(batt60,batx,baty);
-		else if (batteryLife >40 && batteryLife <= 60)
-			oslDrawImageXY(batt40,batx,baty);
-		else if (batteryLife >20 && batteryLife <= 40) 
-			oslDrawImageXY(batt20,batx,baty);
-		else if (batteryLife >10 && batteryLife <= 20)
-			oslDrawImageXY(batt10,batx,baty);
-		else if (batteryLife >0 && batteryLife <= 10)
-			oslDrawImageXY(batt0,batx,baty);
+	if (batteryLife == 100)
+		oslDrawImageXY(batt100,batx,baty);
+	else if (batteryLife >80 && batteryLife <= 100) 
+		oslDrawImageXY(batt80,batx,baty);
+	else if (batteryLife >60 && batteryLife <= 80)
+		oslDrawImageXY(batt60,batx,baty);
+	else if (batteryLife >40 && batteryLife <= 60)
+		oslDrawImageXY(batt40,batx,baty);
+	else if (batteryLife >20 && batteryLife <= 40) 
+		oslDrawImageXY(batt20,batx,baty);
+	else if (batteryLife >10 && batteryLife <= 20)
+		oslDrawImageXY(batt10,batx,baty);
+	else if (batteryLife >0 && batteryLife <= 10)
+		oslDrawImageXY(batt0,batx,baty);
 			
-		if (scePowerIsBatteryCharging() == 1)
-			oslDrawImageXY(battcharge,batx,baty);
-		
+	if (scePowerIsBatteryCharging() == 1)
+		oslDrawImageXY(battcharge,batx,baty);	
 }
 
 void appdrawericon()
 {
-		if (cursor->x  >= 215 && cursor->x  <= 243 && cursor->y >= 195 && cursor->y <= 230)
+	if (cursor->x  >= 215 && cursor->x  <= 243 && cursor->y >= 195 && cursor->y <= 230)
 		oslDrawImageXY(ic_allapps_pressed,223,200);
 	
-		else
+	else
 		oslDrawImageXY(ic_allapps,223,200);
 }
 
 void navbar_buttons()
 {		
-		oslDrawImageXY(navbar, 110, 237);
+	oslDrawImageXY(navbar, 110, 237);
 		
-		if (cursor->x  >= 144 && cursor->x  <= 204 && cursor->y >= 226 && cursor->y <= 271)
+	if (cursor->x  >= 144 && cursor->x  <= 204 && cursor->y >= 226 && cursor->y <= 271)
 		oslDrawImageXY(backicon,110, 237);
 	
-		else
+	else
 		oslDrawImageXY(navbar,110, 237);
 		
-		if (cursor->x  >= 205 && cursor->x  <= 271 && cursor->y >= 226 && cursor->y <= 271)
+	if (cursor->x  >= 205 && cursor->x  <= 271 && cursor->y >= 226 && cursor->y <= 271)
 		oslDrawImageXY(homeicon,110, 237);
 	
-		else
+	else
 		oslDrawImageXY(navbar,110, 237);
 		
-		if (cursor->x  >= 272 && cursor->x  <= 332 && cursor->y >= 226 && cursor->y <= 271)
+	if (cursor->x  >= 272 && cursor->x  <= 332 && cursor->y >= 226 && cursor->y <= 271)
 		oslDrawImageXY(multicon,110, 237);
 	
-		else
+	else
 		oslDrawImageXY(navbar,110, 237);
 }
 
 void android_notif()
 {		
-		oslDrawImageXY(notif,0,notif_y);
+	oslDrawImageXY(notif,0,notif_y);
 		
-		getDayOfWeek(65,yPos1);
-		getMonthOfYear(65,yPos2+5);
+	getDayOfWeek(65,yPos1);
+	getMonthOfYear(65,yPos2+5);
 		
-		oslDrawStringf(1,yLine1, "BRIGHTNESS");
-		oslDrawStringf(90,yLine1, "SETTINGS");
-		oslDrawStringf(185,yLine1, "Wi-Fi");
-		oslDrawStringf(268,yLine1, "%d%%",scePowerGetBatteryLifePercent());
-		oslDrawStringf(340,yLine1, "ROTATE");
-		oslDrawStringf(428,yLine1, "SLEEP");
+	oslDrawStringf(1,yLine1, "BRIGHTNESS");
+	oslDrawStringf(90,yLine1, "SETTINGS");
+	oslDrawStringf(185,yLine1, "Wi-Fi");
+	oslDrawStringf(268,yLine1, "%d%%",scePowerGetBatteryLifePercent());
+	oslDrawStringf(340,yLine1, "ROTATE");
+	oslDrawStringf(428,yLine1, "SLEEP");
 		
-		oslDrawStringf(25,yLine2, "LOCK-");
-		oslDrawStringf(20,yLine2+10, "SCREEN");
-		oslDrawStringf(90,yLine2, "HEADS UP");
-		oslDrawStringf(95,yLine2+10, "ENABLED");
+	oslDrawStringf(25,yLine2, "LOCK-");
+	oslDrawStringf(20,yLine2+10, "SCREEN");
+	oslDrawStringf(90,yLine2, "HEADS UP");
+	oslDrawStringf(95,yLine2+10, "ENABLED");
 		
-		digitaltime(2,yPos1,40);
+	digitaltime(2,yPos1,40);
 				
-		if ((osl_pad.held.cross && notif_y == 0 && cursor->x >= 0 && cursor->x <= 480 && cursor->y <= 1) || (osl_pad.held.cross && notif_y == 0 && cursor->y >= 246))
-		{
+	if ((osl_pad.held.cross && notif_y == 0 && cursor->x >= 0 && cursor->x <= 480 && cursor->y <= 1) || (osl_pad.held.cross && notif_y == 0 && cursor->y >= 246))
+	{
+		notif_up = 1;
+		notif_down = 0;
+	}
+		
+	if (notif_up == 1) 
+	{
+		notif_y = notif_y-10;
+		yPos1 = yPos1-10;
+		yPos2 = yPos2-10;
+		yLine1 = yLine1-10;
+		yLine2 = yLine2-10;
+	}
+		
+	if (notif_y <= -272) 
+	{
+		notif_y = -272;
+		yPos1 = -272;
+		yPos2 = -272;
+		yLine1 = -272;
+		yLine2 = -272;
+		notif_enable = 0;
+		notif_up = 0;
+	}
+
+	if (notif_y < -272)
+	{
+		notif_y = -272;
+		yPos1 = -272;
+		yPos2 = -272;
+		yLine1 = -272;
+		yLine2 = -272;
+	}
+		
+	if (osl_pad.held.cross && cursor->x >= 0 && cursor->x <= 480  && cursor->y <= 1 && notif_y == -272) 
+	{
+		notif_down = 1;
+		notif_up = 0;
+		notif_enable = 1;
+	}
+		
+	if (notif_down == 1) 
+	{
+		notif_y = notif_y+10;
+		yPos1 = yPos1+10;
+		yPos2 = yPos2+10;
+		yLine1 = yLine1+10;
+		yLine2 = yLine2+10;
+	}
+		
+	if (notif_y == 0)
+	{
+		notif_down = 0;
+		notif_enable = 1;
+	}
+		
+	if (notif_y > 0) 
+	{
+		notif_y = 0;
+		yPos1 = 10;
+		yPos2 = 20;
+		yLine1 = 110;
+		yLine2 = 200;
+		
+		if (cursor->x >= 80 && cursor->x <= 158 && cursor->y >= 41 && cursor->y <= 135 && osl_pad.held.cross)
+		{	
 			notif_up = 1;
 			notif_down = 0;
+			settingsmenu();
 		}
 		
-		if (notif_up == 1) 
-		{
-			notif_y = notif_y-10;
-			yPos1 = yPos1-10;
-			yPos2 = yPos2-10;
-			yLine1 = yLine1-10;
-			yLine2 = yLine2-10;
-		}
-		
-		if (notif_y <= -272) 
-		{
-			notif_y = -272;
-			yPos1 = -272;
-			yPos2 = -272;
-			yLine1 = -272;
-			yLine2 = -272;
-			notif_enable = 0;
-			notif_up = 0;
-		}
-
-		if (notif_y < -272)
-		{
-			notif_y = -272;
-			yPos1 = -272;
-			yPos2 = -272;
-			yLine1 = -272;
-			yLine2 = -272;
-		}
-		
-		if (osl_pad.held.cross && cursor->x >= 0 && cursor->x <= 480  && cursor->y <= 1 && notif_y == -272) 
-		{
-			notif_down = 1;
-			notif_up = 0;
-			notif_enable = 1;
-		}
-		
-		if (notif_down == 1) 
-		{
-			notif_y = notif_y+10;
-			yPos1 = yPos1+10;
-			yPos2 = yPos2+10;
-			yLine1 = yLine1+10;
-			yLine2 = yLine2+10;
-		}
-		
-		if (notif_y == 0)
-		{
-			notif_down = 0;
-			notif_enable = 1;
-		}
-		
-		if (notif_y > 0) 
-		{
-			notif_y = 0;
-			yPos1 = 10;
-			yPos2 = 20;
-			yLine1 = 110;
-			yLine2 = 200;
-			if (cursor->x >= 80 && cursor->x <= 158 && cursor->y >= 41 && cursor->y <= 135 && osl_pad.held.cross)
-			{	
-				notif_up = 1;
-				notif_down = 0;
-				settingsmenu();
-			}
-			if (cursor->x >= 162 && cursor->x <= 239 && cursor->y >= 41 && cursor->y <= 135 && osl_pad.held.cross)
-			{	
-				notif_up = 1;
-				notif_down = 0;
-				wifi_menu();
-			}
-			if (cursor->x >= 405 && cursor->x <= 480 && cursor->y >= 41 && cursor->y <= 135 && osl_pad.held.cross)
-			{	
-				notif_up = 1;
-				notif_down = 0;
-				standby_device();
-			}
-			if (cursor->x >= 1 && cursor->x <= 78 && cursor->y >= 138 && cursor->y <= 232 && osl_pad.held.cross)
-			{	
-				notif_up = 1;
-				notif_down = 0;
-				lockscreen();
-			}
-		}
-}
-
-void android_notif2()
-{		
-		oslDrawImageXY(notif2,0,notif_y);
-		
-		if ((osl_pad.held.cross && notif_y == 0 && cursor->x >= 241 && cursor->x <=480 && cursor->y <= 1) || (osl_pad.held.cross && notif_y == 0 && cursor->y >= 246))
-		{
+		if (cursor->x >= 162 && cursor->x <= 239 && cursor->y >= 41 && cursor->y <= 135 && osl_pad.held.cross)
+		{	
 			notif_up = 1;
 			notif_down = 0;
-		}
-	
-		if (notif_up == 1) 
-		{
-			notif_y=notif_y-10;
+			wifi_menu();
 		}
 		
-		if (notif_y <= -272) 
-		{
-			notif_y = -272;
-			notif_enable = 0;
-			notif_up = 0;
-		}
-
-		if (notif_y < -272)
-		{
-			notif_y = -272;
-		}
-		
-		if (osl_pad.held.cross && cursor->x >= 240 && cursor->x <=480 && cursor->y <= 1  && notif_y == -272) 
-		{
-			notif_down = 1;
-			notif_up = 0;
-			notif_enable = 1;
-		}
-		
-		if (notif_down == 1) 
-		{
-			notif_y = notif_y+10;
-		}
-		
-		if (notif_y == 0)
-		{
+		if (cursor->x >= 405 && cursor->x <= 480 && cursor->y >= 41 && cursor->y <= 135 && osl_pad.held.cross)
+		{	
+			notif_up = 1;
 			notif_down = 0;
-			notif_enable = 1;
+			standby_device();
 		}
 		
-		if (notif_y > 0) 
-		{
-			notif_y = 0;	
+		if (cursor->x >= 1 && cursor->x <= 78 && cursor->y >= 138 && cursor->y <= 232 && osl_pad.held.cross)
+		{	
+			notif_up = 1;
+			notif_down = 0;
+			lockscreen();
 		}
+	}
 }
 
 void internet()
 {
-int browser = 0; 
-    int skip=0; 
+	int browser = 0; 
+    int skip = 0; 
     oslNetInit(); 
     oslBrowserInit("https://www.google.com/","/PSP/GAME/CyanogenMod/downloads",10*1024*1024, 
                         PSP_UTILITY_HTMLVIEWER_DISPLAYMODE_SMART_FIT, 
@@ -362,35 +320,35 @@ void firstBootMessage()
 	
 	if(!firstBootTxt)
 	{
-	FILE * firstBootTxt = fopen("system/firstBoot.txt", "w");
-	fprintf(firstBootTxt, "1", firstBoot);
-	fclose(firstBootTxt);
+		FILE * firstBootTxt = fopen("system/firstBoot.txt", "w");
+		fprintf(firstBootTxt, "1", firstBoot);
+		fclose(firstBootTxt);
 	}
 	
 	fscanf(firstBootTxt,"%d",&firstBoot);
 
-		if (firstBoot!= 0)
-		{
-			oslDrawImageXY(transbackground, 0, 0);
-			oslDrawImageXY(welcome, 140, 40);
-			oslDrawImageXY(ok, 360, 200);
-			fclose(firstBootTxt);
+	if (firstBoot!= 0)
+	{
+		oslDrawImageXY(transbackground, 0, 0);
+		oslDrawImageXY(welcome, 140, 40);
+		oslDrawImageXY(ok, 360, 200);
+		fclose(firstBootTxt);
 	
-			if (cursor->x >= 360 && cursor->x <= 460 && cursor->y >= 200 && cursor->y <= 250 && osl_pad.held.cross)
-			{
-				firstBootTxt = fopen("system/firstBoot.txt", "w"); 
-				fprintf(firstBootTxt, "0", firstBoot);
-				fclose(firstBootTxt);
-			}
-		}
-		
-		if (firstBoot == 0)
+		if (cursor->x >= 360 && cursor->x <= 460 && cursor->y >= 200 && cursor->y <= 250 && osl_pad.held.cross)
 		{
-			home();
-			oslDeleteImage(welcome);
-			oslDeleteImage(ok);
-			oslDeleteImage(transbackground);
+			firstBootTxt = fopen("system/firstBoot.txt", "w"); 
+			fprintf(firstBootTxt, "0", firstBoot);
+			fclose(firstBootTxt);
 		}
+	}
+		
+	if (firstBoot == 0)
+	{
+		home();
+		oslDeleteImage(welcome);
+		oslDeleteImage(ok);
+		oslDeleteImage(transbackground);
+	}
 	fclose(firstBootTxt);
 }
 
