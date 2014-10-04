@@ -353,59 +353,37 @@ int browser = 0;
     oslNetTerm();
 }
 
-int firstBoot;
-int num = 0;
-
-void firstBootLoad(){
-
-	FILE * firstboottxt;
-
-	fopen("firstboot.txt", "r");
-
-	if(!firstboottxt) 
-	return firstBootSave();
-
-	fclose(firstboottxt);	
-}
-
-void firstBootSave(){
-
-	FILE * firstboottxt;
-
-	fopen("firstboot.txt", "w");
-
-	firstBoot = 1;	
-	num= fprintf(firstboottxt, "%d", firstBoot);
-	
-	fclose(firstboottxt);	
-
-}
-
 //First Boot Message
-void firstBootMessage(){
+void firstBootMessage()
+{	
+	int firstBoot;
 
-	FILE * firstboottxt;
+	FILE * firstBootTxt = fopen("system/firstBoot.txt", "r");
+	
+	fscanf(firstBootTxt,"%d",&firstBoot);
 
-	fopen("firstboot.txt", "r");
+		if (firstBoot!= 0)
+		{
+			oslDrawImageXY(transbackground, 0, 0);
+			oslDrawImageXY(welcome, 140, 40);
+			oslDrawImageXY(ok, 360, 200);
+			fclose(firstBootTxt);
 	
-	if(firstBoot==1)
-	{
-	oslDrawImageXY(transbackground, 0, 0);
-	oslDrawImageXY(welcome, 140, 40);
-	oslDrawImageXY(ok, 360, 200);
-	}
-	
-	if (cursor->x >= 360 && cursor->x <= 460 && cursor->y >= 200 && cursor->y <= 250 && osl_pad.held.cross)
-	{
-		oslDeleteImage(welcome);
-		oslDeleteImage(ok);
-		oslDeleteImage(transbackground);
-		home();
-		fopen("firstboot.txt", "w"); 
-		firstBoot = 0;	
-		num= fprintf(firstboottxt, "%d", firstBoot);
-		fclose(firstboottxt);
-	}
+			if (cursor->x >= 360 && cursor->x <= 460 && cursor->y >= 200 && cursor->y <= 250 && osl_pad.held.cross)
+			{
+				firstBootTxt = fopen("system/firstBoot.txt", "w"); 
+				fprintf(firstBootTxt, "0", firstBoot);
+				fclose(firstBootTxt);
+			}
+		}
+		
+		if (firstBoot == 0)
+		{
+			home();
+			oslDeleteImage(welcome);
+			oslDeleteImage(ok);
+			oslDeleteImage(transbackground);
+		}
 }
 
 void setfont()
@@ -514,6 +492,7 @@ int main()
 		battery();
 		navbar_buttons();
 		android_notif();
+		firstBootMessage();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.home)
