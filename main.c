@@ -318,14 +318,19 @@ void firstBootMessage()
 
 	FILE * firstBootTxt = fopen("system/firstBoot.txt", "r");
 	
-	if(!firstBootTxt)
+	if (fileExists("system/firstBoot.txt"))
 	{
-		FILE * firstBootTxt = fopen("system/firstBoot.txt", "w");
+	fscanf(firstBootTxt,"%d",&firstBoot);
+	fclose(firstBootTxt);
+	}
+	else
+	{
+		firstBootTxt = fopen("system/firstBoot.txt", "w");
 		fprintf(firstBootTxt, "1", firstBoot);
 		fclose(firstBootTxt);
 	}
 	
-	fscanf(firstBootTxt,"%d",&firstBoot);
+	
 
 	if (firstBoot!= 0)
 	{
@@ -349,7 +354,6 @@ void firstBootMessage()
 		oslDeleteImage(ok);
 		oslDeleteImage(transbackground);
 	}
-	fclose(firstBootTxt);
 }
 
 void setfont()
