@@ -320,8 +320,8 @@ void firstBootMessage()
 	
 	if (fileExists("system/firstBoot.txt"))
 	{
-	fscanf(firstBootTxt,"%d",&firstBoot);
-	fclose(firstBootTxt);
+		fscanf(firstBootTxt,"%d",&firstBoot);
+		fclose(firstBootTxt);
 	}
 	else
 	{

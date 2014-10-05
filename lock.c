@@ -19,6 +19,8 @@ int lockscreen()
 	int click = 0;
 	int ending = 0;
 	int style = 0;
+	int musicApp = 0;
+	int messengerApp = 0;
 	
 	setfont();
 	
@@ -33,10 +35,6 @@ int lockscreen()
 
 	if (!background || !cursor || !lock || !unlock || !circle || !messengericon1 || !music || !circles)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-		
-	style = 0;
-	click = 0;
-	ending = 0;
 
 	while (!osl_quit)
 	{		
@@ -56,34 +54,34 @@ int lockscreen()
 		
 		if (osl_pad.held.cross && cursor->x >= 190 && cursor->x <= 290 && cursor->y >= 120 && cursor->y <= 220)
 		{
-				click = 1;
+			click = 1;
 		}
 		
 		if (! (osl_pad.held.cross))
 			click = 0;
 		if (ending == 1)
-		if (style == 0)
+		if (style == 0 && ! (osl_pad.held.cross))
 		{
 		lockscreen_deleteimages();
 		return;
 		}
 		
-		if (click == 1) {
+		if (click == 1)
+		{
 			oslDrawImageXY(messengericon1, 115,160);
 			oslDrawImageXY(music, 216,76);
 			oslDrawImageXY(circle, cursor->x - 50, cursor->y - 50);
-			}
+		}
 			
-		if (ending == 1) {
+		if (ending == 1) 
+		{
 			oslDrawImageXY(unlock, 300,130);
-			oslDrawImageXY(circle, 300,130);
-			}
+		}
 			
 		else
-			{
-			oslDrawImageXY(lock, 300,130);
-			
-			}
+		{
+			oslDrawImageXY(lock, 300,130);	
+		}
 			
 		if (cursor->x-50 >= 270 && cursor->x - 50 <= 330 && cursor->y - 50 >= 90 && cursor->y - 50 <= 160 && click == 1) 
 		{
@@ -98,20 +96,36 @@ int lockscreen()
 		
 		if (cursor->x >= 216 && cursor->x <= 276 && cursor->y >= 66 && cursor->y <= 116 && click == 1) 
 		{
-			ending = 0;
+			musicApp = 1;
 			oslDrawImageXY(music2, 193,57);
 		}
 		
 		if (cursor->x >= 90 && cursor->x <= 150 && cursor->y >= 125 && cursor->y <= 195 && click == 1) 
 		{
-			ending = 0;
+			messengerApp = 1;
 			oslDrawImageXY(messengericon2, 85,130);
 		}
-
+		
+		if (musicApp == 1)
+		{
+			if (! (osl_pad.held.cross))
+			{
+				mp3player();
+			}
+		}
+		
+		if (messengerApp == 1)
+		{
+			if (! (osl_pad.held.cross))
+			{
+				messenger();
+			}
+		}
+		
 		if (click == 0)
 		{
-		oslDrawImageXY(circle, 190,120);
-		oslDrawImageXY(lock, 190,120);
+			oslDrawImageXY(circle, 190,120);
+			oslDrawImageXY(lock, 190,120);
 		}
 		oslDrawImage(cursor);
 
@@ -120,9 +134,9 @@ int lockscreen()
 			screenshot();
 		}
 		
-		oslEndDrawing();
-		oslSyncFrame();	
-        oslAudioVSync();
+	oslEndDrawing();
+	oslSyncFrame();	
+    oslAudioVSync();
 	}
 }
 

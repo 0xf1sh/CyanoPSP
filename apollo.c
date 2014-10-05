@@ -1,33 +1,12 @@
-#include <pspkernel.h>
-#include <pspctrl.h>
-#include <pspdebug.h>
-#include <pspaudio.h>
-#include <pspaudiolib.h>
-#include <psppower.h>
-#include <oslib/oslib.h>
-#include "mp3player.h"
-#include "fm.h"
+#include "apollo.h"
 #include "clock.h"
+#include "fm.h"
 #include "lock.h"
+#include "mp3player.h"
 #include "multi.h"
 #include "power_menu.h"
 #include "include/screenshot.h"
 #include "include/utils.h"
-
-#define MAX_MP3_DISPLAY			3 // max amount of files displayed on-screen.
-#define MP3_DISPLAY_X			20 // X value of where the filebrowser is displayed.
-#define MP3_DISPLAY_Y			108 // Y value of the filebrowser is displayed.
-#define MP3_CURR_DISPLAY_Y     	90 
-#define MP3DISPLAY_X        20
-
-OSL_IMAGE *mp3bg, *cursor, *wificon, *nowplaying, *mp3_select;
-OSL_FONT *pgfFont;
-
-int MP3Scan(const char* path);
-void mp3Up();
-void mp3Down();
-void mp3Controls();
-char * mp3Browse(const char * path);
 
 int MP3Scan(const char* path )
 {
@@ -39,7 +18,8 @@ int MP3Scan(const char* path )
 		dirScan[i].exist = 0;
 
 	int x;
-	for (x=0; x<=MAX_FILES; x++) {
+	for (x=0; x<=MAX_FILES; x++) 
+	{
 		folderIcons[x].active = 0;
 	}
 
@@ -47,9 +27,10 @@ int MP3Scan(const char* path )
 
 	i = 1;
 	
-	if (fd) {
-		if (!(stricmp(path, "ms0:")==0 || (stricmp(path, "ms0:/")==0))) {
-
+	if (fd) 
+	{
+		if (!(stricmp(path, "ms0:")==0 || (stricmp(path, "ms0:/")==0))) 
+		{
 			sceIoDread(fd, &g_dir);		// get rid of '.' and '..'
 			sceIoDread(fd, &g_dir);
 
@@ -60,10 +41,14 @@ int MP3Scan(const char* path )
 			sprintf(folderIcons[1].fileType, "dotdot");
 
 			x = 2;
-		} else {
+		} 
+		else 
+		{
 			x = 1;
 		}
-		while ( sceIoDread(fd, &g_dir) && i<=MAX_FILES ) {
+		
+		while ( sceIoDread(fd, &g_dir) && i<=MAX_FILES ) 
+		{
 			sprintf( dirScan[i].name, g_dir.d_name );
 			sprintf( dirScan[i].path, "%s/%s", path, dirScan[i].name );
 			
@@ -74,10 +59,13 @@ int MP3Scan(const char* path )
 				continue;
 			};
 
-			if (g_dir.d_stat.st_attr & FIO_SO_IFDIR) {
+			if (g_dir.d_stat.st_attr & FIO_SO_IFDIR) 
+			{
 				dirScan[i].directory = 1;
 				dirScan[i].exist = 1;
-			} else {
+			}
+			else 
+			{
 				dirScan[i].directory = 0;
 				dirScan[i].exist = 1;
 			}
@@ -90,20 +78,24 @@ int MP3Scan(const char* path )
 	sceIoDclose(fd);
 
 	for (i=1; i<MAX_FILES; i++) {
-		if (dirScan[i].exist == 0) break;
+		if (dirScan[i].exist == 0) 
+		break;
 		folderIcons[x].active = 1;
 		sprintf(folderIcons[x].filePath, dirScan[i].path);
 		sprintf(folderIcons[x].name, dirScan[i].name);
 
 		char *suffix = strrchr(dirScan[i].name, '.');
 		
-		if (dirScan[i].directory == 1) {      // if it's a directory
+		if (dirScan[i].directory == 1) 
+		{      // if it's a directory
 			sprintf(folderIcons[x].fileType, "fld");
 		} 
-		else if ((dirScan[i].directory == 0) && (suffix)) {		// if it's not a directory
+		else if ((dirScan[i].directory == 0) && (suffix)) 
+		{		// if it's not a directory
 			sprintf(folderIcons[x].fileType, "none");
 		}
-		else if (!(suffix)) {
+		else if (!(suffix)) 
+		{
 			sprintf(folderIcons[x].fileType, "none");
 		}
 		x++;
@@ -115,7 +107,8 @@ int MP3Scan(const char* path )
 void mp3Up()
 {
 	current--; // Subtract a value from current so the ">" goes up
-	if ((current <= curScroll-1) && (curScroll > 1)) {
+	if ((current <= curScroll-1) && (curScroll > 1)) 
+	{
 		curScroll--; // To do with how it scrolls
 	}
 }
@@ -123,7 +116,8 @@ void mp3Up()
 void mp3Down()
 {
 	if (folderIcons[current+1].active) current++; // Add a value onto current so the ">" goes down
-	if (current >= (MAX_MP3_DISPLAY+curScroll)) {
+	if (current >= (MAX_MP3_DISPLAY+curScroll)) 
+	{
 		curScroll++; // To do with how it scrolls
 	}
 }
@@ -137,27 +131,29 @@ void mp3FileDisplay()
 	digitaltime(420,4,458);
 	
 	// Displays the directories, while also incorporating the scrolling
-	for(i=curScroll;i<MAX_MP3_DISPLAY+curScroll;i++) {
-	
+	for(i=curScroll;i<MAX_MP3_DISPLAY+curScroll;i++) 
+	{
 		char * ext = strrchr(dirScan[i].name, '.'); //For file extension.
 	
 		// Handles the cursor and the display to not move past the MAX_MP3_DISPLAY.
 		// For moving down
 		//if ((folderIcons[i].active == 0) && (current >= i-1)) {
 	
-		if ((folderIcons[i].active == 0) && (current >= i-1)) {
+		if ((folderIcons[i].active == 0) && (current >= i-1)) 
+		{
 			current = i-1;
 			break;
 		}
 		// For moving up
-		if (current <= curScroll-1) {
+		if (current <= curScroll-1) 
+		{
 			current = curScroll-1;
 			break;
 		}
 		
 		// If the currently selected item is active, then display the name
-		if (folderIcons[i].active == 1) {
-			
+		if (folderIcons[i].active == 1)
+		{	
 			oslDrawStringf(MP3_DISPLAY_X, (i - curScroll)*55+MP3_DISPLAY_Y, folderIcons[i].name);	// change the X & Y value accordingly if you want to move it (for Y, just change the +10)		
 		}
 	}
@@ -169,15 +165,18 @@ void mp3Controls() //Controls
 
 	if (pad.Buttons != oldpad.Buttons) {
 	
-		if ((pad.Buttons & PSP_CTRL_DOWN) && (!(oldpad.Buttons & PSP_CTRL_DOWN))) {
+		if ((pad.Buttons & PSP_CTRL_DOWN) && (!(oldpad.Buttons & PSP_CTRL_DOWN))) 
+		{
 			mp3Down();
 			timer = 0;
 		}
-		else if ((pad.Buttons & PSP_CTRL_UP) && (!(oldpad.Buttons & PSP_CTRL_UP))) {
+		else if ((pad.Buttons & PSP_CTRL_UP) && (!(oldpad.Buttons & PSP_CTRL_UP))) 
+		{
 			mp3Up();
 			timer = 0;
 		}
-		if ((pad.Buttons & PSP_CTRL_TRIANGLE) && (!(oldpad.Buttons & PSP_CTRL_TRIANGLE))) {
+		if ((pad.Buttons & PSP_CTRL_TRIANGLE) && (!(oldpad.Buttons & PSP_CTRL_TRIANGLE))) 
+		{
 			if (!(stricmp(lastDir, "ms0:")==0) || (stricmp(lastDir, "ms0:/")==0)) {
 				curScroll = 1;
 				current = 1;
@@ -218,10 +217,13 @@ void mp3Controls() //Controls
 	}
 	
 	timer++;
-	if ((timer > 30) && (pad.Buttons & PSP_CTRL_UP)) {
+	if ((timer > 30) && (pad.Buttons & PSP_CTRL_UP)) 
+	{
 		mp3Up();
 		timer = 25;
-	} else if ((timer > 30) && (pad.Buttons & PSP_CTRL_DOWN)) {
+	}
+	else if ((timer > 30) && (pad.Buttons & PSP_CTRL_DOWN)) 
+	{
 		mp3Down();
 		timer = 25;
 	}
@@ -242,10 +244,10 @@ char * mp3Browse(const char * path)
 		oslClearScreen(RGB(0,0,0));	
 		
 		if (!strcmp(".", g_dir.d_name) || !strcmp("..", g_dir.d_name)) 
-			{
-				memset(&g_dir, 0, sizeof(SceIoDirent));
-				continue;
-			};
+		{
+			memset(&g_dir, 0, sizeof(SceIoDirent));
+			continue;
+		};
 		
 		oldpad = pad;
 		sceCtrlReadBufferPositive(&pad, 1);
@@ -254,14 +256,14 @@ char * mp3Browse(const char * path)
 		
 		sceDisplayWaitVblankStart();
 		
-		if (strlen(returnMe) > 4) {
+		if (strlen(returnMe) > 4) 
+		{
 			break;
 		}
-		oslEndDrawing();
-		oslSyncFrame();	
-        oslAudioVSync();
+	oslEndDrawing();
+	oslSyncFrame();	
+    oslAudioVSync();
 	}
-		
 	return returnMe;
 }
 
@@ -295,5 +297,3 @@ int mp3player()
         oslAudioVSync();
 		}
 }
-
-
