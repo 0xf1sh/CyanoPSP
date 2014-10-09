@@ -174,15 +174,8 @@ int LoadStartModule(char *module)
 
 int StopUnloadModule(char *module)
 {
-	SceUID mod = sceKernelLoadModule(module, 0, NULL);
-	
-	if (mod >= 0)
-    {
-		sceKernelStopModule(mod, 0, NULL, NULL, NULL);
-		sceKernelUnloadModule(mod);
-		if (mod < 0)
-            Error("Cannot load/start %s", module);
-    }
+	sceKernelStopModule(module, 0, NULL, NULL, NULL);
+	sceKernelUnloadModule(module);
 
     return 0;
 }
