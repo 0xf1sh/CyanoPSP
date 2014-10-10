@@ -68,67 +68,6 @@ const int cpu_list[] = { 20, 75, 100, 133, 166, 222, 266, 300, 333 };
 const int bus_list[] = { 10, 37, 50, 66, 83, 111, 133, 150, 166 };
 int current = 0;
 
-int connectAPCallback(int state){
-    oslStartDrawing();
-    oslDrawString(30, 200, "Connecting to AP...");
-    sprintf(buffer, "State: %i", state);
-    oslDrawString(30, 230, buffer);
-    oslEndDrawing();
-    oslEndFrame();
-    oslSyncFrame();
-
-    return 0;
-}
-
-int connectToAP(int config){
-    oslStartDrawing();
-    oslDrawString(30, 200, "Connecting to AP...");
-    oslEndDrawing();
-    oslEndFrame();
-    oslSyncFrame();
-
-    int result = oslConnectToAP(config, 30, connectAPCallback);
-    if (!result){
-        char ip[30] = "";
-        char resolvedIP[30] = "";
-
-        oslStartDrawing();
-        oslGetIPaddress(ip);
-        sprintf(buffer, "IP address: %s", ip);
-        oslDrawString(30, 170, buffer);
-
-        sprintf(buffer, "Resolving %s", Address);
-        oslDrawString(30, 200, buffer);
-        oslEndDrawing();
-        oslEndFrame();
-        oslSyncFrame();
-
-        result = oslResolveAddress(Address, resolvedIP);
-
-        oslStartDrawing();
-        oslGetIPaddress(ip);
-        if (!result)
-            sprintf(buffer, "Resolved IP address: %s", ip);
-        else
-            sprintf(buffer, "Error resolving address.");
-        oslDrawString(30, 230, buffer);
-        oslEndDrawing();
-        oslEndFrame();
-        oslSyncFrame();
-		sceKernelDelayThread(3*1000000);
-    }else{
-        oslStartDrawing();
-        sprintf(buffer, "Error connecting to AP.");
-        oslDrawString(200, 200, buffer);
-        oslEndDrawing();
-        oslEndFrame();
-        oslSyncFrame();
-		sceKernelDelayThread(3*1000000);
-    }
-    oslDisconnectFromAP();
-    return 0;
-}	
-
 int OnlineUpdater()
 {
 	int skip = 0;
@@ -242,13 +181,14 @@ void saveConfig()
 {
 	FILE * configtxt = fopen(configFile, "wb"); //create config file if it doesn't exist.
 	fprintf(configtxt,
-	"ro.build.version.release = %s\r\n\
-	ro.product.model = %d\r\n\
-	ro.product.locale.language = %s\r\n\
-	ro.build.user = Joel16\r\n\
-	ro.product.cpu.frequency =  %d\r\n\
-	ro.build.date = Sun Aug 24 12:06 PM EST 2014",
-	Version, kuKernelGetModel(),lang,setclock);
+"ro.build.version.release = %s\r\n\
+ro.product.model = %d\r\n\
+ro.product.locale.language = %s\r\n\
+ro.build.user = Joel16\r\n\
+ro.product.cpu.frequency =  %d\r\n\
+ro.product.bus.frequency =  %d\r\n\
+ro.build.date = Sun Aug 24 12:06 PM EST 2014",
+	Version, kuKernelGetModel(),lang,getCpuClock(),getBusClock());
 	fclose(configtxt);	
 }
 
@@ -662,8 +602,20 @@ unsigned int wait_press(unsigned int buttons)
     return 0;   /* never reaches here, again, just to suppress warning */ 
 } 
 
+void set_cpu_clock(int n)
+{
+	if(n==0)
+		scePowerSetClockFrequency(222,222,111);
+	else if(n==1)
+		scePowerSetClockFrequency(266,266,133);
+	else if(n==2)
+		scePowerSetClockFrequency(333,333,166);
+}
+
 void processor_menu(int argc, char *argv[])
 {	
+	int timer;
+
 	processorbg = oslLoadImageFilePNG("system/settings/processorbg.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	if (!processorbg)
@@ -671,9 +623,6 @@ void processor_menu(int argc, char *argv[])
 
 	setfont();
 	
-	u32 b; 
-	int cpu, bus, bmark; 
-
 	sceCtrlSetSamplingCycle(0); 
     sceCtrlSetSamplingMode(PSP_CTRL_MODE_DIGITAL); 
 	
@@ -698,7 +647,7 @@ void processor_menu(int argc, char *argv[])
 		oslDrawString(35,197,"20 MHz");
 		oslDrawString(35,236,"Maximum CPU Frequency");
 		oslDrawString(35,249,"333 MHz");
-	
+		
 		digitaltime(420,4,458);
 		battery();
 		
@@ -715,23 +664,24 @@ void processor_menu(int argc, char *argv[])
 		 setclock = 6;
 		 scePowerSetClockFrequency(222, 222, 111);
 		}
+				
+		if (current < 0)
+		{
+			current = MAX;
+		}
+		if (current > MAX)
+		{
+			current = 0;
+		}
 		
-		cpu = scePowerGetCpuClockFrequency(); 
-		bus = scePowerGetBusClockFrequency(); 
-		
-		 b = wait_press(0xffff); 
-		 wait_release(b);
-		
-		if (b & PSP_CTRL_RIGHT) 
-      { 
-         cpu++; 
-         scePowerSetClockFrequency(cpu, cpu, cpu/2); 
-      } 
-      if (b & PSP_CTRL_LEFT) 
-      { 
-         cpu--; 
-         scePowerSetClockFrequency(cpu, cpu, cpu/2); 
-      } 
+		if (pad.Buttons & PSP_CTRL_LTRIGGER)
+		{
+		set_cpu_clock(1);
+		}
+		if (pad.Buttons & PSP_CTRL_RTRIGGER)
+		{
+		set_cpu_clock(2);
+		}
 		
 		oslDrawStringf(35,87,"%d/%d",cpu_list[current],bus_list[current]);
 		
