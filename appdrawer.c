@@ -65,7 +65,7 @@ int appdrawer()
 	int settings_x = 396;
 	int settings_text_x = 397;
 
-	//loads appdrawer icons memory
+	//loads appdrawer icons
 	appdrawer_loadImages();
 	setfont();
 
@@ -116,23 +116,23 @@ int appdrawer()
 		battery();
 		navbar_buttons();
 		
-		if (settings_x >= 1 && fm_x >= 1 && settings_x <= 500 && fm_x <= 500)
-		{
-		oslDrawImageXY(pointer1, 221, 222);
-		oslDrawImageXY(pointer, 229, 221);
-		oslDrawImageXY(pointer1, 243, 222);
-		}
-		else if (settings_x <= -10 && fm_x <= -10)
+		if (settings_x <= -10 && fm_x <= -10)
 		{
 		oslDrawImageXY(pointer1, 221, 222);
 		oslDrawImageXY(pointer1, 231, 222);
 		oslDrawImageXY(pointer, 240, 221);
 		}
-		else
+		else if (apollo_x >= 500)
 		{
 		oslDrawImageXY(pointer, 220, 221);
 		oslDrawImageXY(pointer1, 234, 222);
 		oslDrawImageXY(pointer1, 244, 222);
+		}
+		else
+		{
+		oslDrawImageXY(pointer1, 221, 222);
+		oslDrawImageXY(pointer, 229, 221);
+		oslDrawImageXY(pointer1, 243, 222);
 		}
 		
 		android_notif();

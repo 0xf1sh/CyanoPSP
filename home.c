@@ -30,7 +30,7 @@ int home()
 		oslDrawImageXY(browser, 276, 190);
 		oslDrawImageXY(gmail, 331, 190);
 		oslDrawImageXY(messengericon, 160, 190);
-		oslDrawImageXY(pointer, 231, 180);
+		oslDrawImageXY(pointer, 230, 180);
 		
 		digitaltime(420,4,458);
 		appdrawericon();
@@ -89,10 +89,10 @@ int home()
 		{
 			screenshot();
 		}
-		
-		oslEndDrawing();
-		oslSyncFrame();	
-        oslAudioVSync();
+	
+	oslEndDrawing();
+	oslSyncFrame();	
+    oslAudioVSync();
 	}
 }
 
