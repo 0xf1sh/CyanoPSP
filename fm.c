@@ -481,6 +481,22 @@ void dirDown()
 	}
 }
 
+void dirUpx5()
+{
+	current -= 5;  // Subtract a value from current so the ">" goes up
+	if ((current <= curScroll-1) && (curScroll > 1)) {
+		curScroll -= 5;  // To do with how it scrolls
+	}
+}
+
+void dirDownx5()
+{
+	if (folderIcons[current+1].active) current += 5; // Add a value onto current so the ">" goes down
+	if (current >= (MAX_DISPLAY+curScroll)) {
+		curScroll += 5; // To do with how it scrolls
+	}
+}
+
 void dirDisplay()
 {	
 	oslDrawImageXY(filemanagerbg, 0, 19);
@@ -579,6 +595,14 @@ void dirControls() //Controls
 		}
 		else if ((pad.Buttons & PSP_CTRL_UP) && (!(oldpad.Buttons & PSP_CTRL_UP))) {
 			dirUp();
+			timer = 0;
+		}
+		if ((pad.Buttons & PSP_CTRL_RIGHT) && (!(oldpad.Buttons & PSP_CTRL_RIGHT))) {
+			dirDownx5();
+			timer = 0;
+		}
+		else if ((pad.Buttons & PSP_CTRL_LEFT) && (!(oldpad.Buttons & PSP_CTRL_LEFT))) {
+			dirUpx5();
 			timer = 0;
 		}
 		if ((pad.Buttons & PSP_CTRL_CROSS) && (!(oldpad.Buttons & PSP_CTRL_CROSS))) {
@@ -701,7 +725,6 @@ char * dirBrowse(const char * path)
 		oslSyncFrame();	
         oslAudioVSync();
 	}
-		
 	return returnMe;
 }
 

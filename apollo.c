@@ -122,6 +122,22 @@ void mp3Down()
 	}
 }
 
+void mp3Upx5()
+{
+	current -= 5;  // Subtract a value from current so the ">" goes up
+	if ((current <= curScroll-1) && (curScroll > 1)) {
+		curScroll -= 5;  // To do with how it scrolls
+	}
+}
+
+void mp3Downx5()
+{
+	if (folderIcons[current+1].active) current += 5; // Add a value onto current so the ">" goes down
+	if (current >= (MAX_DISPLAY+curScroll)) {
+		curScroll += 5; // To do with how it scrolls
+	}
+}
+
 void mp3FileDisplay()
 {	
 	oslDrawImageXY(mp3bg, 0, 19);
@@ -173,6 +189,14 @@ void mp3Controls() //Controls
 		else if ((pad.Buttons & PSP_CTRL_UP) && (!(oldpad.Buttons & PSP_CTRL_UP))) 
 		{
 			mp3Up();
+			timer = 0;
+		}
+		if ((pad.Buttons & PSP_CTRL_RIGHT) && (!(oldpad.Buttons & PSP_CTRL_RIGHT))) {
+			mp3Downx5();
+			timer = 0;
+		}
+		else if ((pad.Buttons & PSP_CTRL_LEFT) && (!(oldpad.Buttons & PSP_CTRL_LEFT))) {
+			mp3Upx5();
 			timer = 0;
 		}
 		if ((pad.Buttons & PSP_CTRL_TRIANGLE) && (!(oldpad.Buttons & PSP_CTRL_TRIANGLE))) 
