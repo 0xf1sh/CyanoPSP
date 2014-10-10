@@ -223,33 +223,33 @@ void battery()
 void appdrawericon()
 {
 	if (cursor->x  >= 215 && cursor->x  <= 243 && cursor->y >= 195 && cursor->y <= 230)
-		oslDrawImageXY(ic_allapps_pressed,218,199);
+		oslDrawImageXY(ic_allapps_pressed,218,197);
 	
 	else
-		oslDrawImageXY(ic_allapps,218,199);
+		oslDrawImageXY(ic_allapps,218,197);
 }
 
 void navbar_buttons()
 {		
-	oslDrawImageXY(navbar, 110, 237);
+	oslDrawImageXY(navbar, 109, 237);
 		
 	if (cursor->x  >= 144 && cursor->x  <= 204 && cursor->y >= 226 && cursor->y <= 271)
-		oslDrawImageXY(backicon,110, 237);
+		oslDrawImageXY(backicon,109, 237);
 	
 	else
-		oslDrawImageXY(navbar,110, 237);
+		oslDrawImageXY(navbar,109, 237);
 		
 	if (cursor->x  >= 205 && cursor->x  <= 271 && cursor->y >= 226 && cursor->y <= 271)
-		oslDrawImageXY(homeicon,110, 237);
+		oslDrawImageXY(homeicon,109, 237);
 	
 	else
-		oslDrawImageXY(navbar,110, 237);
+		oslDrawImageXY(navbar,109, 237);
 		
 	if (cursor->x  >= 272 && cursor->x  <= 332 && cursor->y >= 226 && cursor->y <= 271)
-		oslDrawImageXY(multicon,110, 237);
+		oslDrawImageXY(multicon,109, 237);
 	
 	else
-		oslDrawImageXY(navbar,110, 237);
+		oslDrawImageXY(navbar,109, 237);
 }
 
 void android_notif()
