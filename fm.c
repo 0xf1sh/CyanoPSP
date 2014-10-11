@@ -182,8 +182,10 @@ void OptionMenu()
 	
 	if (osl_keys->pressed.cross) 
 	{
+			fcopy(folderIcons[current].filePath);
 			refresh();
 	}
+	
 
 	else if (osl_keys->pressed.triangle) 
 	{
@@ -266,6 +268,35 @@ void showImage(const char * path)
 	//delete image
 	oslDeleteImage(image);	
 	return 1;
+}
+
+char * buffer;
+long size;
+
+void fcopy(char * source) 
+{
+	FILE * src;
+	src = fopen(source,"r");
+	fseek(src,0,SEEK_END);
+	size = ftell(src);
+	rewind(src);
+	buffer = malloc(size);
+	fread(buffer,1,size,src);
+	fclose(src);
+	
+	if (osl_keys->pressed.square) 
+	{
+	fpaste(folderIcons[current].filePath);
+	}
+}
+
+void fpaste(char * destination) 
+{
+	FILE * dst;
+
+	dst = fopen(destination,"w");
+	fwrite(buffer,1,size,dst);
+	fclose(dst);
 }
     
 void oslPrintText(int x, int y, float size, char * text, OSL_COLOR color) {
@@ -403,29 +434,31 @@ void MP3Play(char * path)
 		oslPrintText(250,71,0.5,folderIcons[current].name,RGB(255,255,255));
 		display_mp3_info(folderIcons[current].name);
 		
-		if(osl_pad.held.triangle) {
-		break;
+		if(osl_pad.held.select) 
+		{
+			mp3player();
 		}
 		
 		else if(osl_pad.held.cross) 
 		{
-		MP3_Pause();
-		for(i=0; i<10; i++) {
-		sceDisplayWaitVblankStart();
-		}
+			MP3_Pause();
+			for(i=0; i<10; i++) 
+			{
+				sceDisplayWaitVblankStart();
+			}
 		}
 		
 		if (MP3_EndOfStream() == 1) 
 		{
-		MP3_Stop();
+			MP3_Stop();
 		}
 		
 		if(osl_keys->pressed.circle)
 		{
-		MP3_Pause();
-		MP3_Stop();
-		MP3_FreeTune();
-		return;
+			MP3_Pause();
+			MP3_Stop();
+			MP3_FreeTune();
+			return;
 		}
 		
 		oslEndDrawing();
