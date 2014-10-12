@@ -13,6 +13,11 @@
 extern "C" {
 #endif
 
+#define FALSE 0
+#define TRUE !FALSE
+
+static int isPlaying;	// Set to true when a mod is being played
+
 //  Function prototypes for public functions
 //    void MP3setStubs(codecStubs * stubs);
 

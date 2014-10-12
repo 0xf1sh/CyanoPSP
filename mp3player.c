@@ -13,9 +13,6 @@
 #include <pspaudiolib.h>
 #include "mp3player.h"
 
-
-#define FALSE 0
-#define TRUE !FALSE
 #define min(a,b) (((a)<(b))?(a):(b))
 #define max(a,b) (((a)>(b))?(a):(b))
 #define MadErrorString(x) mad_stream_errorstr(x)
@@ -60,7 +57,6 @@ int Status = 0, i;
 unsigned long FrameCount = 0;
 
 // The following variables are maintained and updated by the tracker during playback
-static int isPlaying;		// Set to true when a mod is being played
 
 //////////////////////////////////////////////////////////////////////
 // These are the public functions
@@ -483,6 +479,7 @@ void MP3_Init(int channel)
 
 void MP3_FreeTune()
 {
+	sceAudioSRCChRelease();
     /* The input file was completely read; the memory allocated by our
      * reading module must be reclaimed.
      */
@@ -546,6 +543,7 @@ void MP3_End()
     MP3_Stop();
     pspAudioSetChannelCallback(myChannel, 0,0);
     MP3_FreeTune();
+	pspAudioEnd();
 }
 
 //////////////////////////////////////////////////////////////////////
