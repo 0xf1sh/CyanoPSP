@@ -9,6 +9,7 @@
 #include <pspiofilemgr.h>
 #include <stdlib.h>
 #include <oslib/oslib.h>
+#include "apollo.h"
 #include "fm.h"
 #include "clock.h"
 #include "lock.h"
@@ -16,10 +17,9 @@
 #include "power_menu.h"
 #include "include/screenshot.h"
 #include "include/utils.h"
-#include "id3.h"
-#include "file_struct.h"
 
-OSL_IMAGE  *filemanagerbg, *diricon, *imageicon, *mp3icon, *txticon, *unknownicon, *documenticon, *binaryicon, *videoicon, *archiveicon, *bar, *deletion, *action, *nowplaying,  *textview;
+OSL_IMAGE 	*filemanagerbg, *diricon, *imageicon, *mp3icon, *txticon, *unknownicon, *documenticon, *binaryicon, *videoicon, *archiveicon, *bar, 
+			*deletion, *action, *textview,  *gallerybar;
 
 OSL_FONT *pgfFont;
 
@@ -183,12 +183,14 @@ void OptionMenu()
 	if (osl_keys->pressed.cross) 
 	{
 			fcopy(folderIcons[current].filePath);
+			oslDeleteImage(action);
 			refresh();
 	}
 	
 
 	else if (osl_keys->pressed.triangle) 
 	{
+			oslDeleteImage(action);
 			refresh();
 	}
 
@@ -197,14 +199,15 @@ void OptionMenu()
 			DeleteFile(folderIcons[current].filePath);
 	}
 	
-	
 	else if (osl_keys->pressed.circle) 
 	{
+			oslDeleteImage(action);
 			refresh();
 	}
 	
 	else if (osl_keys->pressed.select) 
 	{
+			oslDeleteImage(action);
 			return;
 	}
 	
@@ -256,6 +259,8 @@ void showImage(const char * path)
 		
 		oslClearScreen(RGB(255,255,255));
 		oslDrawImageXY(image, 240 - oslGetImageWidth(image) / 2, 136 - oslGetImageHeight(image) / 2);//draw image
+		oslDrawImageXY(gallerybar,0,0);
+		oslDrawStringf(40,12,folderIcons[current].name);
 		
 		oslEndDrawing();
 		oslSyncFrame();	
@@ -358,116 +363,6 @@ void displayTextFromFile()
 	oslSyncFrame();	
     oslAudioVSync();
 	}
-}
-
-char *compact_str(char *s, int max_length) {
-	char *suffix;
-	char t[max_length+1];
- 
-	if(strlen(s) > max_length) {
-		suffix = strrchr(s, '.');
-			if(suffix != NULL) {			
-				strncpy(t, s, max_length-4);
-				t[max_length-4] = '\0';
-				s = strcat(t, suffix);   	
-			} else {
-				strncpy(t, s, max_length-1);
-				t[max_length] = '\0';
-				strcpy(s, t);
-			}
-	}
-
-	return s;
-}
-
-int display_mp3_info(struct FILE_INFO *file) {
-	
-	int y_start = 25; //210
-
-	/*
-	if(file->cover != NULL)
-		blitImageToScreen(0, 0, file->cover->imageWidth, file->cover->imageHeight, file->cover, 305, 23);  
-   	*/
-
-	oslDrawStringf(MP3DISPLAY_X, 190, "ID3Tag: %s", file->mp3Info.ID3.versionfound);	 	
-
-	oslDrawStringf(MP3DISPLAY_X, 200, "Title : %s", compact_str(file->mp3Info.ID3.ID3Title, 28));			 
-
-	oslDrawStringf(MP3DISPLAY_X, 210, "Album : %s", compact_str(file->mp3Info.ID3.ID3Album, 28));			 
-
-	oslDrawStringf(MP3DISPLAY_X, 220, "Year  : %s", file->mp3Info.ID3.ID3Year);			 
-
-	oslDrawStringf(MP3DISPLAY_X, 230, "Artist: %s", compact_str(file->mp3Info.ID3.ID3Artist, 28));			 
-
-	oslDrawStringf(MP3DISPLAY_X, 240, "Genre : %s", compact_str(file->mp3Info.ID3.ID3GenreText, 28));			 	
-		 	
-	
-	return 0;
-}
-
-void MP3Play(char * path)
-{	
-	nowplaying = oslLoadImageFilePNG("system/app/apollo/nowplaying.png", OSL_IN_RAM, OSL_PF_8888);
-
-	if (!nowplaying)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-	
-	scePowerSetClockFrequency(333, 333, 166);
-	
-	pspAudioInit();
-	
-	int i;
-	MP3_Init(1);
-	MP3_Load(path);
-	MP3_Play();
-	
-	while (!osl_quit)
-  {
-		//Draws images onto the screen
-		oslStartDrawing();		
-		
-		oslClearScreen(RGB(0,0,0));
-
-		oslReadKeys();
-		
-		oslDrawImageXY(nowplaying, 0, 19);
-		oslPrintText(250,71,0.5,folderIcons[current].name,RGB(255,255,255));
-		display_mp3_info(folderIcons[current].name);
-		
-		if(osl_pad.held.select) 
-		{
-			mp3player();
-		}
-		
-		else if(osl_pad.held.cross) 
-		{
-			MP3_Pause();
-			for(i=0; i<10; i++) 
-			{
-				sceDisplayWaitVblankStart();
-			}
-		}
-		
-		if (MP3_EndOfStream() == 1) 
-		{
-			MP3_Stop();
-		}
-		
-		if(osl_keys->pressed.circle)
-		{
-			MP3_Pause();
-			MP3_Stop();
-			MP3_FreeTune();
-			return;
-		}
-		
-		oslEndDrawing();
-		oslSyncFrame();	
-        oslAudioVSync();
-		}
-	MP3_Pause();
-	MP3_Stop();
-	MP3_FreeTune();
 }
 	
 void centerText(int centerX, int centerY, char * centerText, int centerLength)
@@ -656,13 +551,15 @@ void dirControls() //Controls
 			OptionMenu();
 	}
 	
-	if (osl_keys->pressed.circle)
+	if (osl_keys->pressed.circle && (!(stricmp(lastDir, "ms0:")==0) || (stricmp(lastDir, "ms0:/")==0)))
 	{
 			dirBack();
-			if (!(stricmp(lastDir, "ms0:")==0) || (stricmp(lastDir, "ms0:/")==0)) 
-			{
-			appdrawer();
-			}
+	}
+	
+	else if(osl_keys->pressed.circle)
+	{
+		filemanager_unload();
+		appdrawer();
 	}
 	
 	if (((ext) != NULL) && ((strcmp(ext ,".png") == 0) || (strcmp(ext ,".jpg") == 0) || (strcmp(ext ,".jpeg") == 0) || (strcmp(ext ,".gif") == 0) || (strcmp(ext ,".PNG") == 0) || (strcmp(ext ,".JPG") == 0) || (strcmp(ext ,".JPEG") == 0) || (strcmp(ext ,".GIF") == 0)) && (osl_keys->pressed.cross))
@@ -694,11 +591,6 @@ void dirControls() //Controls
 	if (((ext) != NULL) && ((strcmp(ext ,".txt") == 0) || ((strcmp(ext ,".TXT") == 0)) || ((strcmp(ext ,".c") == 0)) || ((strcmp(ext ,".h") == 0)) || ((strcmp(ext ,".cpp") == 0))) && (osl_keys->pressed.cross))
 	{
 		displayTextFromFile(folderIcons[current].filePath);
-	}
-	
-	if((!strcmp(lastDir, "ms0:") || !strcmp(lastDir, "ms0:/"))&&(osl_keys->pressed.circle))
-	{
-		appdrawer();
 	}
 	
 	timer++;
@@ -769,6 +661,13 @@ void filemanager_unload()
 	oslDeleteImage(mp3icon);
 	oslDeleteImage(txticon);
 	oslDeleteImage(unknownicon);
+	oslDeleteImage(textview);
+	oslDeleteImage(bar);
+	oslDeleteImage(documenticon);
+	oslDeleteImage(binaryicon);
+	oslDeleteImage(videoicon);
+	oslDeleteImage(archiveicon);
+	oslDeleteImage(gallerybar);
 }
 
 int filemanage(int argc, char *argv[])
@@ -785,6 +684,7 @@ int filemanage(int argc, char *argv[])
 	binaryicon = oslLoadImageFilePNG("system/app/filemanager/binaryicon.png", OSL_IN_RAM, OSL_PF_8888);
 	videoicon = oslLoadImageFilePNG("system/app/filemanager/videoicon.png", OSL_IN_RAM, OSL_PF_8888);
 	archiveicon = oslLoadImageFilePNG("system/app/filemanager/archiveicon.png", OSL_IN_RAM, OSL_PF_8888);
+	gallerybar = oslLoadImageFilePNG("system/app/gallery/galleryBar.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(0,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);

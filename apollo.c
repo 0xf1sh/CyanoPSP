@@ -7,6 +7,8 @@
 #include "power_menu.h"
 #include "include/screenshot.h"
 #include "include/utils.h"
+#include "id3.h"
+#include "file_struct.h"
 
 int MP3Scan(const char* path )
 {
@@ -138,6 +140,129 @@ void mp3Downx5()
 	}
 }
 
+char *compact_str(char *s, int max_length) {
+	char *suffix;
+	char t[max_length+1];
+ 
+	if(strlen(s) > max_length) {
+		suffix = strrchr(s, '.');
+			if(suffix != NULL) {			
+				strncpy(t, s, max_length-4);
+				t[max_length-4] = '\0';
+				s = strcat(t, suffix);   	
+			} else {
+				strncpy(t, s, max_length-1);
+				t[max_length] = '\0';
+				strcpy(s, t);
+			}
+	}
+
+	return s;
+}
+
+void display_mp3_info(struct FILE_INFO *file) {
+	
+	int y_start = 25; //210
+
+	/*
+	if(file->cover != NULL)
+		blitImageToScreen(0, 0, file->cover->imageWidth, file->cover->imageHeight, file->cover, 305, 23);  
+   	*/
+
+	oslDrawStringf(MP3DISPLAY_X, 190, "ID3Tag: %s", file->mp3Info.ID3.versionfound);	 	
+
+	oslDrawStringf(MP3DISPLAY_X, 200, "Title : %s", compact_str(file->mp3Info.ID3.ID3Title, 28));			 
+
+	oslDrawStringf(MP3DISPLAY_X, 210, "Album : %s", compact_str(file->mp3Info.ID3.ID3Album, 28));			 
+
+	oslDrawStringf(MP3DISPLAY_X, 220, "Year  : %s", file->mp3Info.ID3.ID3Year);			 
+
+	oslDrawStringf(MP3DISPLAY_X, 230, "Artist: %s", compact_str(file->mp3Info.ID3.ID3Artist, 28));			 
+
+	oslDrawStringf(MP3DISPLAY_X, 240, "Genre : %s", compact_str(file->mp3Info.ID3.ID3GenreText, 28));			 	
+		 	
+	
+	return 0;
+}
+
+void MP3Status()
+{
+	if (isPlaying = FALSE)
+		oslDrawImageXY(mp3pauseicon, 295, 249);
+	else if (isPlaying = TRUE)
+		oslDrawImageXY(mp3playicon, 295, 249);
+}
+
+void MP3Play(char * path)
+{	
+	nowplaying = oslLoadImageFilePNG("system/app/apollo/nowplaying.png", OSL_IN_RAM, OSL_PF_8888);
+
+	if (!nowplaying)
+		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	
+	scePowerSetClockFrequency(333, 333, 166);
+	
+	pspAudioInit();
+	
+	int i;
+	MP3_Init(1);
+	MP3_Load(path);
+	MP3_Play();
+	
+	while (!osl_quit)
+  {
+		//Draws images onto the screen
+		oslStartDrawing();		
+		
+		oslClearScreen(RGB(0,0,0));
+
+		oslReadKeys();
+		
+		oslDrawImageXY(nowplaying, 0, 19);
+		MP3Status();
+		oslPrintText(250,71,0.5,folderIcons[current].name,RGB(255,255,255));
+		display_mp3_info(folderIcons[current].name);
+		
+		if(osl_pad.held.select) 
+		{
+			oslDeleteImage(nowplaying);
+			oslDeleteImage(mp3pauseicon);
+			oslDeleteImage(mp3playicon);
+			return;
+		}
+		
+		else if(osl_pad.held.cross) 
+		{
+			MP3_Pause();
+			for(i=0; i<10; i++) 
+			{
+				sceDisplayWaitVblankStart();
+			}
+		}
+			
+		if (MP3_EndOfStream() == 1) 
+		{
+			pspAudioEnd();
+			MP3_Stop();
+		}
+		
+		if(osl_keys->pressed.circle)
+		{
+			MP3_Pause();
+			MP3_End();
+			oslDeleteImage(nowplaying);
+			oslDeleteImage(mp3pauseicon);
+			oslDeleteImage(mp3playicon);
+			return;
+		}
+		
+		oslEndDrawing();
+		oslSyncFrame();	
+        oslAudioVSync();
+		}
+	MP3_End();
+}
+
 void mp3FileDisplay()
 {	
 	oslDrawImageXY(mp3bg, 0, 19);
@@ -217,6 +342,7 @@ void mp3Controls() //Controls
 
 	if (osl_pad.held.circle)
 	{
+		apolloUnload();
 		appdrawer();
 	}
 	
@@ -229,12 +355,7 @@ void mp3Controls() //Controls
 	{
 		lockscreen();
     }
-		
-	if (osl_pad.held.circle)
-	{
-		appdrawer();
-	}
-		
+	
 	if (osl_pad.held.R && osl_pad.held.triangle)
 	{
 		screenshot();
@@ -266,13 +387,7 @@ char * mp3Browse(const char * path)
 	{		
 		oslStartDrawing();
 		oslClearScreen(RGB(0,0,0));	
-		
-		if (!strcmp(".", g_dir.d_name) || !strcmp("..", g_dir.d_name)) 
-		{
-			memset(&g_dir, 0, sizeof(SceIoDirent));
-			continue;
-		};
-		
+
 		oldpad = pad;
 		sceCtrlReadBufferPositive(&pad, 1);
 		mp3FileDisplay();
@@ -291,11 +406,19 @@ char * mp3Browse(const char * path)
 	return returnMe;
 }
 
+void apolloUnload()
+{
+	oslDeleteImage(mp3bg);
+	oslDeleteImage(mp3_select);
+}
+
 int mp3player()
 {	
 	nowplaying = oslLoadImageFilePNG("system/app/apollo/nowplaying.png", OSL_IN_RAM, OSL_PF_8888);
 	mp3bg = oslLoadImageFilePNG("system/app/apollo/mp3bg.png", OSL_IN_RAM, OSL_PF_8888);
 	mp3_select = oslLoadImageFilePNG("system/app/apollo/mp3_select.png", OSL_IN_RAM, OSL_PF_8888);
+	mp3playicon = oslLoadImageFilePNG("system/app/apollo/play.png", OSL_IN_RAM, OSL_PF_8888);
+	mp3pauseicon = oslLoadImageFilePNG("system/app/apollo/pause.png", OSL_IN_RAM, OSL_PF_8888);
 
 	if (!mp3bg || !cursor || !wificon || !nowplaying)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
