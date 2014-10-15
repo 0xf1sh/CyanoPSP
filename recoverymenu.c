@@ -21,13 +21,19 @@
 #include "menu.h"
 #include "kuman_header.h"
 #include "systemctrl_se.h"
+#include "settingsmenu.h"
 
 #define Version "flash0:/vsh/etc/version.txt"
 #define PWD "password.TXT"
 
 extern void CheckerPrintf(char *fmt, ...);
 
-OSL_IMAGE *recoverybg;
+OSL_IMAGE *recoverybg, *Selector;
+
+OSL_FONT *roboto;
+
+int selector_image_x; //Determines the starting x position of the selection
+int selector_image_y; //Determines the starting y position of the selection
 
 int color = 0;
 u32 value;
@@ -87,7 +93,7 @@ void ShowPage5()
         }
 		if (pad.Buttons & PSP_CTRL_CIRCLE)
 		{
-			ShowMainMenu();
+			mainRecoveryMenu();
         }
 		
 		sceKernelDelayThread(10000);
@@ -138,7 +144,7 @@ void ShowPage4()
         }
 		if (pad.Buttons & PSP_CTRL_CIRCLE)
 		{
-			ShowMainMenu();
+			mainRecoveryMenu();
         }
 		
 		sceKernelDelayThread(10000);
@@ -151,7 +157,7 @@ void backupPassword()
 	memset(pass, 0, sizeof(pass));
 	
 	FILE * configtxt = fopen(PWD, "wb"); //create config file
-	sprintf("Password: %s\n", GetRegistryValue("/CONFIG/SYSTEM/LOCK", "password", &pass, sizeof(pass)));
+	fprintf("Password: %s\n", GetRegistryValue("/CONFIG/SYSTEM/LOCK", "password", &pass, sizeof(pass)));
 	fclose(PWD);	
 }
 
@@ -165,37 +171,48 @@ void ShowPage3()
 	*(u32 *)kirk = chGetKirk();
 	*(u32 *)spock = chGetSpock();
 	
+	while (!osl_quit)
+  {
+
+	oslStartDrawing();	
+	
+	oslReadKeys();
+	
+	oslClearScreen(RGB(0,0,0));
+		
+	oslDrawImageXY(recoverybg, 0, 0);
+	
 	GetRegistryValue("/CONFIG/SYSTEM/XMB", "button_assign", &value);
 
     if (value == 1) 
     {
-        sprintf(button, "Swap buttons: Yes (currently: O is enter)\n");		
+        oslDrawStringf(10,100,button, "Swap buttons: Yes (currently: O is enter)\n");		
     } 
 	else 
 	{
-        sprintf(button, "Swap buttons: No (currently: X is enter)\n");		
+        oslDrawStringf(10,100,button, "Swap buttons: No (currently: X is enter)\n");		
     }
 	
 	GetRegistryValue("/CONFIG/MUSIC", "wma_play", &value);
 
     if (value == 1)
 	{
-		sprintf(wma, "WMA:          Yes\n");	
+		oslDrawStringf(10,110,wma, "WMA:          Yes\n");	
 	}
 	else
 	{
-	    sprintf(wma, "WMA:          No\n");		
+	    oslDrawStringf(10,110,wma, "WMA:          No\n");		
 	}
 	
 	GetRegistryValue("/CONFIG/BROWSER", "flash_activated", &value);
 
     if (value == 1)
 	{
-		sprintf(flash, "Flash player: Yes\n\n\n");	
+		oslDrawStringf(10,120,flash, "Flash player: Yes\n\n\n");	
 	}
 	else
 	{
-	    sprintf(flash, "Flash player: No\n\n\n");		
+	    oslDrawStringf(10,120,flash, "Flash player: No\n\n\n");		
 	}
 
 	memset(name, 0, sizeof(name));
@@ -204,56 +221,52 @@ void ShowPage3()
 	chGetCpuSpeed(&cpu, &bus);
 	chGetMACAddress(macaddr);
 	
-	CheckerInitMainScreen("System Information");
+	oslDrawStringf(10,5,"System Information");
 
-	CheckerPrintf("CPU Speed:    %i/%i Mhz\n", cpu, bus);
-	CheckerPrintf("WLAN:         %s\n\n", sceWlanGetSwitchState() == 0 ? "Off" : "On");
-	CheckerPrintf("Name:         %s\n", GetRegistryValue("/CONFIG/SYSTEM", "owner_name", &name, sizeof(name)));
-	CheckerPrintf("Password:     %s\n", GetRegistryValue("/CONFIG/SYSTEM/LOCK", "password", &pass, sizeof(pass)));
+	oslDrawStringf(10,20,"CPU Speed:    %i/%i Mhz\n", cpu, bus);
+	oslDrawStringf(10,30,"WLAN:         %s\n\n", sceWlanGetSwitchState() == 0 ? "Off" : "On");
+	oslDrawStringf(10,40,"Name:         %s\n", GetRegistryValue("/CONFIG/SYSTEM", "owner_name", &name, sizeof(name)));
+	oslDrawStringf(10,50,"Password:     %s\n", GetRegistryValue("/CONFIG/SYSTEM/LOCK", "password", &pass, sizeof(pass)));
 	
-	if(VerifyFile("machide.chk") == -1)
-	   CheckerPrintf("MAC Address:  %02X:%02X:%02X:%02X:%02X:%02X\n\n", macaddr[0], macaddr[1], macaddr[2], macaddr[3], macaddr[4], macaddr[5]);
-	else
-	   CheckerPrintf("MAC Address:  00:00:00:00:00:00 (Hidden)\n\n");   
+	if(VerifyFile("machide.chk") == -1){
+	   oslDrawStringf(10,60,"MAC Address:  %02X:%02X:%02X:%02X:%02X:%02X\n\n", macaddr[0], macaddr[1], macaddr[2], macaddr[3], macaddr[4], macaddr[5]);
+	}
+	else{
+	   oslDrawStringf(10,60,"MAC Address:  00:00:00:00:00:00 (Hidden)\n\n");   
+	}
 	   
-	CheckerPrintf("Scramble:     0x%08X\n\n", chGetScramble());
-	CheckerPrintf("Kirk:         %c%c%c%c\n", kirk[3], kirk[2], kirk[1], kirk[0]);
+	oslDrawStringf(10,70,"Scramble:     0x%08X\n\n", chGetScramble());
+	oslDrawStringf(10,80,"Kirk:         %c%c%c%c\n", kirk[3], kirk[2], kirk[1], kirk[0]);
 	
-	if(kuKernelGetModel() == 4) CheckerPrintf("Spock:        -\n\n");
-	else CheckerPrintf("Spock:        %c%c%c%c\n\n", spock[3], spock[2], spock[1], spock[0]);  
+	if(kuKernelGetModel() == 4){
+	oslDrawStringf(10,90,"Spock:        -\n\n");
+	}
+	else{
+	oslDrawStringf(10,90,"Spock:        %c%c%c%c\n\n", spock[3], spock[2], spock[1], spock[0]); 
+	}
 	
-	CheckerPrintf(button);
-	CheckerPrintf(wma);
-	CheckerPrintf(flash);
-	
-	CheckerPrintf("Press L/R to switch sections, X to edit and Circle to return.\n");
-	
-	sceKernelDelayThread(200000);
-	
-	while (1)
-	{
-		sceCtrlReadBufferPositive(&pad, 1);
+	oslDrawStringf(10,200,"Press L/R to switch sections, X to edit and Circle to return.\n");
 		
-		if (pad.Buttons & PSP_CTRL_LTRIGGER)
+		if (osl_keys->pressed.L)
 		{
-			sceKernelDelayThread(250000);
 			ShowPage2();
         }
-		if (pad.Buttons & PSP_CTRL_RTRIGGER)
+		if (osl_keys->pressed.R)
 		{
-			sceKernelDelayThread(250000);
 			ShowPage4();
         }
-		if (pad.Buttons & PSP_CTRL_CROSS)
+		if (osl_keys->pressed.cross)
 		{
 			ShowSystemMenu();
         }
-		if (pad.Buttons & PSP_CTRL_CIRCLE)
+		if (osl_keys->pressed.circle)
 		{
-			ShowMainMenu();
-        }
+			mainRecoveryMenu();
+		}
 		
-		sceKernelDelayThread(10000);
+	oslEndDrawing();
+	oslSyncFrame();	
+    oslAudioVSync();
 	}
 }
 
@@ -262,57 +275,186 @@ void ShowPage2()
 {
     int batser, batmode;
 	
-	CheckerInitMainScreen("Battery Information");
+	while (!osl_quit)
+  {
+
+	oslStartDrawing();	
+	
+	oslReadKeys();
+	
+	oslClearScreen(RGB(0,0,0));
+		
+	oslDrawImageXY(recoverybg, 0, 0);
+	
+	oslDrawStringf(10,5,"Battery Information");
 	
 	batmode = GetBatType();
 	batser = GetBatSer();
 
-	CheckerPrintf("Battery Status:  %s\n", scePowerIsBatteryCharging() == 1 ? "Charging" : "Using");
-	pspDebugScreenPrintf(" Battery %%:       %i%%\n\n", scePowerGetBatteryLifePercent() < 0 ? 0 : scePowerGetBatteryLifePercent()); //Here I used printf because my CheckerPrintf doesn't printf %
-	CheckerPrintf("Hours Left:   %i:%02i\n\n", scePowerGetBatteryLifeTime() < 0 ? 0 : (scePowerGetBatteryLifeTime() / 60), scePowerGetBatteryLifeTime() < 0 ? 0 : (scePowerGetBatteryLifeTime() - (scePowerGetBatteryLifeTime() / 60 * 60)));
-	CheckerPrintf("Battery Temp:    %iºC\n", scePowerGetBatteryTemp() < 0 ? 0 : scePowerGetBatteryTemp());
-	CheckerPrintf("Battery Voltage: %0.3fV\n\n", scePowerGetBatteryVolt() < 0 ? 0 : (float)scePowerGetBatteryVolt() / 1000.0);
-	CheckerPrintf("Remain Capacity: %i mAh\n", scePowerGetBatteryRemainCapacity() < 0 ? 0 : scePowerGetBatteryRemainCapacity()); //From raing3s psppower
+	oslDrawStringf(10,20,"Battery Status:  %s\n", scePowerIsBatteryCharging() == 1 ? "Charging" : "Using");
+	oslDrawStringf(10,30,"Battery %%:       %i%%\n\n", scePowerGetBatteryLifePercent() < 0 ? 0 : scePowerGetBatteryLifePercent()); //Here I used printf because my CheckerPrintf doesn't printf %
+	oslDrawStringf(10,40,"Hours Left:   %i:%02i\n\n", scePowerGetBatteryLifeTime() < 0 ? 0 : (scePowerGetBatteryLifeTime() / 60), scePowerGetBatteryLifeTime() < 0 ? 0 : (scePowerGetBatteryLifeTime() - (scePowerGetBatteryLifeTime() / 60 * 60)));
+	oslDrawStringf(10,50,"Battery Temp:    %iºC\n", scePowerGetBatteryTemp() < 0 ? 0 : scePowerGetBatteryTemp());
+	oslDrawStringf(10,60,"Battery Voltage: %0.3fV\n\n", scePowerGetBatteryVolt() < 0 ? 0 : (float)scePowerGetBatteryVolt() / 1000.0);
+	oslDrawStringf(10,70,"Remain Capacity: %i mAh\n", scePowerGetBatteryRemainCapacity() < 0 ? 0 : scePowerGetBatteryRemainCapacity()); //From raing3s psppower
 	
 	if(chGetPSPCreatePandora() == 0) //Yes so we can show the serial, mode of battery
 	{
-	    CheckerPrintf("Battery Type:    %s\n", Batterys[batmode]);
-	    CheckerPrintf("Battery Serial:  0x%08X\n\n\n", batser);
+	    oslDrawStringf(10,80,"Battery Type:    %s\n", Batterys[batmode]);
+	    oslDrawStringf(10,90,"Battery Serial:  0x%08X\n\n\n", batser);
 	}
 	else
 	{
-	    CheckerPrintf("Battery Type:    -\n");
-	    CheckerPrintf("Battery Serial:  -\n\n\n");
+	    oslDrawStringf(10,80,"Battery Type:    -\n");
+	    oslDrawStringf(10,90,"Battery Serial:  -\n\n\n");
 	}
 	
-	CheckerPrintf("Press L/R to switch sections, X to edit and Circle to return.\n");
-	
-	sceKernelDelayThread(200000);
-	
-	while (1)
-	{
-		sceCtrlReadBufferPositive(&pad, 1);
+	oslDrawStringf(10,200,"Press L/R to switch sections, X to edit and Circle to return.\n");
 
-		if (pad.Buttons & PSP_CTRL_LTRIGGER)
+		if (osl_keys->pressed.L)
 		{
-			sceKernelDelayThread(250000);
 			ShowPage1();
         }
-		if (pad.Buttons & PSP_CTRL_RTRIGGER)
+		if (osl_keys->pressed.R)
 		{
-			sceKernelDelayThread(250000);
 			ShowPage3();
         }
-		if (pad.Buttons & PSP_CTRL_CROSS)
+		if (osl_keys->pressed.cross)
 		{
 			ShowBatteryMenu();
         }
-		if (pad.Buttons & PSP_CTRL_CIRCLE)
+		if (osl_keys->pressed.circle)
 		{
-			ShowMainMenu();
-        }
+			mainRecoveryMenu();
+		}
 		
-		sceKernelDelayThread(10000);
+	oslEndDrawing();
+	oslSyncFrame();	
+    oslAudioVSync();
+	}
+}
+
+// Don't judge ;) I prefer the long and easy way lol.
+// I tried using oslDrawStringf("Kernel Version: %s (0x%08X)\n\n", FWs[type], sceKernelDevkitVersion());
+// Returned null, so yeah.
+
+void sceKernelVersion()
+{
+	if(sceKernelDevkitVersion() == 0x01000300) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 1.00 (0x01000300)");
+	}
+    else if(sceKernelDevkitVersion() == 0x01050001) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 1.50 (0x01050001)");
+	}
+	else if(sceKernelDevkitVersion() == 0x01050100) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 1.51 (0x01050100)");
+	}
+	else if(sceKernelDevkitVersion() == 0x01050200) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 1.52 (0x01050200)");
+	}
+	else if(sceKernelDevkitVersion() == 0x02000010) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 2.00 (0x02000010)");
+	}
+	else if(sceKernelDevkitVersion() == 0x02050010) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 2.50 (0x02050010)");
+	}
+	else if(sceKernelDevkitVersion() == 0x02060010) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 2.60 (0x02060010)");
+	}
+	else if(sceKernelDevkitVersion() == 0x02070010) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 2.70 (0x02070010)");
+	}
+	else if(sceKernelDevkitVersion() == 0x02070110) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 2.71 (0x02070110)");
+	}
+	else if(sceKernelDevkitVersion() == 0x02080010) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 2.80 (0x02080010)");
+	}
+	else if(sceKernelDevkitVersion() == 0x02080110) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 2.81 (0x02080110)");
+	}
+	else if(sceKernelDevkitVersion() == 0x02080210) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 2.82 (0x02080210)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03000010) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.00 (0x03000010)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03000110) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.01 (0x03000110)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03000210) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.02 (0x03000210)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03000310) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.03 (0x03000310)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03010010) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.10 (0x03010010)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03010110) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.11 (0x03010110)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03030010) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.30 (0x03030010)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03040010) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.40 (0x03040010)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03050010) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.50 (0x03050010)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03050110) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.51 (0x03050110)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03050210) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.52 (0x03050210)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03070010) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.70 (0x03070010)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03070110) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.71 (0x03070110)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03070210) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.72 (0x03070210)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03070310) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.73 (0x03070310)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03080010) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.80 (0x03080010)");
+	}
+	else if(sceKernelDevkitVersion() == 0x03090010) 
+	{
+		oslDrawStringf(10,20,"Kernel Version: 3.90 (0x03090010)");
 	}
 }
 
@@ -321,7 +463,18 @@ void ShowPage1()
     int baryon, pommel, tachyon, fuseid, fusecfg, mb, model, type, region;
 	char *unk_minor = "-";
 	
-	CheckerInitMainScreen("PSP General Information");
+	while (!osl_quit)
+  {
+
+	oslStartDrawing();	
+	
+	oslReadKeys();
+	
+	oslClearScreen(RGB(0,0,0));
+		
+	oslDrawImageXY(recoverybg, 0, 0);
+	
+	oslDrawStringf(10,5,"PSP General Information");
 	
 	chGetVersions(&baryon, &pommel, &tachyon, &fuseid, &fusecfg);
 	
@@ -330,219 +483,331 @@ void ShowPage1()
     type = chDetectOFW();
     region = chGetRegion();		
 
-	CheckerPrintf("Kernel Version: %s (0x%08X)\n\n", FWs[type], sceKernelDevkitVersion());
+	oslDrawStringf(10,20,"Kernel Version: %s (0x%08X)\n\n", FWs[type], sceKernelDevkitVersion());
+	pspgetmodel();
+	oslDrawStringf(10,60,"Module:         %s\n", Modules[model]);      
+	oslDrawStringf(10,70,"Motherboard:    %s\n\n", MBs[mb]);
+	oslDrawStringf(10,80,"Tachyon:        0x%08X\n", tachyon);
+	oslDrawStringf(10,90,"Baryon:         0x%08X\n", baryon);
+	oslDrawStringf(10,100,"Pommel:         0x%08X\n\n", pommel);
+	oslDrawStringf(10,110,"Fuse ID:        0x%04X%08X\n", fuseid);
+	oslDrawStringf(10,120,"Fuse CFG:       0x%08X\n\n", fusecfg);
+	oslDrawStringf(10,130,"Region:         %s\n\n\n", Regions[region]);
 	
-	if(region == 10)
-	   CheckerPrintf("Model:          %s%i\n", PSPs[model], unk_minor);
-	else if(model == 4)
-	   CheckerPrintf("Model:          %s\n", PSPs[model]);   
-	else
-	   CheckerPrintf("Model:          %s%i\n", PSPs[model], region);
-	   
-	CheckerPrintf("Module:         %s\n", Modules[model]);      
-	CheckerPrintf("Motherboard:    %s\n\n", MBs[mb]);
-	CheckerPrintf("Tachyon:        0x%08X\n", tachyon);
-	CheckerPrintf("Baryon:         0x%08X\n", baryon);
-	CheckerPrintf("Pommel:         0x%08X\n\n", pommel);
-	CheckerPrintf("Fuse ID:        0x%04X%08X\n", fuseid);
-	CheckerPrintf("Fuse CFG:       0x%08X\n\n", fusecfg);
-	CheckerPrintf("Region:         %s\n\n\n", Regions[region]);
-	
-	CheckerPrintf("Press L/R to switch sections and Circle to return.\n");
-	
-	sceKernelDelayThread(200000);
-	
-	while (1)
-	{
-		sceCtrlReadBufferPositive(&pad, 1);
+	oslDrawStringf(10,200,"Press L/R to switch sections and Circle to return.\n");
 		
-		if (pad.Buttons & PSP_CTRL_LTRIGGER)
+		if (osl_keys->pressed.L)
 		{
-			sceKernelDelayThread(250000);
 			ShowPage5();
         }
-		if (pad.Buttons & PSP_CTRL_RTRIGGER)
+		if (osl_keys->pressed.R)
 		{
-			sceKernelDelayThread(250000);
 			ShowPage2();
         }
-		if (pad.Buttons & PSP_CTRL_CIRCLE)
+		if (osl_keys->pressed.circle)
 		{
-			ShowMainMenu();
-        }
-		
-		sceKernelDelayThread(10000);
+			mainRecoveryMenu();
+		}
+	   
+	oslEndDrawing();
+	oslSyncFrame();	
+    oslAudioVSync();
 	}
 }
 
 void ShowVersionTxt()
 {
-	CheckerInitMainScreen("PSP Version.txt");
+	while (!osl_quit)
+  {
+
+	oslStartDrawing();	
 	
-	CheckerPrintf("Checking...");
+	oslReadKeys();
+	
+	oslClearScreen(RGB(0,0,0));
+		
+	oslDrawImageXY(recoverybg, 0, 0);
+	
+	oslDrawStringf(10,5,"PSP Version.txt");
 	
 	if(CheckVersion(Version) == -1)
-	   Error("Version.txt not found...");
-	   
-	sceKernelDelayThread(2000000);      
+	   oslDrawStringf(10,40,"Version.txt not found...");
+	     
+	oslDrawStringf(10,40,"Version.txt:\n");
+    oslDrawStringf(10,60," \n%s\n\n", GetVersion());	
 	
-    CheckerPrintf("Ok\n\n\n");
-	CheckerPrintf("Version.txt:\n");
-    CheckerPrintf(" \n%s\n\n", GetVersion());	
-	
-	CheckerPrintf("Press Circle to return to Main Menu.\n\n");
-	
-	while(1)
-	{
-	    sceCtrlReadBufferPositive(&pad, 1);
+	oslDrawStringf(10,200,"Press Circle to return to Main Menu.\n\n");
 
-		if (pad.Buttons & PSP_CTRL_CIRCLE)
+	if (osl_keys->pressed.circle)
 		{
-		    ShowMainMenu();
+		    mainRecoveryMenu();
 		}
+		
+	oslEndDrawing();
+	oslSyncFrame();	
+    oslAudioVSync();
 	}
 }
 
-void ShowAdvancedCnfMenu(void)
+void ConfigurationMenu()
 {
-    int btn;
+	int MenuSelection = 1; // Pretty obvious
+	int selector_x = 0; //The x position of the first selection
+	int selector_y = 10; //The y position of the first selection
+	int selector_image_x; //Determines the starting x position of the selection
+	int selector_image_y; //Determines the starting y position of the selection
+	int numMenuItems = 5; //Amount of items in the menu
+		
+	int selection = 0;
 	
 	sctrlSEGetConfig(&config);
-
-	sprintf(patch, "Plain modules in UMD/ISO     (currently: %s)", config.umdactivatedplaincheck ? "Enabled" : "Disabled");
-    sprintf(bootbin, "Execute PBOOT.BIN in UMD/ISO (currently: %s)", config.executebootbin ? "Enabled" : "Disabled");
-    sprintf(xmb, "XMB plugins                  (currently: %s)", config.xmbplugins ? "Disabled" : "Enabled");
-    sprintf(game, "GAME plugins                 (currently: %s)", config.gameplugins ? "Disabled" : "Enabled");
-    sprintf(pops, "POPS plugins                 (currently: %s)", config.popsplugins ? "Disabled" : "Enabled");
 	
-	CheckerInitMainScreen("Advanced Configuration Edit Menu");
-	hcMenuClear();
-    hcMenuAddEntry(patch, 1);
-	hcMenuAddEntry(bootbin, 2);
-	hcMenuAddEntry(xmb, 3);
-	hcMenuAddEntry(game, 4);
-	hcMenuAddEntry(pops, 5);
-    hcMenuAddEntry("Back", 6);
-	
-	while(1 == 1)
-    {
-        btn = hcMenuShowMenu(0, 3);
+	while (!osl_quit)
+  {
 
-		if(btn == 1)
+	oslStartDrawing();	
+	
+	oslReadKeys();
+	
+	oslClearScreen(RGB(0,0,0));
+		
+	oslDrawImageXY(recoverybg, 0, 0);
+	oslDrawImage(Selector);
+	
+	oslDrawStringf(10,5,"Configuration Menu");
+	
+	oslDrawStringf(10,20,"- advanced configuration");
+	oslDrawStringf(10,30,"- general configuration");
+	oslDrawStringf(10,40,"- system");
+	oslDrawStringf(10,50,"- battery");
+	oslDrawStringf(10,60,"- *****Go Back*****");
+	
+		Selector->x = selector_image_x; //Sets the selection coordinates
+        Selector->y = selector_image_y; //Sets the selection coordinates
+        
+        selector_image_x = selector_x+(selector_xDistance*MenuSelection); //Determines where the selection image is drawn for each selection
+        selector_image_y = selector_y+(selector_yDistance*MenuSelection); //Determines where the selection image is drawn for each selection
+        
+        if (osl_keys->pressed.down) MenuSelection++; //Moves the selector down
+        if (osl_keys->pressed.up) MenuSelection--; //Moves the selector up
+        
+        if (MenuSelection > numMenuItems) MenuSelection = 1; //Sets the selection to the first
+        if (MenuSelection < 1) MenuSelection = numMenuItems; //Sets the selection back to last
+		
+		if (MenuSelection == 1 && osl_keys->pressed.cross)
+        {
+			ShowAdvancedCnfMenu();
+        }
+	
+		if (MenuSelection == 2 && osl_keys->pressed.cross)
+        {
+			ShowCnfMenu();
+        }
+		
+		if (MenuSelection == 3 && osl_keys->pressed.cross)
+        {
+			ShowSystemMenu();
+        }
+		
+		if (MenuSelection == 4 && osl_keys->pressed.cross)
+        {
+			ShowBatteryMenu();
+        }
+		
+		if (MenuSelection == 5 && osl_keys->pressed.cross)
+        {
+			mainRecoveryMenu();
+        }
+		
+		if (osl_keys->pressed.circle)
+		{
+		    mainRecoveryMenu();
+		}	
+	oslEndDrawing();
+	oslSyncFrame();	
+    oslAudioVSync();
+	}
+	return selection;
+}
+
+void ShowAdvancedCnfMenu(void)
+{	
+	
+	int MenuSelection = 1; // Pretty obvious
+	int selector_x = 0; //The x position of the first selection
+	int selector_y = 10; //The y position of the first selection
+	int selector_image_x; //Determines the starting x position of the selection
+	int selector_image_y; //Determines the starting y position of the selection
+	int numMenuItems = 6; //Amount of items in the menu
+
+	int selection = 0;
+	
+	sctrlSEGetConfig(&config);
+	
+	while (!osl_quit)
+  {
+
+	oslStartDrawing();	
+	
+	oslReadKeys();
+	
+	oslClearScreen(RGB(0,0,0));
+		
+	oslDrawImageXY(recoverybg, 0, 0);
+	oslDrawImage(Selector);
+	
+	oslDrawStringf(10,5,"Advanced Configuration Menu");
+    oslDrawStringf(10,20,"- plain modules in UMD/ISO     (currently: %s)", config.umdactivatedplaincheck ? "enabled" : "disabled");
+	oslDrawStringf(10,30,"- execute PBOOT.BIN in UMD/ISO (currently: %s)", config.executebootbin ? "enabled" : "disabled");
+	oslDrawStringf(10,40,"- XMB plugins                  (currently: %s)", config.xmbplugins ? "disabled" : "enabled");
+	oslDrawStringf(10,50,"- GAME plugins                 (currently: %s)", config.gameplugins ? "disabled" : "enabled");
+	oslDrawStringf(10,60,"- POPS plugins                 (currently: %s)", config.popsplugins ? "disabled" : "enabled");
+    oslDrawStringf(10,70,"- *****Go Back*****");
+	
+		Selector->x = selector_image_x; //Sets the selection coordinates
+        Selector->y = selector_image_y; //Sets the selection coordinates
+        
+        selector_image_x = selector_x+(selector_xDistance*MenuSelection); //Determines where the selection image is drawn for each selection
+        selector_image_y = selector_y+(selector_yDistance*MenuSelection); //Determines where the selection image is drawn for each selection
+        
+        if (osl_keys->pressed.down) MenuSelection++; //Moves the selector down
+        if (osl_keys->pressed.up) MenuSelection--; //Moves the selector up
+        
+        if (MenuSelection > numMenuItems) MenuSelection = 1; //Sets the selection to the first
+        if (MenuSelection < 1) MenuSelection = numMenuItems; //Sets the selection back to last
+
+		if (MenuSelection == 1 && osl_keys->pressed.cross)
         {
 			config.umdactivatedplaincheck = !config.umdactivatedplaincheck;
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowAdvancedCnfMenu();
         }
-        if(btn == 2)
+        if (MenuSelection == 2 && osl_keys->pressed.cross)
         {
 			config.executebootbin = !config.executebootbin;
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowAdvancedCnfMenu();
         }	
-        if(btn == 3)
+        if (MenuSelection == 3 && osl_keys->pressed.cross)
         {
 			config.xmbplugins = !config.xmbplugins;
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowAdvancedCnfMenu();
         }	
-        if(btn == 4)
+        if (MenuSelection == 4 && osl_keys->pressed.cross)
         {
 			config.gameplugins = !config.gameplugins;
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowAdvancedCnfMenu();
         }
-        if(btn == 5)
+        if (MenuSelection == 5 && osl_keys->pressed.cross)
         {
 			config.popsplugins = !config.popsplugins;
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowAdvancedCnfMenu();
         }
-        if(btn == 6)
-        {
-		    ShowPage5();
-        }	
-		if (pad.Buttons & PSP_CTRL_CIRCLE)
+		if (osl_keys->pressed.L)
 		{
-		    ShowPage5();
+			ShowBatteryMenu();
+        }
+		if (osl_keys->pressed.R)
+		{
+			ShowCnfMenu();
+        }
+		if (MenuSelection == 6 && osl_keys->pressed.cross)
+        {
+		    ConfigurationMenu();
+        }	
+		if (osl_keys->pressed.circle)
+		{
+		    ConfigurationMenu();
 		}		
+	oslEndDrawing();
+	oslSyncFrame();	
+    oslAudioVSync();
 	}
+	return selection;
 }
 
 void ShowCnfMenu(void)
 {
-    int btn;
+    int MenuSelection = 1; // Pretty obvious
+	int selector_x = 0; //The x position of the first selection
+	int selector_y = 10; //The y position of the first selection
+	int selector_image_x; //Determines the starting x position of the selection
+	int selector_image_y; //Determines the starting y position of the selection
+	int numMenuItems = 14; //Amount of items in the menu
+		
+	int selection = 0;
 	
 	sctrlSEGetConfig(&config);
 	
-	sprintf(skip, "Skip Sony logo                 (currently: %s)", config.skiplogo ? "Enabled" : "Disabled");
-    sprintf(hide, "Hide corrupt icons             (currently: %s)", config.hidecorrupt ? "Enabled" : "Disabled");
-    sprintf(gamefolder, "Game folder homebrew           (currently: %s)", config.gamekernel150 ? "1.50 Kernel" : "6.XX Kernel");
-    sprintf(bootprog, "Autoboot program at /PSP/GAME/BOOT/ (currently: %s)", config.startupprog ? "Enabled" : "Disabled");
-    sprintf(noumd, "UMD Mode                       (currently: %s)", umdmodes[config.umdmode]);
-    sprintf(region, "Fake region                    (currently: %s)", regions[config.fakeregion]);
-    sprintf(vshmenu, "Use VshMenu                    (currently: %s)", vshmenuoptions[config.vshmenu]);
-    sprintf(usbdev, "XMB Usb Device                 (currently: %s)", usbdevices[config.usbdevice]);
-    sprintf(update, "Use network update             (currently: %s)", config.notusedaxupd ? "Disabled" : "Enabled");
-    sprintf(hidepic, "Hide PIC1.PNG and PIC0.PNG     (currently: %s)", config.hidepics ? "Enabled" : "Disabled");
-    sprintf(versiontxt, "Use version.txt                (currently: %s)", config.useversiontxt ? "Enabled" : "Disabled");
-    sprintf(useslimcolor, "Use Slim colors on Classic PSP (currently: %s)", config.slimcolors ? "Enabled" : "Disabled");
-    sprintf(hidemac, "Hide MAC address               (currently: %s)", config.hidemac ? "Enabled" : "Disabled");
-	
-	CheckerInitMainScreen("Configurations Edit Menu");
-	hcMenuClear();
-    hcMenuAddEntry(skip, 1);
-	hcMenuAddEntry(hide, 2);
-	hcMenuAddEntry(game, 3);
-	hcMenuAddEntry(bootprog, 4);
-	hcMenuAddEntry(noumd, 5);
-	hcMenuAddEntry(region, 6);
-	hcMenuAddEntry(usbdev, 7);
-	hcMenuAddEntry(update, 8);
-	hcMenuAddEntry(hidepic, 9);
-	hcMenuAddEntry(versiontxt, 10);
-    hcMenuAddEntry(useslimcolor, 11);
-	hcMenuAddEntry(hidemac, 12);
-    hcMenuAddEntry("Back", 13);
-	
-	while(1 == 1)
-    {
-        btn = hcMenuShowMenu(0, 3);
+	while (!osl_quit)
+  {
 
-		if(btn == 1)
+	oslStartDrawing();	
+	
+	oslReadKeys();
+	
+	oslClearScreen(RGB(0,0,0));
+		
+	oslDrawImageXY(recoverybg, 0, 0);
+	oslDrawImage(Selector);
+	
+	oslDrawStringf(10,5,"Configurations Edit Menu");
+	
+    oslDrawStringf(10,20,"Skip Sony logo                 (currently: %s)", config.skiplogo ? "Enabled" : "Disabled");
+	oslDrawStringf(10,30,"Hide corrupt icons             (currently: %s)", config.hidecorrupt ? "Enabled" : "Disabled");
+	oslDrawStringf(10,40,"Game folder homebrew           (currently: %s)", config.gamekernel150 ? "1.50 Kernel" : "6.XX Kernel");
+	oslDrawStringf(10,50,"Autoboot program at /PSP/GAME/BOOT/ (currently: %s)", config.startupprog ? "Enabled" : "Disabled");
+	oslDrawStringf(10,60,"UMD Mode                       (currently: %s)", umdmodes[config.umdmode]);
+	oslDrawStringf(10,70,"Fake region                    (currently: %s)", regions[config.fakeregion]);
+	oslDrawStringf(10,80,"Use VshMenu                    (currently: %s)", vshmenuoptions[config.vshmenu]);
+	oslDrawStringf(10,90,"XMB Usb Device                 (currently: %s)", usbdevices[config.usbdevice]);
+	oslDrawStringf(10,100,"Use network update             (currently: %s)", config.notusedaxupd ? "Disabled" : "Enabled");
+	oslDrawStringf(10,110,"Hide PIC1.PNG and PIC0.PNG     (currently: %s)", config.hidepics ? "Enabled" : "Disabled");
+    oslDrawStringf(10,120,"Use version.txt                (currently: %s)", config.useversiontxt ? "Enabled" : "Disabled");
+	oslDrawStringf(10,130,"Use Slim colors on Classic PSP (currently: %s)", config.slimcolors ? "Enabled" : "Disabled");
+    oslDrawStringf(10,140,"Hide MAC address               (currently: %s)", config.hidemac ? "Enabled" : "Disabled");
+	oslDrawStringf(10,150,"- *****Go Back*****");
+
+		Selector->x = selector_image_x; //Sets the selection coordinates
+        Selector->y = selector_image_y; //Sets the selection coordinates
+        
+        selector_image_x = selector_x+(selector_xDistance*MenuSelection); //Determines where the selection image is drawn for each selection
+        selector_image_y = selector_y+(selector_yDistance*MenuSelection); //Determines where the selection image is drawn for each selection
+        
+        if (osl_keys->pressed.down) MenuSelection++; //Moves the selector down
+        if (osl_keys->pressed.up) MenuSelection--; //Moves the selector up
+        
+        if (MenuSelection > numMenuItems) MenuSelection = 1; //Sets the selection to the first
+        if (MenuSelection < 1) MenuSelection = numMenuItems; //Sets the selection back to last
+
+		if (MenuSelection == 1 && osl_keys->pressed.cross)
         {
 			config.skiplogo = !config.skiplogo;
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowCnfMenu();
         }
-        if(btn == 2)
+        if (MenuSelection == 2 && osl_keys->pressed.cross)
         {
 			config.hidecorrupt = !config.hidecorrupt;
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowCnfMenu();
         }	
-        if(btn == 3)
+        if (MenuSelection == 3 && osl_keys->pressed.cross)
         {
 			config.gamekernel150 = !config.gamekernel150;
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowCnfMenu();
         }	
-        if(btn == 4)
+        if (MenuSelection == 4 && osl_keys->pressed.cross)
         {
 			config.startupprog = !config.startupprog;
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowCnfMenu();
         }
-        if(btn == 5)
+        if (MenuSelection == 5 && osl_keys->pressed.cross)
         {
 			if(config.umdmode == MODE_UMD)
                 config.umdmode = MODE_MARCH33;
@@ -552,12 +817,10 @@ void ShowCnfMenu(void)
                 config.umdmode = MODE_OE_LEGACY;
             else if(config.umdmode == MODE_OE_LEGACY)
                 config.umdmode = MODE_UMD;
-				
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowCnfMenu();
         }
-        if(btn == 6)
+        if (MenuSelection == 6 && osl_keys->pressed.cross)
         {
 			if(config.fakeregion == FAKE_REGION_DISABLED)
                 config.fakeregion = FAKE_REGION_JAPAN;
@@ -587,12 +850,10 @@ void ShowCnfMenu(void)
                 config.fakeregion = FAKE_REGION_DEBUG_TYPE_II;
             else if(config.fakeregion == FAKE_REGION_DEBUG_TYPE_II)
                 config.fakeregion = FAKE_REGION_DISABLED;
-				
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowCnfMenu();
         }
-        if(btn == 7)
+        if (MenuSelection == 8 && osl_keys->pressed.cross)
         {
 			if(config.usbdevice == USBDEVICE_MEMORYSTICK)
                 config.usbdevice = USBDEVICE_FLASH0;
@@ -607,277 +868,357 @@ void ShowCnfMenu(void)
             else if(config.usbdevice == USBDEVICE_UMD9660)
                 config.usbdevice = USBDEVICE_MEMORYSTICK;
 				
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowCnfMenu();
         } 
-        if(btn == 8)
+        if (MenuSelection == 9 && osl_keys->pressed.cross)
         {
 			config.notusedaxupd = !config.notusedaxupd;
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowCnfMenu();
         }
-        if(btn == 9)
+        if (MenuSelection == 10 && osl_keys->pressed.cross)
         {
 			config.hidepics = !config.hidepics;
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowCnfMenu();
         } 
-        if(btn == 10)
+        if (MenuSelection == 11 && osl_keys->pressed.cross)
         {
 			config.useversiontxt = !config.useversiontxt;
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowCnfMenu();
         } 
-        if(btn == 11)
+        if (MenuSelection == 12 && osl_keys->pressed.cross)
         {
 			config.slimcolors = !config.slimcolors;
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowCnfMenu();
         } 
-        if(btn == 12)
+        if (MenuSelection == 13 && osl_keys->pressed.cross)
         {
 			config.hidemac = !config.hidemac;
-			sceKernelDelayThread(100000);
 			sctrlSESetConfig(&config);
 			ShowCnfMenu();
         }
-        if(btn == 13)
+        if (MenuSelection == 14 && osl_keys->pressed.cross)
         {
-		    ShowPage4();
+		    ConfigurationMenu();
         }	
-		if (pad.Buttons & PSP_CTRL_CIRCLE)
+		if (osl_keys->pressed.L)
 		{
-		    ShowPage4();
-		}		
+			ShowAdvancedCnfMenu();
+        }
+		if (osl_keys->pressed.R)
+		{
+			ShowSystemMenu();
+        }
+		if (osl_keys->pressed.circle)
+		{
+		    ConfigurationMenu();
+		}			
+	oslEndDrawing();
+	oslSyncFrame();	
+    oslAudioVSync();
 	}
+	return selection;
 }
 
 void ShowSystemMenu(void)
 {
-    int btn;
-	
-	CheckerInitMainScreen("System Edit Menu");
-	hcMenuClear();
-    hcMenuAddEntry("Swap buttons", 1);
-	hcMenuAddEntry("Activate WMA", 2);
-	hcMenuAddEntry("Activate flash player", 3);
-	hcMenuAddEntry("Use Fake name", 4);
-	hcMenuAddEntry("Hide MAC Address", 5);
-	hcMenuAddEntry("Back", 6);
-	
-	while(1 == 1)
-    {
-        btn = hcMenuShowMenu(0, 3);
+    int MenuSelection = 1; // Pretty obvious
+	int selector_x = 0; //The x position of the first selection
+	int selector_y = 10; //The y position of the first selection
+	int selector_image_x; //Determines the starting x position of the selection
+	int selector_image_y; //Determines the starting y position of the selection
+	int numMenuItems = 6; //Amount of items in the menu
 
-		if(btn == 1)
+	int selection = 0;
+	
+	while (!osl_quit)
+  {
+
+	oslStartDrawing();	
+	
+	oslReadKeys();
+	
+	oslClearScreen(RGB(0,0,0));
+		
+	oslDrawImageXY(recoverybg, 0, 0);
+	oslDrawImage(Selector);
+	
+	oslDrawStringf(10,5,"System Menu");
+	
+    oslDrawStringf(10,20,"- swap buttons");
+	oslDrawStringf(10,30,"- activate WMA");
+	oslDrawStringf(10,40,"- activate flash player");
+	oslDrawStringf(10,50,"- use fake name");
+	oslDrawStringf(10,60,"- hide MAC address");
+	oslDrawStringf(10,70,"- *****Go Back*****");
+	
+		Selector->x = selector_image_x; //Sets the selection coordinates
+        Selector->y = selector_image_y; //Sets the selection coordinates
+        
+        selector_image_x = selector_x+(selector_xDistance*MenuSelection); //Determines where the selection image is drawn for each selection
+        selector_image_y = selector_y+(selector_yDistance*MenuSelection); //Determines where the selection image is drawn for each selection
+        
+        if (osl_keys->pressed.down) MenuSelection++; //Moves the selector down
+        if (osl_keys->pressed.up) MenuSelection--; //Moves the selector up
+        
+        if (MenuSelection > numMenuItems) MenuSelection = 1; //Sets the selection to the first
+        if (MenuSelection < 1) MenuSelection = numMenuItems; //Sets the selection back to last
+
+		if (MenuSelection == 1 && osl_keys->pressed.cross)
         {
-		    CheckerInitMainScreen("Assigning...");
+		    oslDrawStringf(10,200,"Assigning...");
 			swap_buttons();
-			sceKernelDelayThread(2000000);
 			ShowSystemMenu();
         }
-		if(btn == 2)
+		if (MenuSelection == 2 && osl_keys->pressed.cross)
         {
-		    CheckerInitMainScreen("Activating...");
+		    oslDrawStringf(10,200,"Activating...");
 			active_wma();
-			sceKernelDelayThread(2000000);
 			ShowSystemMenu();
         }
-		if(btn == 3)
+		if (MenuSelection == 3 && osl_keys->pressed.cross)
         {
-		    CheckerInitMainScreen("Activating...");
+		    oslDrawStringf(10,200,"Activating...");
 			active_flash();
-			sceKernelDelayThread(2000000);
 			ShowSystemMenu();
         }
-		if(btn == 4)
+		if (MenuSelection == 4 && osl_keys->pressed.cross)
         {
-		    CheckerInitMainScreen("Faking...");
+		    oslDrawStringf(10,200,"Faking...");
 			fake_name();
-			sceKernelDelayThread(2000000);
 			ShowSystemMenu();
         }
-		if(btn == 5)
+		if (MenuSelection == 5 && osl_keys->pressed.cross)
         {
-		    CheckerInitMainScreen("Hiding...");
+		    oslDrawStringf(10,200,"Hiding...");
 			hide_mac();
-			sceKernelDelayThread(2000000);
 			ShowSystemMenu();
         }
-		if(btn == 6)
+		if (MenuSelection == 6 && osl_keys->pressed.cross)
         {
-		    ShowPage3();
+		    ConfigurationMenu();
         } 
-		if (pad.Buttons & PSP_CTRL_CIRCLE)
+		if (osl_keys->pressed.L)
 		{
-		    ShowPage3();
+			ShowCnfMenu();
+        }
+		if (osl_keys->pressed.R)
+		{
+			ShowBatteryMenu();
+        }
+		if (osl_keys->pressed.circle)
+		{
+		    ConfigurationMenu();
 		}		
+	oslEndDrawing();
+	oslSyncFrame();	
+    oslAudioVSync();
 	}
+	return selection;
 }
 
 void ShowBatteryMenu(void)
 {
-    int btn;
-	
-	CheckerInitMainScreen("Battery Edit Menu");
-	hcMenuClear();
-    hcMenuAddEntry("Make Battery Pandora", 1);
-	hcMenuAddEntry("Make Battery AutoBoot", 2);
-	hcMenuAddEntry("Make Battery Normal", 3);
-	hcMenuAddEntry("Dump Battery Serial to file", 4);
-	hcMenuAddEntry("Back", 5);
-	
-	while(1 == 1)
-    {
-        btn = hcMenuShowMenu(0, 3);
+	int MenuSelection = 1; // Pretty obvious
+	int selector_x = 0; //The x position of the first selection
+	int selector_y = 10; //The y position of the first selection
+	int selector_image_x; //Determines the starting x position of the selection
+	int selector_image_y; //Determines the starting y position of the selection
+	int numMenuItems = 5; //Amount of items in the menu
+		
+	int selection = 0;
+    
+	while (!osl_quit)
+	{
 
-		if(btn == 1)
-        {
-		    CheckerInitMainScreen("Creating...");
+	oslStartDrawing();	
+	
+	oslReadKeys();
+	
+	oslClearScreen(RGB(0,0,0));
+		
+	oslDrawImageXY(recoverybg, 0, 0);
+	oslDrawImage(Selector);
+	
+	oslDrawStringf(10,5,"Battery Menu");
+	
+    oslDrawStringf(10,20,"- make battery pandora");
+	oslDrawStringf(10,30,"- make battery autoBoot");
+	oslDrawStringf(10,40,"- make battery normal");
+	oslDrawStringf(10,50,"- dump battery serial to file");
+	oslDrawStringf(10,60,"- *****Go Back*****");
+	
+		Selector->x = selector_image_x; //Sets the selection coordinates
+        Selector->y = selector_image_y; //Sets the selection coordinates
+        
+        selector_image_x = selector_x+(selector_xDistance*MenuSelection); //Determines where the selection image is drawn for each selection
+        selector_image_y = selector_y+(selector_yDistance*MenuSelection); //Determines where the selection image is drawn for each selection
+        
+        if (osl_keys->pressed.down) MenuSelection++; //Moves the selector down
+        if (osl_keys->pressed.up) MenuSelection--; //Moves the selector up
+        
+        if (MenuSelection > numMenuItems) MenuSelection = 1; //Sets the selection to the first
+        if (MenuSelection < 1) MenuSelection = numMenuItems; //Sets the selection back to last
+
+		if (MenuSelection == 1 && osl_keys->pressed.cross)
+        {			
+			if(chGetPSPCreatePandora() == 1) oslDrawStringf(10,190,"Your hardware is not supported.");
 			
-			if(chGetPSPCreatePandora() == 1) Error("Your hardware is not supported.");
-			
-			CheckerPrintf("Creating Pandora Battery...");
+			oslDrawStringf(10,200,"Creating Pandora Battery...");
 			SetBatSer(0xFFFF, 0xFFFF);
-	        CheckerPrintf("Done");
-			sceKernelDelayThread(2000000);
+	        oslDrawStringf(10,210,"Done");
 			ShowBatteryMenu();
         }
-		if(btn == 2)
+		if (MenuSelection == 2 && osl_keys->pressed.cross)
         {
-		    CheckerInitMainScreen("Creating...");
+			if(chGetPSPCreatePandora() == 1) oslDrawStringf(10,190,"Your hardware is not supported.");
 			
-			if(chGetPSPCreatePandora() == 1) Error("Your hardware is not supported.");
-			
-			CheckerPrintf("Creating AutoBoot Battery...");
+			oslDrawStringf(10,200,"Creating AutoBoot Battery...");
 			SetBatSer(0x0000, 0x0000);
-			CheckerPrintf("Done");
-			sceKernelDelayThread(2000000);
+			oslDrawStringf(10,210,"Done");
 			ShowBatteryMenu();
         }
-		if(btn == 3)
-        {
-		    CheckerInitMainScreen("Creating...");
+		if (MenuSelection == 3 && osl_keys->pressed.cross)
+        {			
+			if(chGetPSPCreatePandora() == 1) oslDrawStringf(10,190,"Your hardware is not supported.");
 			
-			if(chGetPSPCreatePandora() == 1) Error("Your hardware is not supported.");
-			
-			CheckerPrintf("Creating Normal Battery...");
+			oslDrawStringf(10,210,"Creating Normal Battery...");
 			SetBatSer(0x5241, 0x4E44);
-			CheckerPrintf("Done");
-			sceKernelDelayThread(2000000);
+			oslDrawStringf(10,200,"Done");
 			ShowBatteryMenu();
         }
-		if(btn == 4)
+		if (MenuSelection == 4 && osl_keys->pressed.cross)
         {
-			CheckerInitMainScreen("Dumping...");
+			if(chGetPSPCreatePandora() == 1) oslDrawStringf(10,190,"Your hardware is not supported.");
 			
-			if(chGetPSPCreatePandora() == 1) Error("Your hardware is not supported.");
-			
-			CheckerPrintf("Dumping Battery Serial...");
+			oslDrawStringf(10,210,"Dumping Battery Serial...");
 			GetBatSer(BatSerCurrent);
 			WriteFile("ms0:/batser.bin", BatSerCurrent, 4);
-			CheckerPrintf("Done");
-			sceKernelDelayThread(2000000);
+			oslDrawStringf(10,200,"Done");
 			ShowBatteryMenu();
         }
-		if(btn == 5)
+		if (MenuSelection == 5 && osl_keys->pressed.cross)
         {
-		    ShowPage2();
+		    ConfigurationMenu();
         } 
-		if (pad.Buttons & PSP_CTRL_CIRCLE)
+		if (osl_keys->pressed.L)
 		{
-		    ShowPage2();
-		}		
+			ShowSystemMenu();
+        }
+		if (osl_keys->pressed.R)
+		{
+			ShowAdvancedCnfMenu();
+        }
+		if (osl_keys->pressed.circle)
+		{
+		    ConfigurationMenu();
+		}	
+	oslEndDrawing();
+	oslSyncFrame();	
+    oslAudioVSync();
 	}
+	return selection;
 }
 
-void ShowMainMenu(void)
+int mainRecoveryMenu()
 {
-    int btn;		
-	CheckerInitMainScreen("Main Menu");
-	hcMenuClear();
-	hcMenuAddEntry("Toggle USB", 1);
-    hcMenuAddEntry("Configuration", 2);
-	hcMenuAddEntry("Show Version.txt", 3);
-	hcMenuAddEntry("Plugins", 4);
-    hcMenuAddEntry("Exit", 5);
-	hcMenuAddEntry("Exit to XMB", 6);
-	hcMenuAddEntry("Standby", 7);
-	hcMenuAddEntry("Shutdown Device", 8);
-	
-	while(1 == 1)
-    {
-        btn = hcMenuShowMenu(0, 3);
+	int MenuSelection = 1; // Pretty obvious
+	int selector_x = 0; //The x position of the first selection
+	int selector_y = 10; //The y position of the first selection
+	int numMenuItems = 9; //Amount of items in the menu
 		
-		if(btn == 1)
-        {
-		    USB_Toggle();
-        }
+	int selection = 0;
+	
+	recoverybg = oslLoadImageFilePNG("android_bootable_recovery/res/images/recoverybg.png", OSL_IN_RAM, OSL_PF_8888);
+	Selector = oslLoadImageFile("android_bootable_recovery/res/images/selector.png", OSL_IN_RAM, OSL_PF_8888);
+	
+	roboto = oslLoadIntraFontFile("system/fonts/Roboto.pgf", INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8);
+	oslIntraFontSetStyle(roboto, 0.5f, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
+	oslSetFont(roboto);
 
-		if(btn == 2)
-        {
-		    ShowPage1();
-        }
-		if(btn == 3)
-        {
-		    ShowVersionTxt();
-        } 
-		if(btn == 5)
-        {
-			Exittoshell();
-        }  
-		if(btn == 6)
-        {
-			CheckerExit();
-        } 
-		if(btn == 7)
-        {
-			standby_device();
-        } 
-		if(btn == 8)
-        {
-			shutdown_device();
-        } 
-	}
-}
+	while (!osl_quit)
+  {
+		oslStartDrawing();	
 
-int recoverymain(void)
-{	
-	pspDebugScreenInit();
-	
-	//Default Color
-	if(color == 0)
-	{
-		color = 1;
-        CheckerSetColor(0x00FFFFFF);
-	}
-	
-	CheckerInitMainScreen("Loading...");
-	
-	WriteFile("ipl_update.prx", ipl_update, size_ipl_update);
-	WriteFile("batman.prx", batman, size_batman);
-	WriteFile("kuman.prx", kuman, size_kuman);
-	sceKernelDelayThread(1000000);
-	
-	LoadStartModule("ipl_update.prx");
-	LoadStartModule("batman.prx");
-	LoadStartModule("kuman.prx");
-	sceKernelDelayThread(1000000);
-	
-	CheckerPrintf("PRXs loaded successfully.\n\n");
-	sceKernelDelayThread(2000000);
+		oslReadKeys();
 		
-    ShowMainMenu();
-	
-	if (osl_pad.held.R && osl_pad.held.triangle)
+		oslClearScreen(RGB(0,0,0));
+		
+		oslDrawImageXY(recoverybg, 0, 0);
+		oslDrawImage(Selector);
+		oslDrawStringf(10,5,"CWM-based Recovery v1.0\n");
+		
+		oslDrawStringf(10,20,"- toggle USB");
+		oslDrawStringf(10,30,"- system information");
+		oslDrawStringf(10,40,"- configuration");
+        oslDrawStringf(10,50,"- show version.txt");
+		oslDrawStringf(10,60,"- plugins");
+		oslDrawStringf(10,70,"- exit");
+		oslDrawStringf(10,80,"- exit to XMB");
+		oslDrawStringf(10,90,"- standby");
+		oslDrawStringf(10,100,"- shutdown device");
+		
+		Selector->x = selector_image_x; //Sets the selection coordinates
+        Selector->y = selector_image_y; //Sets the selection coordinates
+        
+        selector_image_x = selector_x+(selector_xDistance*MenuSelection); //Determines where the selection image is drawn for each selection
+        selector_image_y = selector_y+(selector_yDistance*MenuSelection); //Determines where the selection image is drawn for each selection
+        
+        if (osl_keys->pressed.down) MenuSelection++; //Moves the selector down
+        if (osl_keys->pressed.up) MenuSelection--; //Moves the selector up
+        
+        if (MenuSelection > numMenuItems) MenuSelection = 1; //Sets the selection to the first
+        if (MenuSelection < 1) MenuSelection = numMenuItems; //Sets the selection back to last
+		
+		if (MenuSelection == 1 && osl_keys->pressed.cross)
 		{
-			screenshot();
+			USB_Toggle();
 		}
-	
-	return 0;
+		
+		if (MenuSelection == 2 && osl_keys->pressed.cross)
+		{
+			ShowPage1();
+		}
+		
+		if (MenuSelection == 3 && osl_keys->pressed.cross)
+		{
+			ConfigurationMenu();
+		}
+		
+		if (MenuSelection == 4 && osl_keys->pressed.cross)
+		{
+			ShowVersionTxt();
+		}
+		
+		if (MenuSelection == 6 && osl_keys->pressed.cross)
+		{
+			oslSyncFrame();
+			sceKernelDelayThread(3*1000000);
+			home();
+		}
+		
+		if (MenuSelection == 7 && osl_keys->pressed.cross)
+		{
+			CheckerExit();
+		}
+		
+		if (MenuSelection == 8 && osl_keys->pressed.cross)
+		{
+			standby_device();
+		}
+		
+		if (MenuSelection == 9 && osl_keys->pressed.cross)
+		{
+			shutdown_device();
+		}
+		
+		oslEndDrawing();
+		oslSyncFrame();	
+        oslAudioVSync();
+	}
+	return selection;
 }
