@@ -15,7 +15,7 @@ What's working
 - Menu buttons Highlighting effects.
 - Battery functions. (Displays the battery percentage, by using icons.)
 - App Drawer
-- Recovery Menu (Merged) - Use R + X to launch Recovery menu, once you're in home.
+- CWM Based PSP Recovery Menu 1.0 (Merged) - Press square to open power menu, then select recovery.
 - Lockscreen
 - Notification Slider
 - Navbar functions, for returning home or back to the previous menu.
