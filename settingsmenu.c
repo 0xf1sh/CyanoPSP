@@ -361,13 +361,11 @@ void about_menu()
 		
 		if(osl_pad.held.select)
 		{
-			LoadStartModule("modules/RemoteJoyLite.prx");
 			enableUsb();
 		}
 		
 		else if(osl_pad.held.select)
 		{	
-			StopUnloadModule("modules/RemoteJoyLite.prx");
 			disableUsb();
 		}
 		

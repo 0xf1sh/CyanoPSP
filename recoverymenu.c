@@ -1176,7 +1176,12 @@ int mainRecoveryMenu()
 		
 		if (MenuSelection == 1 && osl_keys->pressed.cross)
 		{
-			USB_Toggle();
+			enableUsb();
+		}
+		
+		else if (MenuSelection == 1 && osl_keys->pressed.cross)
+		{
+			disableUsb();
 		}
 		
 		if (MenuSelection == 2 && osl_keys->pressed.cross)
