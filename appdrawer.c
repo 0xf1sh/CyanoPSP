@@ -118,21 +118,21 @@ int appdrawer()
 		
 		if (settings_x <= -10 && fm_x <= -10)
 		{
-		oslDrawImageXY(pointer1, 221, 222);
-		oslDrawImageXY(pointer1, 231, 222);
-		oslDrawImageXY(pointer, 240, 221);
+			oslDrawImageXY(pointer1, 221, 222);
+			oslDrawImageXY(pointer1, 231, 222);
+			oslDrawImageXY(pointer, 240, 221);
 		}
 		else if (apollo_x >= 500)
 		{
-		oslDrawImageXY(pointer, 220, 221);
-		oslDrawImageXY(pointer1, 234, 222);
-		oslDrawImageXY(pointer1, 244, 222);
+			oslDrawImageXY(pointer, 220, 221);
+			oslDrawImageXY(pointer1, 234, 222);
+			oslDrawImageXY(pointer1, 244, 222);
 		}
 		else
 		{
-		oslDrawImageXY(pointer1, 221, 222);
-		oslDrawImageXY(pointer, 229, 221);
-		oslDrawImageXY(pointer1, 243, 222);
+			oslDrawImageXY(pointer1, 221, 222);
+			oslDrawImageXY(pointer, 229, 221);
+			oslDrawImageXY(pointer1, 243, 222);
 		}
 		
 		android_notif();
@@ -140,62 +140,62 @@ int appdrawer()
 			
 		if (osl_pad.held.left && (osl_pad.held.cross))
 		{
-		apollo_x = apollo_x-10;
-		browser_x = browser_x-10;
-		browser_text_x = browser_text_x-10;
-		calc_x = calc_x-10;
-		calc_text_x = calc_text_x-10;
-		calendar_x = calendar_x-10;
-		calendar_text_x = calendar_text_x-10;
-		clock_x = clock_x-10;
-		clock_text_x = clock_text_x-10;
-		email_x = email_x-10;
-		email_text_x = email_text_x-10;
-		fm_x = fm_x-10;
-		fm_text_x = fm_text_x-10;
-		gallery_text_x = gallery_text_x-10;
-		gmail_x = gmail_x-10;
-		gmail_text_x = gmail_text_x-10;
-		game_icon = game_icon-10;
-		game_text_icon = game_text_icon-10;
-		messenger_x = messenger_x-10;
-		messenger_text_x = messenger_text_x-10;
-		people_x = people_x-10;
-		people_text_x = people_text_x-10;
-		phone_x = phone_x-10;
-		phone_text_x = phone_text_x-10;
-		settings_x = settings_x-10;
-		settings_text_x = settings_text_x-10;
+			apollo_x = apollo_x-10;
+			browser_x = browser_x-10;
+			browser_text_x = browser_text_x-10;
+			calc_x = calc_x-10;
+			calc_text_x = calc_text_x-10;
+			calendar_x = calendar_x-10;
+			calendar_text_x = calendar_text_x-10;
+			clock_x = clock_x-10;
+			clock_text_x = clock_text_x-10;
+			email_x = email_x-10;
+			email_text_x = email_text_x-10;
+			fm_x = fm_x-10;
+			fm_text_x = fm_text_x-10;
+			gallery_text_x = gallery_text_x-10;
+			gmail_x = gmail_x-10;
+			gmail_text_x = gmail_text_x-10;
+			game_icon = game_icon-10;
+			game_text_icon = game_text_icon-10;
+			messenger_x = messenger_x-10;
+			messenger_text_x = messenger_text_x-10;
+			people_x = people_x-10;
+			people_text_x = people_text_x-10;
+			phone_x = phone_x-10;
+			phone_text_x = phone_text_x-10;
+			settings_x = settings_x-10;
+			settings_text_x = settings_text_x-10;
 		}
 		
 		else if (osl_pad.held.right && (osl_pad.held.cross))
 		{
-		apollo_x = apollo_x+10;
-		browser_x = browser_x+10;
-		browser_text_x = browser_text_x+10;
-		calc_x = calc_x+10;
-		calc_text_x = calc_text_x+10;
-		calendar_x = calendar_x+10;
-		calendar_text_x = calendar_text_x+10;
-		clock_x = clock_x+10;
-		clock_text_x = clock_text_x+10;
-		email_x = email_x+10;
-		email_text_x = email_text_x+10;
-		fm_x = fm_x+10;
-		fm_text_x = fm_text_x+10;
-		gallery_text_x = gallery_text_x+10;
-		gmail_x = gmail_x+10;
-		gmail_text_x = gmail_text_x+10;
-		game_icon = game_icon+10;
-		game_text_icon = game_text_icon+10;
-		messenger_x = messenger_x+10;
-		messenger_text_x = messenger_text_x+10;
-		people_x = people_x+10;
-		people_text_x = people_text_x+10;
-		phone_x = phone_x+10;
-		phone_text_x = phone_text_x+10;
-		settings_x = settings_x+10;
-		settings_text_x = settings_text_x+10;
+			apollo_x = apollo_x+10;
+			browser_x = browser_x+10;
+			browser_text_x = browser_text_x+10;
+			calc_x = calc_x+10;
+			calc_text_x = calc_text_x+10;
+			calendar_x = calendar_x+10;
+			calendar_text_x = calendar_text_x+10;
+			clock_x = clock_x+10;
+			clock_text_x = clock_text_x+10;
+			email_x = email_x+10;
+			email_text_x = email_text_x+10;
+			fm_x = fm_x+10;
+			fm_text_x = fm_text_x+10;
+			gallery_text_x = gallery_text_x+10;
+			gmail_x = gmail_x+10;
+			gmail_text_x = gmail_text_x+10;
+			game_icon = game_icon+10;
+			game_text_icon = game_text_icon+10;
+			messenger_x = messenger_x+10;
+			messenger_text_x = messenger_text_x+10;
+			people_x = people_x+10;
+			people_text_x = people_text_x+10;
+			phone_x = phone_x+10;
+			phone_text_x = phone_text_x+10;
+			settings_x = settings_x+10;
+			settings_text_x = settings_text_x+10;
 		}
 		
 		if (osl_pad.held.square)

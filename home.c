@@ -79,12 +79,6 @@ int home()
 			multitask();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.cross)
-		{
-			unloadicons();
-			recoverymain();
-        }
-		
 		if (osl_pad.held.R && osl_pad.held.triangle)
 		{
 			screenshot();

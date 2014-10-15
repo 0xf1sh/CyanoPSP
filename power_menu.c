@@ -48,7 +48,9 @@ int powermenu()
 		
 		if (cursor->x >= 128 && cursor->x <= 354 && cursor->y >= 88 && cursor->y <= 140 && osl_pad.held.cross)
 		{
-			recoverymain();
+			oslSyncFrame();
+			sceKernelDelayThread(3*1000000);
+			mainRecoveryMenu();
 		}
 		
 		if (cursor->x >= 128 && cursor->x <= 354 && cursor->y >= 192 && cursor->y <= 242 && osl_pad.held.cross)

@@ -30,6 +30,14 @@ int dirExists(const char* path)
 	}
 }
 
+void deleteUpdateFile()
+{
+	if (fileExists("ms0:/PSP/GAME/CyanogenMod.zip"))
+	{
+		sceIoRemove("ms0:/PSP/GAME/CyanogenMod.zip");
+	}
+}
+
 void makeDownloadDir()
 {
 	SceUID dir = sceIoDopen(downloadPath);

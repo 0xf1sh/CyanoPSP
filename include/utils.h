@@ -12,6 +12,7 @@
 
 int fileExists(const char* path);
 int dirExists(const char* path);
+void deleteUpdateFile();
 void makeDownloadDir();
 void makeMusicDir();
 void fadeOut(OSL_IMAGE* bg,int x, int y);

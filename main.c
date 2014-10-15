@@ -32,12 +32,12 @@
 
 PSP_MODULE_INFO("CyanoPSP - C",  1, 2, 2);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU); 
-PSP_HEAP_SIZE_KB(-128);
+PSP_HEAP_SIZE_KB(20*1024);
 
 //declaration
 OSL_IMAGE *background, *cursor, *ic_allapps, *ic_allapps_pressed, *navbar, *wificon, *apollo, *gmail, *messengericon, *browser, *google, *notif, *batt100, 
 		  *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon, *usbdebug, 
-		  *recoverybg, *welcome, *ok, *transbackground, *notif2;
+		  *recoverybg, *welcome, *ok, *transbackground, *notif2 , *wifibg;
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -82,10 +82,10 @@ int SetupCallbacks(void) {
 
 int connectAPCallback(int state){
     oslStartDrawing();
-    oslDrawImageXY(background, 0, 0);
-    oslDrawString(30, 200, "Connecting to AP...");
+    oslDrawImageXY(wifibg, 0, 19);
+    oslDrawString(30, 175, "Connecting to AP...");
     sprintf(buffer, "State: %i", state);
-    oslDrawString(30, 230, buffer);
+    oslDrawString(30, 195, buffer);
     oslEndDrawing();
     oslEndFrame();
     oslSyncFrame();
@@ -95,8 +95,8 @@ int connectAPCallback(int state){
  
 int connectToAP(int config){
     oslStartDrawing();
-    oslDrawImageXY(background, 0, 0);
-    oslDrawString(30, 200, "Connecting to AP...");
+    oslDrawImageXY(wifibg, 0, 19);
+    oslDrawString(30, 175, "Connecting to AP...");
     oslEndDrawing();
     oslEndFrame();
     oslSyncFrame();
@@ -107,13 +107,13 @@ int connectToAP(int config){
         char resolvedIP[30] = "";
 
         oslStartDrawing();
-        oslDrawImageXY(background, 0, 0);
+        oslDrawImageXY(wifibg, 0, 19);
         oslGetIPaddress(ip);
         sprintf(buffer, "IP address: %s", ip);
-        oslDrawString(30, 170, buffer);
+        oslDrawString(30, 175, buffer);
 
         sprintf(buffer, "Resolving %s", ADDRESS);
-        oslDrawString(30, 200, buffer);
+        oslDrawString(30, 195, buffer);
         oslEndDrawing();
         oslEndFrame();
         oslSyncFrame();
@@ -121,22 +121,22 @@ int connectToAP(int config){
         result = oslResolveAddress(ADDRESS, resolvedIP);
 
         oslStartDrawing();
-        oslDrawImageXY(background, 0, 0);
+        oslDrawImageXY(wifibg, 0, 19);
         oslGetIPaddress(ip);
         if (!result)
             sprintf(buffer, "Resolved IP address: %s", ip);
         else
             sprintf(buffer, "Error resolving address!");
-        oslDrawString(30, 230, buffer);
+        oslDrawString(30, 195, buffer);
         oslEndDrawing();
         oslEndFrame();
         oslSyncFrame();
 		sceKernelDelayThread(3*1000000);
     }else{
         oslStartDrawing();
-        oslDrawImageXY(background, 0, 0);
+        oslDrawImageXY(wifibg, 0, 19);
         sprintf(buffer, "Error connecting to AP!");
-        oslDrawString(30, 200, buffer);
+        oslDrawString(30, 195, buffer);
         oslEndDrawing();
         oslEndFrame();
         oslSyncFrame();
@@ -371,52 +371,44 @@ void android_notif()
 void internet()
 {
 	int skip = 0;
-    int enabled = 1;
-    int selectedConfig = 0;
+    int browser = 0;
+	
 	oslNetInit();
 
-    if (!oslIsWlanPowerOn())
-        sprintf(message, "Please turn on the WLAN.");
+    while(!osl_quit)
+	{
+        browser = oslBrowserIsActive();
+		if (!skip)
+		{
+            oslStartDrawing();
 
-    //Get connections list:
-    struct oslNetConfig configs[OSL_MAX_NET_CONFIGS];
-    int numconfigs = oslGetNetConfigs(configs);
-    if (!numconfigs){
-        sprintf(message, "No configuration found!");
-        enabled = 0;
-    }
-
-    while(!osl_quit){
-        if (!skip){
-			oslStartDrawing();
-			oslDrawImageXY(background, 0, 0);
-            if (enabled){
-                sprintf(buffer, "Press X to connect to %s.", configs[selectedConfig].name);
-    			oslDrawString(30, 50, buffer);
-    			oslDrawString(30, 80, "Press UP and DOWN to change settings.");
+            if (browser)
+			{
+                oslDrawBrowser();
+                if (oslGetBrowserStatus() == PSP_UTILITY_DIALOG_NONE)
+				{
+                    oslEndBrowser();
+					home();
+                }
             }
-            oslDrawString(30, 150, "Press /\\ to quit.");
-			oslDrawString(30, 200, message);
-
-			oslEndDrawing();
+            oslEndDrawing();
 		}
-        oslEndFrame();
-        skip = oslSyncFrame();
+		oslEndFrame();
+		skip = oslSyncFrame();
 
-        oslReadKeys();
-        if (osl_keys->released.triangle)
-            runningFlag = 0;
+        if (!browser)
+		{
+            oslReadKeys();
+            int res = oslBrowserInit("http://www.google.com", "/PSP/GAME/CyanogenMod/downloads", 5*1024*1024,
+                                         PSP_UTILITY_HTMLVIEWER_DISPLAYMODE_SMART_FIT,
+                                         PSP_UTILITY_HTMLVIEWER_DISABLE_STARTUP_LIMITS,
+                                         PSP_UTILITY_HTMLVIEWER_INTERFACEMODE_FULL,
+                                         PSP_UTILITY_HTMLVIEWER_CONNECTMODE_MANUAL_ALL);
+			memset(message, 0, sizeof(message));
 
-        if (osl_keys->released.cross){
-            connectToAP(selectedConfig + 1);
-        }else if (osl_keys->released.up){
-            if (++selectedConfig >= numconfigs)
-                selectedConfig = numconfigs - 1;
-        }else if (osl_keys->released.down){
-            if (--selectedConfig < 0)
-                selectedConfig = 0;
         }
     }
+	oslNetTerm();
 }
 
 //First Boot Message
@@ -534,6 +526,7 @@ int main()
 	setfont();
 	
 	makeDownloadDir();
+	deleteUpdateFile();
 	
 	//Main loop to run the program
 	while (!osl_quit)
@@ -612,12 +605,6 @@ int main()
 			unloadicons();
 			multitask();
 		}
-		
-		if (osl_pad.held.R && osl_pad.held.cross)
-		{
-			unloadicons();
-			recoverymain();
-        }
 		
 		if (osl_pad.held.R && osl_pad.held.triangle)
 		{
