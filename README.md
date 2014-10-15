@@ -35,10 +35,11 @@ What's working
 - App drawer pane navigation
 - Quick toggles
 - File Manager
+- Internet Browser - NetFront default PSP browser
+- OTA Updates - Settings>About>CyanoPSP Updates (WiFi only obviously)
 
 What's yet to work
 =================
-- Internet
 - Fully functional calculator
 - Boot animation (I'll use a set of 20 images in a zip file probably - These images can be replaced by using another zip with the same file names and format)
 - Game (Homebrew and Backups) Launcher
