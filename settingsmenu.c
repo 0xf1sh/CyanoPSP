@@ -26,6 +26,7 @@
 #include "lock.h"
 #include "multi.h"
 #include "power_menu.h"
+#include "recoverymenu.h"
 #include "include/screenshot.h"
 
 #define configFile "system/build.prop"
@@ -34,8 +35,9 @@
 
 //declaration
 OSL_IMAGE *settingsbg, *cursor, *wificon, *usbdebug, *aboutbg, *offswitch, *onswitch, *themebg, *performancebg, *wifibg, *developerbg, *about, *highlight, 
-		  *developeroptions, *themes, *wifi, *processorbg, *background, *appicon1, *appicon2, *navbar, *apollo, *gmail, *messengericon, *browser, *cpuset, *check,
-		  *backicon, *homeicon, *multicon, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *isoloadericon, *fb, *settings, *updatesbg, *performance;
+		  *developeroptions, *themes, *wifi, *processorbg, *background, *appicon1, *appicon2, *navbar, *apollo, *gmail, *messengericon, *browser, *cpuset, 
+		  *check, *backicon, *homeicon, *multicon, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *isoloadericon, *fb, *settings, *updatesbg, 
+		  *performance, *recoverybg;
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -71,78 +73,53 @@ int current = 0;
 int OnlineUpdater()
 {
 	int skip = 0;
-    int enabled = 1;
-    int selectedConfig = 0;
-	int download = 0;
-    
-    oslNetInit();
-    
-    if (!oslIsWlanPowerOn())
-        sprintf(Settings_message, "Please turn on the WLAN.");
-    
-    //Get connections list:
-    struct oslNetConfig configs[OSL_MAX_NET_CONFIGS];
-    int numconfigs = oslGetNetConfigs(configs);
-    if (!numconfigs){
-        sprintf(Settings_message, "No configuration found");
-        enabled = 0;
-    }
-    
-    while(!osl_quit){
-        if (!skip){
-                oslStartDrawing();
-        
-			if (enabled){
-					oslDrawStringf(25,127,buffer, "Press X to connect to %s.", configs[selectedConfig].name);
-					oslDrawString(25,113, buffer);
-					oslDrawString(25, 141, "Press UP and DOWN to change settings.");
-						}
-        
-					oslDrawString(25, 155, "Press trianlge to cancel.");
-					oslDrawString(30, 200, Settings_message);
+    int browser = 0;
+	char message[100] = "";
+	
+	oslNetInit();
 
-					oslEndDrawing();
-				}
-        oslEndFrame();
-        skip = oslSyncFrame();
+    while(!osl_quit)
+	{
+        browser = oslBrowserIsActive();
+		if (!skip)
+		{
+            oslStartDrawing();
 
-        oslReadKeys();
- 
-        if (osl_keys->released.triangle)
-		{
-            break;
+            if (browser)
+			{
+                oslDrawBrowser();
+                if (oslGetBrowserStatus() == PSP_UTILITY_DIALOG_NONE)
+				{
+                    oslEndBrowser();
+					if (fileExists("ms0:/PSP/GAME/CyanogenMod.zip"))
+					{
+					pgeZip* zipFiles = pgeZipOpen("../CyanogenMod.zip");
+					chdir("..");
+					pgeZipExtract(zipFiles, NULL);
+					pgeZipClose(zipFiles);
+					sceKernelExitGame();
+					}
+					about_menu();
+                }
+            }
+            oslEndDrawing();
 		}
-        if (osl_keys->released.cross)
+		oslEndFrame();
+		skip = oslSyncFrame();
+
+        if (!browser)
 		{
-        connectToAP(selectedConfig + 1);
-		download = 1;
-		
-		if (download == 1)
-		{
-			//download file
-			oslNetGetFile("http://zone-wifi.fr/psp/PSP/GAME/CyanogenMod.zip", "../");
-			oslDrawStringf(25, 80,"Installing update...");
-			pgeZip* zipFiles = pgeZipOpen("../CyanogenMod.zip");
-			chdir("..");
-			pgeZipExtract(zipFiles, NULL);
-			pgeZipClose(zipFiles);
-			oslDrawStringf(25,90,"Installation done.");
-		}
-        }
-		
-		else if (osl_keys->released.up)
-		{
-            if (++selectedConfig >= numconfigs)
-				selectedConfig = numconfigs - 1;
-        }
-		else if (osl_keys->released.down)
-		{
-			if (--selectedConfig < 0)
-				selectedConfig = 0;
+            oslReadKeys();
+            int res = oslBrowserInit("http://zone-wifi.fr/psp/PSP/GAME/CyanogenMod.zip", "/PSP/GAME", 5*1024*1024,
+                                         PSP_UTILITY_HTMLVIEWER_DISPLAYMODE_SMART_FIT,
+                                         PSP_UTILITY_HTMLVIEWER_DISABLE_STARTUP_LIMITS,
+                                         PSP_UTILITY_HTMLVIEWER_INTERFACEMODE_FULL,
+                                         PSP_UTILITY_HTMLVIEWER_CONNECTMODE_MANUAL_ALL);
+			memset(message, 0, sizeof(message));
+
         }
     }
-    oslNetTerm();
-    return 1;
+	oslNetTerm();
 }
 	
 void wlanstatus()
@@ -979,11 +956,12 @@ void wifi_menu()
 		oslDrawImageXY(wifibg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 
-		 if (enabled)
-		 {
-                sprintf(buffer, "%s", configs[selectedConfig].name);
-    			oslDrawString(30, wifi_y+28, configs[selectedConfig].name);
-         }
+		if (enabled)
+		{
+			sprintf(buffer, "%s", configs[selectedConfig].name);
+    		oslDrawString(30, wifi_y+28, configs[selectedConfig].name);
+			oslDrawString(30, 195, "Press up or down to navigate through your Wifi configurations.");
+        }
 		
 		oslDrawString(30, 200, Settings_message);
 		
@@ -994,20 +972,20 @@ void wifi_menu()
 		navbar_buttons();
 		android_notif();
 		
-		 if (osl_keys->released.cross)
-		 {
-            connectToAP(selectedConfig + 1);
-         }
-		 else if (osl_keys->released.up)
-		 {
-		 	 if (++selectedConfig >= numconfigs)
+		if (osl_keys->released.cross)
+		{
+			connectToAP(selectedConfig + 1);
+        }
+		else if (osl_keys->released.up)
+		{
+			if (++selectedConfig >= numconfigs)
 				selectedConfig = numconfigs - 1;
-         } 
-		 else if (osl_keys->released.down)
-		 {
+        } 
+		else if (osl_keys->released.down)
+		{
 			 if (--selectedConfig < 0)
 				selectedConfig = 0;
-         }
+        }
 		
 		oslDrawImage(cursor);
 		
