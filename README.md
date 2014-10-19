@@ -37,6 +37,7 @@ What's working
 - File Manager
 - Internet Browser - NetFront default PSP browser
 - OTA Updates - Settings>About>CyanoPSP Updates (WiFi only obviously)
+- Gallery App
 
 What's yet to work
 =================
