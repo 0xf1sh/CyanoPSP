@@ -4,7 +4,7 @@
 #include "lock.h"
 #include "multi.h"
 #include "power_menu.h"
-#include "include/screenshot.h"
+#include "screenshot.h"
 
 OSL_IMAGE *background, *cursor, *appicon, *appicon2, *wificon, *apollo, *gmail, *messengericon, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon;
 
@@ -19,6 +19,8 @@ int home()
 
 	while (!osl_quit)
 	{
+		LowMemExit();
+	
 		oslStartDrawing();
 
 		controls();	
@@ -84,9 +86,9 @@ int home()
 			screenshot();
 		}
 	
-	oslEndDrawing();
-	oslSyncFrame();	
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();
 	}
 }
 

@@ -17,6 +17,8 @@ int powermenu()
 
 	while (!osl_quit)
 	{
+		LowMemExit();
+	
 		oslStartDrawing();
 
 		controls();	
@@ -64,9 +66,9 @@ int powermenu()
 			screenshot();
 		}
 		
-		oslEndDrawing();
-		oslSyncFrame();	
-        oslAudioVSync();
+		oslEndDrawing(); 
+		oslEndFrame(); 
+		oslSyncFrame();
 	}
 }
 

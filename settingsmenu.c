@@ -19,6 +19,7 @@
 #include <stdlib.h> 
 
 #include "include/pgeZip.h"
+#include "include/ram.h"
 #include "include/utils.h"
 #include "fm.h"
 #include "settingsmenu.h"
@@ -27,7 +28,7 @@
 #include "multi.h"
 #include "power_menu.h"
 #include "recoverymenu.h"
-#include "include/screenshot.h"
+#include "screenshot.h"
 
 #define configFile "system/build.prop"
 #define Address "www.google.com"
@@ -37,7 +38,7 @@
 OSL_IMAGE *settingsbg, *cursor, *wificon, *usbdebug, *aboutbg, *offswitch, *onswitch, *themebg, *performancebg, *wifibg, *developerbg, *about, *highlight, 
 		  *developeroptions, *themes, *wifi, *processorbg, *background, *appicon1, *appicon2, *navbar, *apollo, *gmail, *messengericon, *browser, *cpuset, 
 		  *check, *backicon, *homeicon, *multicon, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *isoloadericon, *fb, *settings, *updatesbg, 
-		  *performance, *recoverybg;
+		  *performance, *recoverybg, *easteregg;
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -53,7 +54,7 @@ int setclockrlimit = 0;
 int setclockllimit = 9;
 int RJL = 0;
 int PSPDebug = 0;
-char Version[10] = "2.2 Alpha 1";
+char Version[10] = "2.2";
 char lang[12] = "Uk English";
 char theme_bootanim[10] = "";
 char theme_icons[10] = "";
@@ -76,6 +77,8 @@ int OnlineUpdater()
     int browser = 0;
 	char message[100] = "";
 	
+	recoverybg = oslLoadImageFilePNG("android_bootable_recovery/res/images/recoverybg.png", OSL_IN_RAM, OSL_PF_8888);
+	
 	oslNetInit();
 
     while(!osl_quit)
@@ -84,21 +87,32 @@ int OnlineUpdater()
 		if (!skip)
 		{
             oslStartDrawing();
-
+			
             if (browser)
 			{
                 oslDrawBrowser();
                 if (oslGetBrowserStatus() == PSP_UTILITY_DIALOG_NONE)
 				{
                     oslEndBrowser();
+					oslDrawImageXY(recoverybg, 0, 0);
+					oslDrawStringf(10,10,"Flashing zip...");
 					if (fileExists("ms0:/PSP/GAME/CyanogenMod.zip"))
 					{
 					pgeZip* zipFiles = pgeZipOpen("../CyanogenMod.zip");
 					chdir("..");
 					pgeZipExtract(zipFiles, NULL);
 					pgeZipClose(zipFiles);
+					oslDrawStringf(10,30,"Installed Successfully.");
+					oslDrawStringf(10,50,"Exiting..");
+					oslSyncFrame();
+					sceKernelDelayThread(2*1000000);
+					oslSyncFrame();
+					oslDrawStringf(10,50,"Enjoy :)");
+					sceKernelDelayThread(3*1000000);
+					oslDeleteImage(recoverybg);
 					sceKernelExitGame();
 					}
+					oslDeleteImage(recoverybg);
 					about_menu();
                 }
             }
@@ -118,6 +132,10 @@ int OnlineUpdater()
 			memset(message, 0, sizeof(message));
 
         }
+		if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
+		}
     }
 	oslNetTerm();
 }
@@ -164,7 +182,7 @@ ro.product.locale.language = %s\r\n\
 ro.build.user = Joel16\r\n\
 ro.product.cpu.frequency =  %d\r\n\
 ro.product.bus.frequency =  %d\r\n\
-ro.build.date = Sun Aug 24 12:06 PM EST 2014",
+ro.build.date = Sat Oct 18 9:32 PM EST 2014",
 	Version, kuKernelGetModel(),lang,getCpuClock(),getBusClock());
 	fclose(configtxt);	
 }
@@ -280,7 +298,8 @@ void pspgetmodel()
 void about_menu()
 {	
 	aboutbg = oslLoadImageFilePNG("system/settings/aboutbg.png", OSL_IN_RAM, OSL_PF_8888);
-
+	easteregg = oslLoadImageFilePNG("system/settings/easteregg.png", OSL_IN_RAM, OSL_PF_8888);
+	
 	if (!aboutbg)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
@@ -288,6 +307,8 @@ void about_menu()
 
 	while (!osl_quit)
 	{
+		LowMemExit();
+	
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
@@ -301,7 +322,7 @@ void about_menu()
 		oslDrawString(37,87,"Click for, view or install available updates");
 		pspgetmodel();
 		oslDrawStringf(37,119,"CyanoPSP: %s",Version);
-		oslDrawString(37,147,"Build Date - Mon Sept 15 12:06 PM EST 2014");
+		oslDrawString(37,147,"Build Date - Sat Oct 18 9:32 PM EST 2014");
 		oslDrawString(37,172,"Kernel Version");
 		oslDrawString(37,186,"Undefined-pspsdk_oslib");
 		oslDrawString(37,200,"joellovesanna@psp #1");
@@ -311,9 +332,17 @@ void about_menu()
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 45 && cursor->y <= 90)
 		{
-			oslDrawImageXY(highlight, 16, 53);
+			oslDrawImageXY(highlight, 15, 54);
 			oslDrawString(37,73,"CyanoPSP Updates");
 			oslDrawString(37,87,"Click for, view or install available updates");
+		}
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 95 && cursor->y <= 151)
+		{
+			oslDrawImageXY(highlight, 15, 110);
+			pspgetmodel();
+			oslDrawStringf(37,119,"CyanoPSP: %s",Version);
+			oslDrawString(37,147,"Build Date - Sat Oct 18 9:32 PM EST 2014");
 		}
 		
 		navbar_buttons();
@@ -339,24 +368,32 @@ void about_menu()
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{	
 			oslDeleteImage(aboutbg);
+			oslDeleteImage(easteregg);
 			settingsmenu();	
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{	
 			oslDeleteImage(aboutbg);
+			oslDeleteImage(easteregg);
 			home();	
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{	
 			oslDeleteImage(aboutbg);
+			oslDeleteImage(easteregg);
 			multitask();	
 		}
 		
-		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 70 && cursor->y <= 138 && osl_pad.held.cross)
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 50 && cursor->y <= 94 && osl_pad.held.cross)
 		{
 			updates_menu();
+		}
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 95 && cursor->y <= 151 && osl_pad.held.cross)
+		{
+			EasterEgg();
 		}
 		
 		if(osl_pad.held.select)
@@ -373,10 +410,33 @@ void about_menu()
 		{
 			screenshot();
 		}
-	oslEndDrawing();
-    oslSyncFrame();
-    oslAudioVSync();
+		
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();	
 }
+}
+
+void EasterEgg()
+{
+	while (!osl_quit)
+	{
+		LowMemExit();
+		
+		oslStartDrawing();
+		oslClearScreen(RGB(0,0,0));
+		controls();
+		oslDrawImageXY(easteregg, 0, 0);
+		
+		if(osl_pad.held.circle)
+		{
+			about_menu();
+		}
+		
+		oslEndDrawing(); 
+        oslEndFrame(); 
+		oslSyncFrame();
+	}
 }
 
 void updates_menu()
@@ -390,6 +450,8 @@ void updates_menu()
 
 	while (!osl_quit)
 	{
+		LowMemExit();
+	
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
@@ -457,9 +519,9 @@ void updates_menu()
 		{
 			screenshot();
 		}
-	oslEndDrawing();
-    oslSyncFrame();
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();	
 }
 	oslNetTerm();
 }
@@ -475,6 +537,8 @@ void performance_menu()
 
 	while (!osl_quit)
 	{
+		LowMemExit();
+		
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
@@ -495,6 +559,12 @@ void performance_menu()
 		{
 			oslDrawImageXY(highlight, 15, 83);
 			oslDrawString(40,98,"Processor");
+		}
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 140 && cursor->y <= 196)
+		{
+			oslDrawImageXY(highlight, 15, 139);
+			oslDrawString(40,161,"Ram Management");
 		}
 		
 		navbar_buttons();
@@ -534,6 +604,11 @@ void performance_menu()
 			processor_menu();
 		}
 
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 140 && cursor->y <= 196 && osl_pad.held.cross)
+		{
+			ram_menu();
+		}
+		
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
 			oslDeleteImage(performancebg);
@@ -544,9 +619,9 @@ void performance_menu()
 		{
 			screenshot();
 		}
-	oslEndDrawing();
-    oslSyncFrame();
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();	
 }
 }
 
@@ -603,7 +678,8 @@ void processor_menu(int argc, char *argv[])
 	
 	while (!osl_quit)
 	{
-
+		LowMemExit();
+		
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
@@ -696,9 +772,84 @@ void processor_menu(int argc, char *argv[])
 		{
 			screenshot();
 		}
-	oslEndDrawing();
-    oslSyncFrame();
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();	
+}
+}
+
+void ram_menu(int argc, char *argv[])
+{	
+	performancebg = oslLoadImageFilePNG("system/settings/performancebg.png", OSL_IN_RAM, OSL_PF_8888);
+	
+	if (!performancebg)
+		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+
+	setfont();
+	
+	sceCtrlSetSamplingCycle(0); 
+    sceCtrlSetSamplingMode(PSP_CTRL_MODE_DIGITAL); 
+	
+	while (!osl_quit)
+	{
+		LowMemExit();
+		
+		oslStartDrawing();
+		
+		oslClearScreen(RGB(0,0,0));
+		
+		controls();	
+		
+		sceCtrlPeekBufferPositive(&pad, 1);
+		
+		oslDrawImageXY(performancebg, 0, 19);
+		oslDrawImageXY(wificon, 375, 1);
+		
+		oslDrawStringf(40,98,"RAM Avilable: %d MB Available\n",oslGetRamStatus().maxAvailable/1000000); 
+	
+		navbar_buttons();
+		android_notif();
+		digitaltime(420,4,458);
+		battery();
+		oslDrawImage(cursor);
+		
+		if (osl_pad.held.square)
+		{
+			powermenu();
+		}
+		
+		if (osl_pad.held.circle)
+		{
+			freemem();
+			oslDeleteImage(performancebg);
+			performance_menu();
+		}
+
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{	
+			oslDeleteImage(performancebg);
+			performance_menu();
+		}
+		
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{
+			oslDeleteImage(performancebg);
+			home();
+		}
+
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		{	
+			oslDeleteImage(performancebg);
+			multitask();	
+		}
+		
+		if (osl_pad.held.R && osl_pad.held.triangle)
+		{
+			screenshot();
+		}
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();	
 }
 }
 
@@ -851,6 +1002,8 @@ void theme_menu()
 
 	while (!osl_quit)
 	{
+		LowMemExit();
+	
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
@@ -910,9 +1063,9 @@ void theme_menu()
 		{
 			screenshot();
 		}
-	oslEndDrawing();
-    oslSyncFrame();
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();	
 }
 }
 
@@ -945,6 +1098,8 @@ void wifi_menu()
 
 	while (!osl_quit)
 	{			
+		LowMemExit();
+	
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
@@ -1026,9 +1181,9 @@ void wifi_menu()
 		{
 			screenshot();
 		}	
-	oslEndDrawing();
-    oslSyncFrame();
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();	
 }
 	oslNetTerm();
 }
@@ -1045,6 +1200,8 @@ void developer_menu()
 
 	while (!osl_quit)
 	{
+		LowMemExit();
+		
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
@@ -1164,9 +1321,9 @@ void developer_menu()
 			backupPassword();
 		}
 		
-		oslEndDrawing();
-        oslSyncFrame();
-        oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();	
 }	
 }
 
@@ -1232,6 +1389,8 @@ int settingsmenu()
 
 	while (!osl_quit)
 	{
+		LowMemExit();
+		
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
@@ -1335,8 +1494,8 @@ int settingsmenu()
 		{
 			screenshot();
 		}
-	oslEndDrawing();
-    oslSyncFrame();
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();	
 }
 }

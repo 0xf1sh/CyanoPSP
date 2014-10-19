@@ -5,7 +5,7 @@
 #include "messenger.h"
 #include "multi.h"
 #include "power_menu.h"
-#include "include/screenshot.h"
+#include "screenshot.h"
 
 OSL_IMAGE *messengerbg, *new_message, *cursor, *wificon;
 OSL_FONT *pgfFont;
@@ -25,6 +25,7 @@ void clientConnected(struct remotePsp *aPsp)
 	char mess[100] = "Hello distant World !!!";
 
     while(!osl_quit){
+	
         if (!skip){
             oslStartDrawing();
 			printInfo();
@@ -245,6 +246,8 @@ void newmessage()
 
 	while (!osl_quit)
 	{
+		LowMemExit();
+	
 		if (!skip){
 		oslStartDrawing();
 		
@@ -326,10 +329,10 @@ void newmessage()
 				memset(message, 0, sizeof(message));
 			}
 		}
-        oslEndFrame();
+        oslEndDrawing(); 
+		oslEndFrame(); 
         skip = oslSyncFrame();
 		}
-        oslAudioVSync();
 }
 
 int messenger()
@@ -346,8 +349,9 @@ int messenger()
 		
 	while (!osl_quit)
   {
-		//Draws images onto the screen
-		oslStartDrawing();		
+		LowMemExit();
+
+		oslStartDrawing();	
 		
 		oslClearScreen(RGB(0,0,0));
 		
@@ -407,9 +411,9 @@ int messenger()
         else if (osl_keys->released.square && oslIsWlanPowerOn())
 			doServer();
 		
-		oslEndDrawing();
-		oslSyncFrame();	
-        oslAudioVSync();
+		oslEndDrawing(); 
+		oslEndFrame(); 
+		oslSyncFrame();
 	}
 }
 

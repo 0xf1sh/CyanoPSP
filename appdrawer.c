@@ -4,7 +4,8 @@
 #include "lock.h"
 #include "multi.h"
 #include "power_menu.h"
-#include "include/screenshot.h"
+#include "gallery.h"
+#include "screenshot.h"
 
 OSL_IMAGE *background, *cursor, *wificon, *apollo, *gmail, *messengericon, *browser, *google, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *fb, *settings,*pointer, *pointer1, *isoloadericon;
 
@@ -76,6 +77,8 @@ int appdrawer()
 		
 	while (!osl_quit)
 	{
+		LowMemExit();
+		
 		oslStartDrawing();
 
 		controls();	
@@ -209,6 +212,12 @@ int appdrawer()
 			internet();
 		}
 		
+		if (cursor->x >= 18 && cursor->x <= 65 && cursor->y >= 110 && cursor->y <= 155 && osl_pad.held.cross)
+		{
+			appdrawer_deleteImages();
+			galleryApp();
+		}
+		
 		if (osl_pad.held.L)
 		{
 			lockscreen();
@@ -294,9 +303,9 @@ int appdrawer()
 			screenshot();
 		}
 				
-		oslEndDrawing();
+		oslEndDrawing(); 
+        oslEndFrame(); 
 		oslSyncFrame();	
-        oslAudioVSync();
 	}
 }
 

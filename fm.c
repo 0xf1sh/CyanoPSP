@@ -12,10 +12,11 @@
 #include "apollo.h"
 #include "fm.h"
 #include "clock.h"
+#include "gallery.h"
 #include "lock.h"
 #include "multi.h"
 #include "power_menu.h"
-#include "include/screenshot.h"
+#include "screenshot.h"
 #include "include/utils.h"
 
 OSL_IMAGE 	*filemanagerbg, *diricon, *imageicon, *mp3icon, *txticon, *unknownicon, *documenticon, *binaryicon, *videoicon, *archiveicon, *bar, 
@@ -128,38 +129,6 @@ void refresh()
 	dirBrowse(lastDir);
 }
 
-void DeleteFile(const char * path)
-{
-	deletion = oslLoadImageFilePNG("system/app/filemanager/deletion.png", OSL_IN_RAM, OSL_PF_8888);
-	
-	while (!osl_quit) {
-	oslStartDrawing();	
-	oslDrawImageXY(deletion, 96,59);
-	oslDrawStringf(116,125,"This action cannot be undone. Do you");
-	oslDrawStringf(116,135,"want to continue?");
-	
-	oslDrawStringf(130,180,"Press circle");
-	oslDrawStringf(130,190,"to cancel");
-	oslDrawStringf(270,180,"Press cross");
-	oslDrawStringf(270,190,"to confirm");
-	
-	oslReadKeys();
-	
-	if (osl_keys->pressed.cross) {
-			sceIoRemove(path);
-			oslDeleteImage(deletion);
-			refresh();
-		}
-
-	else if (osl_keys->pressed.circle) {
-			oslDeleteImage(deletion);
-			return;
-		}
-	oslEndDrawing();
-	oslSyncFrame();	
-	}
-};
-
 void OptionMenu()
 {
 	action = oslLoadImageFilePNG("system/app/filemanager/actions.png", OSL_IN_RAM, OSL_PF_8888);
@@ -216,6 +185,39 @@ void OptionMenu()
 	}
 };
 
+void DeleteFile(const char * path)
+{
+	deletion = oslLoadImageFilePNG("system/app/filemanager/deletion.png", OSL_IN_RAM, OSL_PF_8888);
+	
+	while (!osl_quit) {
+	oslStartDrawing();	
+	oslDrawImageXY(deletion, 96,59);
+	oslDrawStringf(116,125,"This action cannot be undone. Do you");
+	oslDrawStringf(116,135,"want to continue?");
+	
+	oslDrawStringf(130,180,"Press circle");
+	oslDrawStringf(130,190,"to cancel");
+	oslDrawStringf(270,180,"Press cross");
+	oslDrawStringf(270,190,"to confirm");
+	
+	oslReadKeys();
+	
+	if (osl_keys->pressed.cross) {
+			sceIoRemove(path);
+			oslDeleteImage(deletion);
+			refresh();
+		}
+
+	else if (osl_keys->pressed.circle) {
+			oslDeleteImage(deletion);
+			return;
+		}
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();	
+	}
+};
+
 void recursiveDelete(const char *dir) 
 { 
  int fd; 
@@ -243,36 +245,6 @@ void recursiveDelete(const char *dir)
   } 
  sceIoDclose(fd); 
  sceIoRmdir(dir); 
-}
-
-void showImage(const char * path)
-{
-	 OSL_IMAGE * image = oslLoadImageFile(path, OSL_IN_RAM, OSL_PF_8888);
-	 
-	 if(!image)
-		return 0;
-		
-	while (!osl_quit) {
-
-		oslReadKeys();
-		oslStartDrawing();	
-		
-		oslClearScreen(RGB(255,255,255));
-		oslDrawImageXY(image, 240 - oslGetImageWidth(image) / 2, 136 - oslGetImageHeight(image) / 2);//draw image
-		oslDrawImageXY(gallerybar,0,0);
-		oslDrawStringf(40,12,folderIcons[current].name);
-		
-		oslEndDrawing();
-		oslSyncFrame();	
-		
-		if (osl_keys->pressed.circle) {
-			return;
-		}
-		
-	}
-	//delete image
-	oslDeleteImage(image);	
-	return 1;
 }
 
 char * buffer;
@@ -359,9 +331,9 @@ void displayTextFromFile()
 		return;
 	}
 				
-	oslEndDrawing();
-	oslSyncFrame();	
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();
 	}
 }
 	
@@ -633,6 +605,8 @@ char * dirBrowse(const char * path)
 	
 	while (!osl_quit)
 	{		
+		LowMemExit();
+	
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));	
@@ -646,9 +620,9 @@ char * dirBrowse(const char * path)
 		if (strlen(returnMe) > 4) {
 			break;
 		}
-		oslEndDrawing();
-		oslSyncFrame();	
-        oslAudioVSync();
+		oslEndDrawing(); 
+        oslEndFrame(); 
+		oslSyncFrame();
 	}
 	return returnMe;
 }
@@ -696,16 +670,18 @@ int filemanage(int argc, char *argv[])
 	char * testDirectory = dirBrowse("ms0:");
 	
 	while (!osl_quit)
-  {
+	{
+		LowMemExit();
+		
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
 
 		centerText(480/2, 272/2, testDirectory, 50);	// Shows the path that 'testDirectory' was supposed to receive from dirBrowse();
 		
-		oslEndDrawing();
-		oslSyncFrame();	
-        oslAudioVSync();
+		oslEndDrawing(); 
+        oslEndFrame(); 
+		oslSyncFrame();
 	}
 }
 

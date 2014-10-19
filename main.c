@@ -25,7 +25,7 @@
 #include "recoverymenu.h"
 #include "settingsmenu.h"
 
-#include "include/screenshot.h"
+#include "screenshot.h"
 #include "include/ram.h"
 
 #define ADDRESS "www.google.com"
@@ -41,6 +41,7 @@ OSL_IMAGE *background, *cursor, *ic_allapps, *ic_allapps_pressed, *navbar, *wifi
 
 //definition of our sounds
 OSL_SOUND *tone;
+OSL_FONT *DroidSans;
 
 static int runningFlag = 1;
 static char message[100] = "";
@@ -456,7 +457,6 @@ void firstBootMessage()
 
 void setfont()
 {
-	OSL_FONT *DroidSans = oslLoadIntraFontFile("system/fonts/DroidSans.pgf", INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8);
 	oslIntraFontSetStyle(DroidSans, 0.5f, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
 	oslSetFont(DroidSans);
 }
@@ -471,6 +471,14 @@ void unloadicons()
 {
 	oslDeleteImage(ic_allapps);
 	oslDeleteImage(ic_allapps_pressed);
+}
+
+void LowMemExit() //This is temporary until I come up with a solution.
+{
+	if (oslGetRamStatus().maxAvailable <= 1500000)
+	{
+		oslQuit();
+	}
 }
 
 int main()
@@ -508,10 +516,10 @@ int main()
 	backicon = oslLoadImageFilePNG("system/home/icons/backicon.png", OSL_IN_RAM, OSL_PF_8888);
 	homeicon = oslLoadImageFilePNG("system/home/icons/homeicon.png", OSL_IN_RAM, OSL_PF_8888);
 	multicon = oslLoadImageFilePNG("system/home/icons/multicon.png", OSL_IN_RAM, OSL_PF_8888);
-	usbdebug = oslLoadImageFilePNG("system/home/icons/usbdebug.png", OSL_IN_RAM, OSL_PF_8888);
 	welcome = oslLoadImageFilePNG("system/home/icons/welcome.png", OSL_IN_RAM, OSL_PF_8888);
 	ok = oslLoadImageFilePNG("system/home/icons/ok.png", OSL_IN_RAM, OSL_PF_8888);
 	transbackground = oslLoadImageFilePNG("system/home/icons/transbackground.png", OSL_IN_RAM, OSL_PF_8888);
+	DroidSans = oslLoadIntraFontFile("system/fonts/DroidSans.pgf", INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8);
 
 	//Debugger
 	if (!background || !cursor || !ic_allapps || !ic_allapps_pressed || !navbar || !wificon || !apollo || !gmail || !messengericon || !browser || !google || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
@@ -548,9 +556,7 @@ int main()
 		oslDrawImageXY(pointer, 230, 180);
 		
 		digitaltime(420,4,458);
-		
-		//calls the functions	
-		
+
 		//Sets the transparency color (black)
 		oslSetTransparentColor(RGB(0,0,0));
 		
@@ -564,7 +570,7 @@ int main()
 		android_notif();
 		firstBootMessage();
 		oslDrawImage(cursor);
-		
+
 		if (osl_pad.held.home)
 		{
 			 powermenu();
@@ -611,14 +617,14 @@ int main()
 			screenshot();
 		}
 	
-		//Ends printing
-		oslEndDrawing();
+		//Ends Printing and Drawing
+		oslEndDrawing(); 
 
+		//End's Frame
+        oslEndFrame(); 
+		
 		//Synchronizes the screen 
 		oslSyncFrame();	
-					   
-	    //For sleep
-        oslAudioVSync();
 	}
 	
 	//Terminates/Ends the program

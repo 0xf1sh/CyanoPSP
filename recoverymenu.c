@@ -35,16 +35,9 @@ OSL_FONT *roboto;
 int selector_image_x; //Determines the starting x position of the selection
 int selector_image_y; //Determines the starting y position of the selection
 
-int color = 0;
-u32 value;
-
 SceCtrlData pad;
 
-SceUID fd;
-
 SEConfig config;
-
-char BatSerCurrent[4];
 
 void ShowPage5()
 {
@@ -171,81 +164,88 @@ void ShowPage3()
 	*(u32 *)kirk = chGetKirk();
 	*(u32 *)spock = chGetSpock();
 	
+	u32 value;
+	
 	while (!osl_quit)
-  {
-
-	oslStartDrawing();	
-	
-	oslReadKeys();
-	
-	oslClearScreen(RGB(0,0,0));
+	{
+		LowMemExit();
 		
-	oslDrawImageXY(recoverybg, 0, 0);
+		oslStartDrawing();	
+		
+		oslReadKeys();
 	
-	GetRegistryValue("/CONFIG/SYSTEM/XMB", "button_assign", &value);
+		oslClearScreen(RGB(0,0,0));
+		
+		oslDrawImageXY(recoverybg, 0, 0);
+	
+		GetRegistryValue("/CONFIG/SYSTEM/XMB", "button_assign", &value);
 
-    if (value == 1) 
-    {
-        oslDrawStringf(10,100,button, "Swap buttons: Yes (currently: O is enter)\n");		
-    } 
-	else 
-	{
-        oslDrawStringf(10,100,button, "Swap buttons: No (currently: X is enter)\n");		
-    }
+		if (value == 1) 
+		{
+			oslDrawStringf(10,100,button, "Swap buttons: Yes (currently: O is enter)\n");		
+		} 
+		else 
+		{
+			oslDrawStringf(10,100,button, "Swap buttons: No (currently: X is enter)\n");		
+		}
 	
-	GetRegistryValue("/CONFIG/MUSIC", "wma_play", &value);
+		GetRegistryValue("/CONFIG/MUSIC", "wma_play", &value);
 
-    if (value == 1)
-	{
-		oslDrawStringf(10,110,wma, "WMA:          Yes\n");	
-	}
-	else
-	{
-	    oslDrawStringf(10,110,wma, "WMA:          No\n");		
-	}
+		if (value == 1)
+		{
+			oslDrawStringf(10,110,wma, "WMA:          Yes\n");	
+		}
+		else
+		{
+			oslDrawStringf(10,110,wma, "WMA:          No\n");		
+		}
 	
-	GetRegistryValue("/CONFIG/BROWSER", "flash_activated", &value);
+		GetRegistryValue("/CONFIG/BROWSER", "flash_activated", &value);
 
-    if (value == 1)
-	{
-		oslDrawStringf(10,120,flash, "Flash player: Yes\n\n\n");	
-	}
-	else
-	{
-	    oslDrawStringf(10,120,flash, "Flash player: No\n\n\n");		
-	}
+		if (value == 1)
+		{
+			oslDrawStringf(10,120,flash, "Flash player: Yes\n\n\n");	
+		}
+		else
+		{
+			oslDrawStringf(10,120,flash, "Flash player: No\n\n\n");		
+		}
 
-	memset(name, 0, sizeof(name));
-	memset(pass, 0, sizeof(pass));
+		memset(name, 0, sizeof(name));
+		memset(pass, 0, sizeof(pass));
+		
+		chGetCpuSpeed(&cpu, &bus);
+		chGetMACAddress(macaddr);
 	
-	chGetCpuSpeed(&cpu, &bus);
-	chGetMACAddress(macaddr);
-	
-	oslDrawStringf(10,5,"System Information");
+		oslDrawStringf(10,5,"System Information");
 
-	oslDrawStringf(10,20,"CPU Speed:    %i/%i Mhz\n", cpu, bus);
-	oslDrawStringf(10,30,"WLAN:         %s\n\n", sceWlanGetSwitchState() == 0 ? "Off" : "On");
-	oslDrawStringf(10,40,"Name:         %s\n", GetRegistryValue("/CONFIG/SYSTEM", "owner_name", &name, sizeof(name)));
-	oslDrawStringf(10,50,"Password:     %s\n", GetRegistryValue("/CONFIG/SYSTEM/LOCK", "password", &pass, sizeof(pass)));
+		oslDrawStringf(10,20,"CPU Speed:    %i/%i Mhz\n", cpu, bus);
+		oslDrawStringf(10,30,"WLAN:         %s\n\n", sceWlanGetSwitchState() == 0 ? "Off" : "On");
+		oslDrawStringf(10,40,"Name:         %s\n", GetRegistryValue("/CONFIG/SYSTEM", "owner_name", &name, sizeof(name)));
+		oslDrawStringf(10,50,"Password:     %s\n", GetRegistryValue("/CONFIG/SYSTEM/LOCK", "password", &pass, sizeof(pass)));
 	
-	if(VerifyFile("machide.chk") == -1){
-	   oslDrawStringf(10,60,"MAC Address:  %02X:%02X:%02X:%02X:%02X:%02X\n\n", macaddr[0], macaddr[1], macaddr[2], macaddr[3], macaddr[4], macaddr[5]);
-	}
-	else{
-	   oslDrawStringf(10,60,"MAC Address:  00:00:00:00:00:00 (Hidden)\n\n");   
-	}
+		if(VerifyFile("machide.chk") == -1)
+		{
+			oslDrawStringf(10,60,"MAC Address:  %02X:%02X:%02X:%02X:%02X:%02X\n\n", macaddr[0], macaddr[1], macaddr[2], macaddr[3], macaddr[4], macaddr[5]);
+		}
+		else
+		{
+			oslDrawStringf(10,60,"MAC Address:  00:00:00:00:00:00 (Hidden)\n\n");   
+		}
 	   
-	oslDrawStringf(10,70,"Scramble:     0x%08X\n\n", chGetScramble());
-	oslDrawStringf(10,80,"Kirk:         %c%c%c%c\n", kirk[3], kirk[2], kirk[1], kirk[0]);
+		oslDrawStringf(10,70,"Scramble:     0x%08X\n\n", chGetScramble());
+		oslDrawStringf(10,80,"Kirk:         %c%c%c%c\n", kirk[3], kirk[2], kirk[1], kirk[0]);
 	
-	if(kuKernelGetModel() == 4){
-	oslDrawStringf(10,90,"Spock:        -\n\n");
-	}
-	else{
-	oslDrawStringf(10,90,"Spock:        %c%c%c%c\n\n", spock[3], spock[2], spock[1], spock[0]); 
-	}
+		if(kuKernelGetModel() == 4)
+		{
+			oslDrawStringf(10,90,"Spock:        -\n\n");
+		}
+		else
+		{
+			oslDrawStringf(10,90,"Spock:        %c%c%c%c\n\n", spock[3], spock[2], spock[1], spock[0]); 
+		}
 	
-	oslDrawStringf(10,200,"Press L/R to switch sections, X to edit and Circle to return.\n");
+		oslDrawStringf(10,200,"Press L/R to switch sections, X to edit and Circle to return.\n");
 		
 		if (osl_keys->pressed.L)
 		{
@@ -264,9 +264,9 @@ void ShowPage3()
 			mainRecoveryMenu();
 		}
 		
-	oslEndDrawing();
-	oslSyncFrame();	
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();
 	}
 }
 
@@ -276,40 +276,41 @@ void ShowPage2()
     int batser, batmode;
 	
 	while (!osl_quit)
-  {
-
-	oslStartDrawing();	
-	
-	oslReadKeys();
-	
-	oslClearScreen(RGB(0,0,0));
+	{
+		LowMemExit();
 		
-	oslDrawImageXY(recoverybg, 0, 0);
+		oslStartDrawing();	
+		
+		oslReadKeys();
+		
+		oslClearScreen(RGB(0,0,0));
+		
+		oslDrawImageXY(recoverybg, 0, 0);
 	
-	oslDrawStringf(10,5,"Battery Information");
+		oslDrawStringf(10,5,"Battery Information");
 	
-	batmode = GetBatType();
-	batser = GetBatSer();
+		batmode = GetBatType();
+		batser = GetBatSer();
 
-	oslDrawStringf(10,20,"Battery Status:  %s\n", scePowerIsBatteryCharging() == 1 ? "Charging" : "Using");
-	oslDrawStringf(10,30,"Battery %%:       %i%%\n\n", scePowerGetBatteryLifePercent() < 0 ? 0 : scePowerGetBatteryLifePercent()); //Here I used printf because my CheckerPrintf doesn't printf %
-	oslDrawStringf(10,40,"Hours Left:   %i:%02i\n\n", scePowerGetBatteryLifeTime() < 0 ? 0 : (scePowerGetBatteryLifeTime() / 60), scePowerGetBatteryLifeTime() < 0 ? 0 : (scePowerGetBatteryLifeTime() - (scePowerGetBatteryLifeTime() / 60 * 60)));
-	oslDrawStringf(10,50,"Battery Temp:    %iºC\n", scePowerGetBatteryTemp() < 0 ? 0 : scePowerGetBatteryTemp());
-	oslDrawStringf(10,60,"Battery Voltage: %0.3fV\n\n", scePowerGetBatteryVolt() < 0 ? 0 : (float)scePowerGetBatteryVolt() / 1000.0);
-	oslDrawStringf(10,70,"Remain Capacity: %i mAh\n", scePowerGetBatteryRemainCapacity() < 0 ? 0 : scePowerGetBatteryRemainCapacity()); //From raing3s psppower
+		oslDrawStringf(10,20,"Battery Status:  %s\n", scePowerIsBatteryCharging() == 1 ? "Charging" : "Using");
+		oslDrawStringf(10,30,"Battery %%:       %i%%\n\n", scePowerGetBatteryLifePercent() < 0 ? 0 : scePowerGetBatteryLifePercent()); //Here I used printf because my CheckerPrintf doesn't printf %
+		oslDrawStringf(10,40,"Hours Left:   %i:%02i\n\n", scePowerGetBatteryLifeTime() < 0 ? 0 : (scePowerGetBatteryLifeTime() / 60), scePowerGetBatteryLifeTime() < 0 ? 0 : (scePowerGetBatteryLifeTime() - (scePowerGetBatteryLifeTime() / 60 * 60)));
+		oslDrawStringf(10,50,"Battery Temp:    %iºC\n", scePowerGetBatteryTemp() < 0 ? 0 : scePowerGetBatteryTemp());
+		oslDrawStringf(10,60,"Battery Voltage: %0.3fV\n\n", scePowerGetBatteryVolt() < 0 ? 0 : (float)scePowerGetBatteryVolt() / 1000.0);
+		oslDrawStringf(10,70,"Remain Capacity: %i mAh\n", scePowerGetBatteryRemainCapacity() < 0 ? 0 : scePowerGetBatteryRemainCapacity()); //From raing3s psppower
 	
-	if(chGetPSPCreatePandora() == 0) //Yes so we can show the serial, mode of battery
-	{
-	    oslDrawStringf(10,80,"Battery Type:    %s\n", Batterys[batmode]);
-	    oslDrawStringf(10,90,"Battery Serial:  0x%08X\n\n\n", batser);
-	}
-	else
-	{
-	    oslDrawStringf(10,80,"Battery Type:    -\n");
-	    oslDrawStringf(10,90,"Battery Serial:  -\n\n\n");
-	}
+		if(chGetPSPCreatePandora() == 0) //Yes so we can show the serial, mode of battery
+		{
+			oslDrawStringf(10,80,"Battery Type:    %s\n", Batterys[batmode]);
+			oslDrawStringf(10,90,"Battery Serial:  0x%08X\n\n\n", batser);
+		}
+		else
+		{
+			oslDrawStringf(10,80,"Battery Type:    -\n");
+			oslDrawStringf(10,90,"Battery Serial:  -\n\n\n");
+		}
 	
-	oslDrawStringf(10,200,"Press L/R to switch sections, X to edit and Circle to return.\n");
+		oslDrawStringf(10,200,"Press L/R to switch sections, X to edit and Circle to return.\n");
 
 		if (osl_keys->pressed.L)
 		{
@@ -328,9 +329,9 @@ void ShowPage2()
 			mainRecoveryMenu();
 		}
 		
-	oslEndDrawing();
-	oslSyncFrame();	
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();
 	}
 }
 
@@ -464,37 +465,38 @@ void ShowPage1()
 	char *unk_minor = "-";
 	
 	while (!osl_quit)
-  {
+	{
+		LowMemExit();
 
-	oslStartDrawing();	
-	
-	oslReadKeys();
-	
-	oslClearScreen(RGB(0,0,0));
+		oslStartDrawing();	
 		
-	oslDrawImageXY(recoverybg, 0, 0);
+		oslReadKeys();
+		
+		oslClearScreen(RGB(0,0,0));
+		
+		oslDrawImageXY(recoverybg, 0, 0);
 	
-	oslDrawStringf(10,5,"PSP General Information");
+		oslDrawStringf(10,5,"PSP General Information");
+		
+		chGetVersions(&baryon, &pommel, &tachyon, &fuseid, &fusecfg);
 	
-	chGetVersions(&baryon, &pommel, &tachyon, &fuseid, &fusecfg);
-	
-	mb = chDetectMotherboard();
-    model = chDetectModel();	
-    type = chDetectOFW();
-    region = chGetRegion();		
+		mb = chDetectMotherboard();
+		model = chDetectModel();	
+		type = chDetectOFW();
+		region = chGetRegion();		
 
-	oslDrawStringf(10,20,"Kernel Version: %s (0x%08X)\n\n", FWs[type], sceKernelDevkitVersion());
-	pspgetmodel();
-	oslDrawStringf(10,60,"Module:         %s\n", Modules[model]);      
-	oslDrawStringf(10,70,"Motherboard:    %s\n\n", MBs[mb]);
-	oslDrawStringf(10,80,"Tachyon:        0x%08X\n", tachyon);
-	oslDrawStringf(10,90,"Baryon:         0x%08X\n", baryon);
-	oslDrawStringf(10,100,"Pommel:         0x%08X\n\n", pommel);
-	oslDrawStringf(10,110,"Fuse ID:        0x%04X%08X\n", fuseid);
-	oslDrawStringf(10,120,"Fuse CFG:       0x%08X\n\n", fusecfg);
-	oslDrawStringf(10,130,"Region:         %s\n\n\n", Regions[region]);
+		oslDrawStringf(10,20,"Kernel Version: %s (0x%08X)\n\n", FWs[type], sceKernelDevkitVersion());
+		pspgetmodel();
+		oslDrawStringf(10,60,"Module:         %s\n", Modules[model]);      
+		oslDrawStringf(10,70,"Motherboard:    %s\n\n", MBs[mb]);
+		oslDrawStringf(10,80,"Tachyon:        0x%08X\n", tachyon);
+		oslDrawStringf(10,90,"Baryon:         0x%08X\n", baryon);
+		oslDrawStringf(10,100,"Pommel:         0x%08X\n\n", pommel);
+		oslDrawStringf(10,110,"Fuse ID:        0x%04X%08X\n", fuseid);
+		oslDrawStringf(10,120,"Fuse CFG:       0x%08X\n\n", fusecfg);
+		oslDrawStringf(10,130,"Region:         %s\n\n\n", Regions[region]);
 	
-	oslDrawStringf(10,200,"Press L/R to switch sections and Circle to return.\n");
+		oslDrawStringf(10,200,"Press L/R to switch sections and Circle to return.\n");
 		
 		if (osl_keys->pressed.L)
 		{
@@ -509,43 +511,44 @@ void ShowPage1()
 			mainRecoveryMenu();
 		}
 	   
-	oslEndDrawing();
-	oslSyncFrame();	
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();
 	}
 }
 
 void ShowVersionTxt()
 {
 	while (!osl_quit)
-  {
-
-	oslStartDrawing();	
-	
-	oslReadKeys();
-	
-	oslClearScreen(RGB(0,0,0));
+	{
+		LowMemExit();
 		
-	oslDrawImageXY(recoverybg, 0, 0);
+		oslStartDrawing();	
 	
-	oslDrawStringf(10,5,"PSP Version.txt");
+		oslReadKeys();
 	
-	if(CheckVersion(Version) == -1)
-	   oslDrawStringf(10,40,"Version.txt not found...");
+		oslClearScreen(RGB(0,0,0));
+		
+		oslDrawImageXY(recoverybg, 0, 0);
+	
+		oslDrawStringf(10,5,"PSP Version.txt");
+	
+		if(CheckVersion(Version) == -1)
+			oslDrawStringf(10,40,"Version.txt not found...");
 	     
-	oslDrawStringf(10,40,"Version.txt:\n");
-    oslDrawStringf(10,60," \n%s\n\n", GetVersion());	
+		oslDrawStringf(10,40,"Version.txt:\n");
+		oslDrawStringf(10,60," \n%s\n\n", GetVersion());	
 	
-	oslDrawStringf(10,200,"Press Circle to return to Main Menu.\n\n");
+		oslDrawStringf(10,200,"Press Circle to return to Main Menu.\n\n");
 
-	if (osl_keys->pressed.circle)
+		if (osl_keys->pressed.circle)
 		{
 		    mainRecoveryMenu();
 		}
 		
-	oslEndDrawing();
-	oslSyncFrame();	
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();
 	}
 }
 
@@ -563,24 +566,25 @@ void ConfigurationMenu()
 	sctrlSEGetConfig(&config);
 	
 	while (!osl_quit)
-  {
+	{
+		LowMemExit();
 
-	oslStartDrawing();	
+		oslStartDrawing();	
 	
-	oslReadKeys();
-	
-	oslClearScreen(RGB(0,0,0));
+		oslReadKeys();
 		
-	oslDrawImageXY(recoverybg, 0, 0);
-	oslDrawImage(Selector);
+		oslClearScreen(RGB(0,0,0));
+			
+		oslDrawImageXY(recoverybg, 0, 0);
+		oslDrawImage(Selector);
 	
-	oslDrawStringf(10,5,"Configuration Menu");
-	
-	oslDrawStringf(10,20,"- advanced configuration");
-	oslDrawStringf(10,30,"- general configuration");
-	oslDrawStringf(10,40,"- system");
-	oslDrawStringf(10,50,"- battery");
-	oslDrawStringf(10,60,"- *****Go Back*****");
+		oslDrawStringf(10,5,"Configuration Menu");
+		
+		oslDrawStringf(10,20,"- advanced configuration");
+		oslDrawStringf(10,30,"- general configuration");
+		oslDrawStringf(10,40,"- system");
+		oslDrawStringf(10,50,"- battery");
+		oslDrawStringf(10,60,"- *****Go Back*****");
 	
 		Selector->x = selector_image_x; //Sets the selection coordinates
         Selector->y = selector_image_y; //Sets the selection coordinates
@@ -623,9 +627,9 @@ void ConfigurationMenu()
 		{
 		    mainRecoveryMenu();
 		}	
-	oslEndDrawing();
-	oslSyncFrame();	
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();
 	}
 	return selection;
 }
@@ -645,24 +649,25 @@ void ShowAdvancedCnfMenu(void)
 	sctrlSEGetConfig(&config);
 	
 	while (!osl_quit)
-  {
-
-	oslStartDrawing();	
-	
-	oslReadKeys();
-	
-	oslClearScreen(RGB(0,0,0));
+	{
+		LowMemExit();
 		
-	oslDrawImageXY(recoverybg, 0, 0);
-	oslDrawImage(Selector);
+		oslStartDrawing();	
+		
+		oslReadKeys();
+		
+		oslClearScreen(RGB(0,0,0));
+			
+		oslDrawImageXY(recoverybg, 0, 0);
+		oslDrawImage(Selector);
 	
-	oslDrawStringf(10,5,"Advanced Configuration Menu");
-    oslDrawStringf(10,20,"- plain modules in UMD/ISO     (currently: %s)", config.umdactivatedplaincheck ? "enabled" : "disabled");
-	oslDrawStringf(10,30,"- execute PBOOT.BIN in UMD/ISO (currently: %s)", config.executebootbin ? "enabled" : "disabled");
-	oslDrawStringf(10,40,"- XMB plugins                  (currently: %s)", config.xmbplugins ? "disabled" : "enabled");
-	oslDrawStringf(10,50,"- GAME plugins                 (currently: %s)", config.gameplugins ? "disabled" : "enabled");
-	oslDrawStringf(10,60,"- POPS plugins                 (currently: %s)", config.popsplugins ? "disabled" : "enabled");
-    oslDrawStringf(10,70,"- *****Go Back*****");
+		oslDrawStringf(10,5,"Advanced Configuration Menu");
+		oslDrawStringf(10,20,"- plain modules in UMD/ISO     (currently: %s)", config.umdactivatedplaincheck ? "enabled" : "disabled");
+		oslDrawStringf(10,30,"- execute PBOOT.BIN in UMD/ISO (currently: %s)", config.executebootbin ? "enabled" : "disabled");
+		oslDrawStringf(10,40,"- XMB plugins                  (currently: %s)", config.xmbplugins ? "disabled" : "enabled");
+		oslDrawStringf(10,50,"- GAME plugins                 (currently: %s)", config.gameplugins ? "disabled" : "enabled");
+		oslDrawStringf(10,60,"- POPS plugins                 (currently: %s)", config.popsplugins ? "disabled" : "enabled");
+		oslDrawStringf(10,70,"- *****Go Back*****");
 	
 		Selector->x = selector_image_x; //Sets the selection coordinates
         Selector->y = selector_image_y; //Sets the selection coordinates
@@ -722,9 +727,9 @@ void ShowAdvancedCnfMenu(void)
 		{
 		    ConfigurationMenu();
 		}		
-	oslEndDrawing();
-	oslSyncFrame();	
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();
 	}
 	return selection;
 }
@@ -743,33 +748,34 @@ void ShowCnfMenu(void)
 	sctrlSEGetConfig(&config);
 	
 	while (!osl_quit)
-  {
-
-	oslStartDrawing();	
-	
-	oslReadKeys();
-	
-	oslClearScreen(RGB(0,0,0));
+	{
+		LowMemExit();
+  
+		oslStartDrawing();	
 		
-	oslDrawImageXY(recoverybg, 0, 0);
-	oslDrawImage(Selector);
+		oslReadKeys();
 	
-	oslDrawStringf(10,5,"Configurations Edit Menu");
+		oslClearScreen(RGB(0,0,0));
+		
+		oslDrawImageXY(recoverybg, 0, 0);
+		oslDrawImage(Selector);
 	
-    oslDrawStringf(10,20,"Skip Sony logo                 (currently: %s)", config.skiplogo ? "Enabled" : "Disabled");
-	oslDrawStringf(10,30,"Hide corrupt icons             (currently: %s)", config.hidecorrupt ? "Enabled" : "Disabled");
-	oslDrawStringf(10,40,"Game folder homebrew           (currently: %s)", config.gamekernel150 ? "1.50 Kernel" : "6.XX Kernel");
-	oslDrawStringf(10,50,"Autoboot program at /PSP/GAME/BOOT/ (currently: %s)", config.startupprog ? "Enabled" : "Disabled");
-	oslDrawStringf(10,60,"UMD Mode                       (currently: %s)", umdmodes[config.umdmode]);
-	oslDrawStringf(10,70,"Fake region                    (currently: %s)", regions[config.fakeregion]);
-	oslDrawStringf(10,80,"Use VshMenu                    (currently: %s)", vshmenuoptions[config.vshmenu]);
-	oslDrawStringf(10,90,"XMB Usb Device                 (currently: %s)", usbdevices[config.usbdevice]);
-	oslDrawStringf(10,100,"Use network update             (currently: %s)", config.notusedaxupd ? "Disabled" : "Enabled");
-	oslDrawStringf(10,110,"Hide PIC1.PNG and PIC0.PNG     (currently: %s)", config.hidepics ? "Enabled" : "Disabled");
-    oslDrawStringf(10,120,"Use version.txt                (currently: %s)", config.useversiontxt ? "Enabled" : "Disabled");
-	oslDrawStringf(10,130,"Use Slim colors on Classic PSP (currently: %s)", config.slimcolors ? "Enabled" : "Disabled");
-    oslDrawStringf(10,140,"Hide MAC address               (currently: %s)", config.hidemac ? "Enabled" : "Disabled");
-	oslDrawStringf(10,150,"- *****Go Back*****");
+		oslDrawStringf(10,5,"Configurations Edit Menu");
+	
+		oslDrawStringf(10,20,"Skip Sony logo                 (currently: %s)", config.skiplogo ? "Enabled" : "Disabled");
+		oslDrawStringf(10,30,"Hide corrupt icons             (currently: %s)", config.hidecorrupt ? "Enabled" : "Disabled");
+		oslDrawStringf(10,40,"Game folder homebrew           (currently: %s)", config.gamekernel150 ? "1.50 Kernel" : "6.XX Kernel");
+		oslDrawStringf(10,50,"Autoboot program at /PSP/GAME/BOOT/ (currently: %s)", config.startupprog ? "Enabled" : "Disabled");
+		oslDrawStringf(10,60,"UMD Mode                       (currently: %s)", umdmodes[config.umdmode]);
+		oslDrawStringf(10,70,"Fake region                    (currently: %s)", regions[config.fakeregion]);
+		oslDrawStringf(10,80,"Use VshMenu                    (currently: %s)", vshmenuoptions[config.vshmenu]);
+		oslDrawStringf(10,90,"XMB Usb Device                 (currently: %s)", usbdevices[config.usbdevice]);
+		oslDrawStringf(10,100,"Use network update             (currently: %s)", config.notusedaxupd ? "Disabled" : "Enabled");
+		oslDrawStringf(10,110,"Hide PIC1.PNG and PIC0.PNG     (currently: %s)", config.hidepics ? "Enabled" : "Disabled");
+		oslDrawStringf(10,120,"Use version.txt                (currently: %s)", config.useversiontxt ? "Enabled" : "Disabled");
+		oslDrawStringf(10,130,"Use Slim colors on Classic PSP (currently: %s)", config.slimcolors ? "Enabled" : "Disabled");
+		oslDrawStringf(10,140,"Hide MAC address               (currently: %s)", config.hidemac ? "Enabled" : "Disabled");
+		oslDrawStringf(10,150,"- *****Go Back*****");
 
 		Selector->x = selector_image_x; //Sets the selection coordinates
         Selector->y = selector_image_y; //Sets the selection coordinates
@@ -917,9 +923,9 @@ void ShowCnfMenu(void)
 		{
 		    ConfigurationMenu();
 		}			
-	oslEndDrawing();
-	oslSyncFrame();	
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();
 	}
 	return selection;
 }
@@ -936,25 +942,26 @@ void ShowSystemMenu(void)
 	int selection = 0;
 	
 	while (!osl_quit)
-  {
-
-	oslStartDrawing();	
-	
-	oslReadKeys();
-	
-	oslClearScreen(RGB(0,0,0));
+	{
+		LowMemExit();
 		
-	oslDrawImageXY(recoverybg, 0, 0);
-	oslDrawImage(Selector);
+		oslStartDrawing();	
+		
+		oslReadKeys();
 	
-	oslDrawStringf(10,5,"System Menu");
+		oslClearScreen(RGB(0,0,0));
+		
+		oslDrawImageXY(recoverybg, 0, 0);
+		oslDrawImage(Selector);
 	
-    oslDrawStringf(10,20,"- swap buttons");
-	oslDrawStringf(10,30,"- activate WMA");
-	oslDrawStringf(10,40,"- activate flash player");
-	oslDrawStringf(10,50,"- use fake name");
-	oslDrawStringf(10,60,"- hide MAC address");
-	oslDrawStringf(10,70,"- *****Go Back*****");
+		oslDrawStringf(10,5,"System Menu");
+	
+		oslDrawStringf(10,20,"- swap buttons");
+		oslDrawStringf(10,30,"- activate WMA");
+		oslDrawStringf(10,40,"- activate flash player");
+		oslDrawStringf(10,50,"- use fake name");
+		oslDrawStringf(10,60,"- hide MAC address");
+		oslDrawStringf(10,70,"- *****Go Back*****");
 	
 		Selector->x = selector_image_x; //Sets the selection coordinates
         Selector->y = selector_image_y; //Sets the selection coordinates
@@ -1014,15 +1021,17 @@ void ShowSystemMenu(void)
 		{
 		    ConfigurationMenu();
 		}		
-	oslEndDrawing();
-	oslSyncFrame();	
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();
 	}
 	return selection;
 }
 
 void ShowBatteryMenu(void)
 {
+	char BatSerCurrent[4];
+	
 	int MenuSelection = 1; // Pretty obvious
 	int selector_x = 0; //The x position of the first selection
 	int selector_y = 10; //The y position of the first selection
@@ -1034,23 +1043,24 @@ void ShowBatteryMenu(void)
     
 	while (!osl_quit)
 	{
+		LowMemExit();
 
-	oslStartDrawing();	
-	
-	oslReadKeys();
-	
-	oslClearScreen(RGB(0,0,0));
+		oslStartDrawing();	
 		
-	oslDrawImageXY(recoverybg, 0, 0);
-	oslDrawImage(Selector);
+		oslReadKeys();
 	
-	oslDrawStringf(10,5,"Battery Menu");
+		oslClearScreen(RGB(0,0,0));
+		
+		oslDrawImageXY(recoverybg, 0, 0);
+		oslDrawImage(Selector);
 	
-    oslDrawStringf(10,20,"- make battery pandora");
-	oslDrawStringf(10,30,"- make battery autoBoot");
-	oslDrawStringf(10,40,"- make battery normal");
-	oslDrawStringf(10,50,"- dump battery serial to file");
-	oslDrawStringf(10,60,"- *****Go Back*****");
+		oslDrawStringf(10,5,"Battery Menu");
+	
+		oslDrawStringf(10,20,"- make battery pandora");
+		oslDrawStringf(10,30,"- make battery autoBoot");
+		oslDrawStringf(10,40,"- make battery normal");
+		oslDrawStringf(10,50,"- dump battery serial to file");
+		oslDrawStringf(10,60,"- *****Go Back*****");
 	
 		Selector->x = selector_image_x; //Sets the selection coordinates
         Selector->y = selector_image_y; //Sets the selection coordinates
@@ -1117,11 +1127,18 @@ void ShowBatteryMenu(void)
 		{
 		    ConfigurationMenu();
 		}	
-	oslEndDrawing();
-	oslSyncFrame();	
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();
 	}
 	return selection;
+}
+
+void unloadRecoveryMenuRes()
+{
+	oslDeleteImage(recoverybg);
+	oslDeleteImage(Selector);
+	oslDeleteFont(roboto);
 }
 
 int mainRecoveryMenu()
@@ -1141,7 +1158,9 @@ int mainRecoveryMenu()
 	oslSetFont(roboto);
 
 	while (!osl_quit)
-  {
+	{
+		LowMemExit();
+  
 		oslStartDrawing();	
 
 		oslReadKeys();
@@ -1203,6 +1222,7 @@ int mainRecoveryMenu()
 		{
 			oslSyncFrame();
 			sceKernelDelayThread(3*1000000);
+			unloadRecoveryMenuRes();
 			home();
 		}
 		
@@ -1221,9 +1241,9 @@ int mainRecoveryMenu()
 			shutdown_device();
 		}
 		
-		oslEndDrawing();
-		oslSyncFrame();	
-        oslAudioVSync();
+		oslEndDrawing(); 
+		oslEndFrame(); 
+		oslSyncFrame();
 	}
 	return selection;
 }

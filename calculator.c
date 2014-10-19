@@ -4,33 +4,33 @@
 #include "lock.h"
 #include "multi.h"
 #include "power_menu.h"
-#include "include/screenshot.h"
+#include "screenshot.h"
 
 OSL_IMAGE *cursor, *calcbackground, *wificon;
-
-int result;
-int x;
-int y;
-int enterednumber;
-int numberuse = 0;
-int suppression = 1;
-int Number = 0;
 
 OSL_COLOR black = RGB(0,0,0),red = RGB(255,0,0), white = RGB(255,255,255);
  
 int calculator()
 {
+	int result;
+	int x;
+	int y;
+	int enterednumber;
+	int numberuse = 0;
+	int suppression = 1;
+	int Number = 0;
+
 	calcbackground = oslLoadImageFile("system/app/calculator/calcbg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	OSL_FONT *pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_CENTER);
-	oslSetFont(pgfFont);
+	setfont();
 
 	if (!calcbackground || !cursor || !wificon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
-
+		
 	while (!osl_quit)
 	{
+		LowMemExit();
+	
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
@@ -287,9 +287,9 @@ int calculator()
 			screenshot();
 		}
 		
-        oslEndDrawing();
-		oslSyncFrame();	
-        oslAudioVSync();
+        oslEndDrawing(); 
+		oslEndFrame(); 
+		oslSyncFrame();
 		}
 }
 

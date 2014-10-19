@@ -4,7 +4,7 @@
 #include "lock.h"
 #include "multi.h"
 #include "power_menu.h"
-#include "include/screenshot.h"
+#include "screenshot.h"
 
 OSL_IMAGE *background, *cursor, *multi_task, *wificon;
 
@@ -19,6 +19,8 @@ int multitask()
 
 	while (!osl_quit)
 	{
+		LowMemExit();
+	
 		oslStartDrawing();
 		
 		controls();
@@ -72,11 +74,11 @@ int multitask()
 		if (osl_pad.held.R && osl_pad.held.triangle)
 		{
 			screenshot();
-		}
-				
-		oslEndDrawing();
-		oslSyncFrame();	
-        oslAudioVSync();
+		}		
+	
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();
 	}
 }
 

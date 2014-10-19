@@ -12,7 +12,7 @@
 #include "lock.h"
 #include "multi.h"
 #include "power_menu.h"
-#include "include/screenshot.h"
+#include "screenshot.h"
 
 /* Part of HBL */
 
@@ -410,7 +410,6 @@ int gamemenu(int argc, char *argv[])
 	 //LOGSTR0("Start menu\n");
     isSet = 0;
 	
-	
     //load folder's contents
 	// if it loads the cache we want it to display folders[*], menuEntry would be empty
     int loadSucess = init(&menuEntry[0][0]);
@@ -420,6 +419,8 @@ int gamemenu(int argc, char *argv[])
     sceKernelDelayThread(100000);
     do
 	{
+		LowMemExit();
+	
 		oslStartDrawing();
 		
 		controls();
@@ -431,17 +432,16 @@ int gamemenu(int argc, char *argv[])
 		android_notif();
 		
 		 if ((osl_pad.held.cross) ||  (osl_pad.held.circle))
-		{ // if the cross or circle button is pressed
+		 { // if the cross or circle button is pressed
             //LOGSTR0("Menu sets EBOOT path: ");
             setEboot();			
-        }
-		else if ((osl_pad.held.down) && (currentFile < nbFiles - 1))
-		{
+         }
+		 else if ((osl_pad.held.down) && (currentFile < nbFiles - 1))
+		 {
             currentFile++;
 			if(currentFile >= (MAXMENUSIZE + menuOffSet) && (nbFiles - 1) >= (MAXMENUSIZE + menuOffSet))
 				menuOffSet++;
-            refreshMenu(menuOffSet, &menuEntry[0][0], loadSucess);
-
+				refreshMenu(menuOffSet, &menuEntry[0][0], loadSucess);
         }
 		else if ((osl_pad.held.up) && (currentFile > 0) )
 		{
@@ -501,11 +501,11 @@ int gamemenu(int argc, char *argv[])
 			screenshot();
 		}
 				
-		oslEndDrawing();
-		oslSyncFrame();	
-        oslAudioVSync();
+		oslEndDrawing(); 
+		oslEndFrame(); 
+		oslSyncFrame();
 		
-} while (!isSet);
+} while (!isSet && !osl_quit);
 
     sceKernelExitGame();
     return 0;

@@ -5,7 +5,7 @@
 #include "mp3player.h"
 #include "multi.h"
 #include "power_menu.h"
-#include "include/screenshot.h"
+#include "screenshot.h"
 #include "include/utils.h"
 #include "id3.h"
 #include "file_struct.h"
@@ -210,8 +210,9 @@ void MP3Play(char * path)
 	MP3_Play();
 	
 	while (!osl_quit)
-  {
-		//Draws images onto the screen
+	{
+		LowMemExit();
+		
 		oslStartDrawing();		
 		
 		oslClearScreen(RGB(0,0,0));
@@ -256,9 +257,9 @@ void MP3Play(char * path)
 			return;
 		}
 		
-		oslEndDrawing();
+		oslEndDrawing(); 
+        oslEndFrame(); 
 		oslSyncFrame();	
-        oslAudioVSync();
 		}
 	MP3_End();
 }
@@ -385,6 +386,8 @@ char * mp3Browse(const char * path)
 	
 	while (!osl_quit)
 	{		
+		LowMemExit();
+	
 		oslStartDrawing();
 		oslClearScreen(RGB(0,0,0));	
 
@@ -399,9 +402,9 @@ char * mp3Browse(const char * path)
 		{
 			break;
 		}
-	oslEndDrawing();
+	oslEndDrawing(); 
+    oslEndFrame(); 
 	oslSyncFrame();	
-    oslAudioVSync();
 	}
 	return returnMe;
 }
@@ -410,6 +413,7 @@ void apolloUnload()
 {
 	oslDeleteImage(mp3bg);
 	oslDeleteImage(mp3_select);
+	oslDeleteFont(pgfFont);
 }
 
 int mp3player()
@@ -433,14 +437,16 @@ int mp3player()
 	
 	while (!osl_quit)
 	{	
+		LowMemExit();
+
 		oslReadKeys();
 		oslStartDrawing();
 		oslClearScreen(RGB(0,0,0));	
 		
 		centerText(480/2, 272/2, Directory, 50);
 
-		oslEndDrawing();
+		oslEndDrawing(); 
+        oslEndFrame(); 
 		oslSyncFrame();	
-        oslAudioVSync();
 		}
 }

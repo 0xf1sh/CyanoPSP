@@ -1,6 +1,6 @@
 #include "clock.h"
 #include "lock.h"
-#include "include/screenshot.h"
+#include "screenshot.h"
 
 void lockscreen_deleteimages()
 {
@@ -37,7 +37,9 @@ int lockscreen()
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
 	while (!osl_quit)
-	{		
+	{	
+		LowMemExit();
+	
 		oslStartDrawing();
 		
 		controls();	
@@ -134,9 +136,9 @@ int lockscreen()
 			screenshot();
 		}
 		
-	oslEndDrawing();
-	oslSyncFrame();	
-    oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();
 	}
 }
 

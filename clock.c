@@ -7,7 +7,7 @@
 #include "lock.h"
 #include "multi.h"
 #include "power_menu.h"
-#include "include/screenshot.h"
+#include "screenshot.h"
 
 OSL_IMAGE *clockbg, *cursor, *wificon, *stop_watch;
 OSL_FONT *clockFont;
@@ -210,7 +210,9 @@ void stopWatch()
 	sceCtrlReadBufferPositive(&oldPad, 1);
 	
 	while (!osl_quit)
-  {		
+	{	
+		LowMemExit();
+		
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
@@ -294,10 +296,9 @@ void stopWatch()
 				counter = 0;
 			}
 		}
-
-		oslEndDrawing();
-		oslSyncFrame();	
-        oslAudioVSync();
+		oslEndDrawing(); 
+		oslEndFrame(); 
+		oslSyncFrame();
 	}
 }
 
@@ -311,7 +312,9 @@ int pspclock()
 	setfont();
 	
 	while (!osl_quit)
-  {		
+	{		
+		LowMemExit();
+	
 		oslStartDrawing();
 		
 		oslClearScreen(RGB(0,0,0));
@@ -371,10 +374,9 @@ int pspclock()
 		{
 			screenshot();
 		}
-		
-		oslEndDrawing();
-		oslSyncFrame();	
-        oslAudioVSync();
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();
 	}
 }
 
