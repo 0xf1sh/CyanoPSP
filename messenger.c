@@ -344,7 +344,7 @@ int messenger()
 {	
 	messengerbg = oslLoadImageFilePNG("system/app/messenger/messengerbg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	if (!messengerbg || !new_message || !cursor || !wificon)
+	if (!messengerbg || !cursor || !wificon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
 	pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
@@ -352,7 +352,7 @@ int messenger()
 	oslSetFont(pgfFont);
 		
 	while (!osl_quit)
-  {
+	{
 		LowMemExit();
 
 		oslStartDrawing();	
