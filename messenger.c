@@ -244,6 +244,8 @@ void newmessage()
 	int skip = 0;
     char message[250] = "";
 
+	new_message = oslLoadImageFilePNG("system/app/messenger/new_message.png", OSL_IN_RAM, OSL_PF_8888);
+	
 	while (!osl_quit)
 	{
 		LowMemExit();
@@ -279,16 +281,19 @@ void newmessage()
 		
 		if (osl_pad.held.circle)
 		{
+			oslDeleteImage(new_message);
 			messenger();
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
+			oslDeleteImage(new_message);
 			messenger();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
+			oslDeleteImage(new_message);
 			home();
 		}
 
@@ -338,7 +343,6 @@ void newmessage()
 int messenger()
 {	
 	messengerbg = oslLoadImageFilePNG("system/app/messenger/messengerbg.png", OSL_IN_RAM, OSL_PF_8888);
-	new_message = oslLoadImageFilePNG("system/app/messenger/new_message.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	if (!messengerbg || !new_message || !cursor || !wificon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
@@ -378,16 +382,19 @@ int messenger()
 		
 		if (osl_pad.held.circle)
 		{
+			oslDeleteImage(messengerbg);
 			appdrawer();
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
+			oslDeleteImage(messengerbg);
 			appdrawer();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
+			oslDeleteImage(messengerbg);
 			home();
 		}
 
@@ -403,7 +410,8 @@ int messenger()
 		
 		if (cursor->x >= 275 && cursor->x <= 376 && cursor->y >= 20 && cursor->y <= 52 && osl_pad.held.cross)
 		{
-		newmessage();
+			oslDeleteImage(messengerbg);
+			newmessage();
 		}
 
         if (osl_keys->released.triangle && oslIsWlanPowerOn())
