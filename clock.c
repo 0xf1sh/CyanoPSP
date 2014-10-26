@@ -258,7 +258,6 @@ void stopWatch()
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			oslDeleteImage(stop_watch);
 			multitask();
 		}
 		
@@ -360,7 +359,6 @@ int pspclock()
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			oslDeleteImage(clockbg);
 			multitask();
 		}
 		

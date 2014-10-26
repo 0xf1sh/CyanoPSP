@@ -381,9 +381,7 @@ void about_menu()
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{	
-			oslDeleteImage(aboutbg);
-			oslDeleteImage(easteregg);
-			multitask();	
+			multitask();
 		}
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 50 && cursor->y <= 94 && osl_pad.held.cross)
@@ -510,8 +508,7 @@ void updates_menu()
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			oslDeleteImage(updatesbg);
+		{	
 			multitask();
 		}
 		
@@ -610,8 +607,7 @@ void performance_menu()
 		}
 		
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			oslDeleteImage(performancebg);
+		{	
 			multitask();
 		}
 		
@@ -764,8 +760,7 @@ void processor_menu(int argc, char *argv[])
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{	
-			oslDeleteImage(processorbg);
-			multitask();	
+			multitask();
 		}
 		
 		if (osl_pad.held.R && osl_pad.held.triangle)
@@ -839,8 +834,7 @@ void ram_menu(int argc, char *argv[])
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{	
-			oslDeleteImage(performancebg);
-			multitask();	
+			multitask();
 		}
 		
 		if (osl_pad.held.R && osl_pad.held.triangle)
@@ -1054,8 +1048,7 @@ void theme_menu()
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			oslDeleteImage(themebg);
+		{	
 			multitask();
 		}
 		
@@ -1172,8 +1165,7 @@ void wifi_menu()
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			oslDeleteImage(wifibg);	
+		{	
 			multitask();
 		}
 		
@@ -1282,9 +1274,7 @@ void developer_menu()
 		}
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
-		{
-			oslDeleteImage(developerbg);
-			oslDeleteImage(check);
+		{	
 			multitask();
 		}
 		
@@ -1456,7 +1446,6 @@ int settingsmenu()
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{	
-			settings_deleteImages();
 			multitask();
 		}
 			

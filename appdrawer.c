@@ -11,6 +11,7 @@ OSL_IMAGE *background, *cursor, *wificon, *apollo, *gmail, *messengericon, *brow
 
 void appdrawer_loadImages()
 {
+	background = oslLoadImageFilePNG("system/framework/framework-res/res/background.png", OSL_IN_RAM, OSL_PF_8888);
 	clockx = oslLoadImageFilePNG("system/home/icons/clock.png", OSL_IN_RAM, OSL_PF_8888);
 	email = oslLoadImageFilePNG("system/home/icons/email.png", OSL_IN_RAM, OSL_PF_8888);
 	fb = oslLoadImageFilePNG("system/home/icons/fb.png", OSL_IN_RAM, OSL_PF_8888);
@@ -25,6 +26,7 @@ void appdrawer_loadImages()
 
 void appdrawer_deleteImages()
 {
+	oslDeleteImage(background);
 	oslDeleteImage(clockx);
 	oslDeleteImage(email);
 	oslDeleteImage(fb);
@@ -294,7 +296,6 @@ int appdrawer()
 		
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			appdrawer_deleteImages();
 			multitask();
 		}
 		

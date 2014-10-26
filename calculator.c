@@ -278,7 +278,6 @@ int calculator()
 
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{	
-			oslDeleteImage(calcbackground);
 			multitask();
 		}
 		

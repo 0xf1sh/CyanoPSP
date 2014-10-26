@@ -11,7 +11,8 @@ OSL_IMAGE *background, *cursor, *appicon, *appicon2, *wificon, *apollo, *gmail, 
 int home()
 {	
 	loadicons();
-
+	background = oslLoadImageFilePNG("system/framework/framework-res/res/background.png", OSL_IN_RAM, OSL_PF_8888);
+	
 	if (!background || !cursor || !wificon || !apollo || !gmail || !messengericon || !browser || !google|| !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
@@ -49,35 +50,39 @@ int home()
 		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
 		{
 			unloadicons();
+			oslDeleteImage(background);
 			internet();
 		}
 		
 		if (cursor->x >= 100 && cursor->x <= 154 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
 		{
 			unloadicons();
+			oslDeleteImage(background);
 			mp3player();
 		}
 		
 		if (cursor->x >= 155 && cursor->x <= 210 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
 		{
 			unloadicons();
+			oslDeleteImage(background);
 			messenger();
 		}
 			
 		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
 		{
 			unloadicons();
+			oslDeleteImage(background);
 			appdrawer();
 		}
 		
 		if (osl_pad.held.L)
 		{	
 			lockscreen();
+			oslDeleteImage(background);
         }
 		
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
 		{
-			unloadicons();
 			multitask();
 		}
 		
