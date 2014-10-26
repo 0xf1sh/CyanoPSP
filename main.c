@@ -47,7 +47,8 @@ static int runningFlag = 1;
 static char message[100] = "";
 static char buffer[100] = "";
 
-int initOSLib(){
+int initOSLib() //Intialize OsLib
+{
     oslInit(0);
     oslInitGfx(OSL_PF_8888, 1);
 	oslSetBilinearFilter(1);
@@ -59,13 +60,15 @@ int initOSLib(){
 }
  
 /* Exit callback */
-int exit_callback(int arg1, int arg2, void *common) {
+int exit_callback(int arg1, int arg2, void *common)
+ {
 	sceKernelExitGame();
 	return 0;
 }
 
 /* Callback thread */
-int CallbackThread(SceSize args, void *argp) {
+int CallbackThread(SceSize args, void *argp) 
+{
 	int cbid;
 	cbid = sceKernelCreateCallback("Exit Callback", exit_callback, NULL);
 	sceKernelRegisterExitCallback(cbid);
@@ -74,14 +77,16 @@ int CallbackThread(SceSize args, void *argp) {
 }
 
 /* Sets up the callback thread and returns its thread id */
-int SetupCallbacks(void) {
+int SetupCallbacks(void) 
+{
 	int thid = 0;
 	thid = sceKernelCreateThread("update_thread", CallbackThread, 0x11, 0xFA0, THREAD_ATTR_USER, 0);
 	if(thid >= 0) sceKernelStartThread(thid, 0, 0);
 	return thid;
 }
 
-int connectAPCallback(int state){
+int connectAPCallback(int state) //Internet stuff
+{
     oslStartDrawing();
     oslDrawImageXY(wifibg, 0, 19);
     oslDrawString(30, 175, "Connecting to AP...");
@@ -94,7 +99,8 @@ int connectAPCallback(int state){
     return 0;
 } 
  
-int connectToAP(int config){
+int connectToAP(int config) //Internet stuff
+{
     oslStartDrawing();
     oslDrawImageXY(wifibg, 0, 19);
     oslDrawString(30, 175, "Connecting to AP...");
@@ -147,8 +153,9 @@ int connectToAP(int config){
     return 0;
 } 
  
-void controls()
+void controls() //Main controller function - allows cursor movement
 {
+	//Intialize the limits
 	int llimit = 0;
 	int rlimit = 460;
 	int ulimit = 0;
@@ -169,6 +176,8 @@ void controls()
 	if(osl_keys->analogY <= -50)
 		cursor->y+= osl_keys->analogY/30;
 		
+	/* Prevents the cursor from going off screen */
+	
 	if (cursor->x <= llimit)
 	{
 		cursor->x = llimit;
@@ -194,13 +203,13 @@ void controls()
 	// It loads the sound file defined in the tones variable  when the cross button is pressed, in channel 1.
 }
 
-void battery()
+void battery() // Draws the battery icon depending on its percentage. 
 {
 	int batx = 400;
 	int baty = 2;
 	int batteryLife;
 	
-	batteryLife = scePowerGetBatteryLifePercent();
+	batteryLife = scePowerGetBatteryLifePercent(); //Gets battery percentage
  
 	if (batteryLife == 100)
 		oslDrawImageXY(batt100,batx,baty);
@@ -217,11 +226,11 @@ void battery()
 	else if (batteryLife >0 && batteryLife <= 10)
 		oslDrawImageXY(batt0,batx,baty);
 			
-	if (scePowerIsBatteryCharging() == 1)
+	if (scePowerIsBatteryCharging() == 1) // If the battery's charging, draw the charging icon on the battery icon.
 		oslDrawImageXY(battcharge,batx,baty);	
 }
 
-void appdrawericon()
+void appdrawericon() //Draws the app drawer icon. Draws a different icon of the same size once hovered with the cursor.
 {
 	if (cursor->x  >= 215 && cursor->x  <= 243 && cursor->y >= 195 && cursor->y <= 230)
 		oslDrawImageXY(ic_allapps_pressed,218,197);
@@ -230,24 +239,24 @@ void appdrawericon()
 		oslDrawImageXY(ic_allapps,218,197);
 }
 
-void navbar_buttons()
+void navbar_buttons() //Draws the navbar buttons in the bottom as seen on androids.
 {		
 	oslDrawImageXY(navbar, 109, 237);
 		
 	if (cursor->x  >= 144 && cursor->x  <= 204 && cursor->y >= 226 && cursor->y <= 271)
-		oslDrawImageXY(backicon,109, 237);
+		oslDrawImageXY(backicon,109, 237); //If the cursor is moved onto/near the back icon, it displays the highlighted back icon, else it just draws the navbar.
 	
 	else
 		oslDrawImageXY(navbar,109, 237);
 		
 	if (cursor->x  >= 205 && cursor->x  <= 271 && cursor->y >= 226 && cursor->y <= 271)
-		oslDrawImageXY(homeicon,109, 237);
+		oslDrawImageXY(homeicon,109, 237); //If the cursor is moved onto/near the back icon, it displays the highlighted back icon, else it just draws the navbar.
 	
 	else
 		oslDrawImageXY(navbar,109, 237);
 		
 	if (cursor->x  >= 272 && cursor->x  <= 332 && cursor->y >= 226 && cursor->y <= 271)
-		oslDrawImageXY(multicon,109, 237);
+		oslDrawImageXY(multicon,109, 237); //If the cursor is moved onto/near the back icon, it displays the highlighted back icon. else it just draws the navbar.
 	
 	else
 		oslDrawImageXY(navbar,109, 237);
@@ -369,7 +378,7 @@ void android_notif()
 	}
 }
 
-void internet()
+void internet() //Draws the browser
 {
 	int skip = 0;
     int browser = 0;
@@ -400,7 +409,7 @@ void internet()
         if (!browser)
 		{
             oslReadKeys();
-            int res = oslBrowserInit("http://www.google.com", "/PSP/GAME/CyanogenMod/downloads", 5*1024*1024,
+            int res = oslBrowserInit("http://www.google.com", "/PSP/GAME/CyanogenMod/downloads", 5*1024*1024, //Downloads will be saved into this directory
                                          PSP_UTILITY_HTMLVIEWER_DISPLAYMODE_SMART_FIT,
                                          PSP_UTILITY_HTMLVIEWER_DISABLE_STARTUP_LIMITS,
                                          PSP_UTILITY_HTMLVIEWER_INTERFACEMODE_FULL,
@@ -455,25 +464,25 @@ void firstBootMessage()
 	}
 }
 
-void setfont()
+void setfont() //Sets the main font (size and color) used in the app
 {
 	oslIntraFontSetStyle(DroidSans, 0.5f, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
 	oslSetFont(DroidSans);
 }
 
-void loadicons()
+void loadicons() // Loading the app drawer icons.
 {
 	ic_allapps = oslLoadImageFilePNG("system/framework/framework-res/res/drawable-hdpi/ic_allapps.png", OSL_IN_RAM, OSL_PF_8888);
 	ic_allapps_pressed = oslLoadImageFile("system/framework/framework-res/res/drawable-hdpi/ic_allapps_pressed.png", OSL_IN_RAM, OSL_PF_8888);
 }
 
-void unloadicons()
+void unloadicons() //Deleting the app drawer icons to save memory.
 {
 	oslDeleteImage(ic_allapps);
 	oslDeleteImage(ic_allapps_pressed);
 }
 
-void LowMemExit() //This is temporary until I come up with a solution.
+void LowMemExit() //This is temporary until I come up with a solution. It exits the app, once the memory is less than/equal to 1.5 MB
 {
 	if (oslGetRamStatus().maxAvailable <= 1500000)
 	{
@@ -483,34 +492,34 @@ void LowMemExit() //This is temporary until I come up with a solution.
 
 int main()
 {
-	SetupCallbacks();
-	initOSLib();
-	oslIntraFontInit(INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8);
+	SetupCallbacks(); //Setup callbacks
+	initOSLib(); //Initializes OsLib
+	oslIntraFontInit(INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8); //Initializes OSL fonts
 	
-	//loads our sound
+	//Loads our touch tones
 	tone = oslLoadSoundFile("system/media/audio/ui/KeypressStandard.wav", OSL_FMT_NONE);
 
-	//loads our images into memory
+	//Loads our images into memory
 	loadicons();
 	background = oslLoadImageFilePNG("system/framework/framework-res/res/background.png", OSL_IN_RAM, OSL_PF_8888);
-	cursor = oslLoadImageFilePNG("system/cursor/cursor.png", OSL_IN_RAM, OSL_PF_8888);
-	navbar = oslLoadImageFile("system/home/icons/nav.png", OSL_IN_RAM, OSL_PF_8888);
-	wificon = oslLoadImageFile("system/home/icons/wificon.png", OSL_IN_RAM, OSL_PF_8888);
+	cursor = oslLoadImageFilePNG("system/cursor/cursor.png", OSL_IN_VRAM, OSL_PF_8888);
+	navbar = oslLoadImageFile("system/home/icons/nav.png", OSL_IN_VRAM, OSL_PF_8888);
+	wificon = oslLoadImageFile("system/home/icons/wificon.png", OSL_IN_VRAM, OSL_PF_8888);
 	apollo = oslLoadImageFilePNG("system/home/icons/apollo.png", OSL_IN_RAM, OSL_PF_8888);
 	gmail = oslLoadImageFilePNG("system/home/icons/gmail.png", OSL_IN_RAM, OSL_PF_8888);
 	messengericon = oslLoadImageFilePNG("system/home/icons/message.png", OSL_IN_RAM, OSL_PF_8888);
 	browser = oslLoadImageFile("system/home/icons/browser.png", OSL_IN_RAM, OSL_PF_8888);
 	google = oslLoadImageFile("system/home/icons/google.png", OSL_IN_RAM, OSL_PF_8888);
-	notif = oslLoadImageFile("system/home/menu/notif2.png", OSL_IN_RAM, OSL_PF_8888);
+	notif = oslLoadImageFile("system/home/menu/notif2.png", OSL_IN_VRAM, OSL_PF_8888);
 	notif2 = oslLoadImageFile("system/home/menu/notif2.png", OSL_IN_RAM, OSL_PF_8888);
-	batt100 = oslLoadImageFile("system/home/icons/100.png", OSL_IN_RAM, OSL_PF_8888);
-	batt80 = oslLoadImageFile("system/home/icons/80.png", OSL_IN_RAM, OSL_PF_8888);
-	batt60 = oslLoadImageFile("system/home/icons/60.png", OSL_IN_RAM, OSL_PF_8888);
-	batt40 = oslLoadImageFile("system/home/icons/40.png", OSL_IN_RAM, OSL_PF_8888);
-	batt20 = oslLoadImageFile("system/home/icons/20.png", OSL_IN_RAM, OSL_PF_8888);
-	batt10 = oslLoadImageFile("system/home/icons/10.png", OSL_IN_RAM, OSL_PF_8888);
-	batt0 = oslLoadImageFile("system/home/icons/0.png", OSL_IN_RAM, OSL_PF_8888);
-	battcharge = oslLoadImageFile("system/home/icons/charge.png", OSL_IN_RAM, OSL_PF_8888);
+	batt100 = oslLoadImageFile("system/home/icons/100.png", OSL_IN_VRAM, OSL_PF_8888);
+	batt80 = oslLoadImageFile("system/home/icons/80.png", OSL_IN_VRAM, OSL_PF_8888);
+	batt60 = oslLoadImageFile("system/home/icons/60.png", OSL_IN_VRAM, OSL_PF_8888);
+	batt40 = oslLoadImageFile("system/home/icons/40.png", OSL_IN_VRAM, OSL_PF_8888);
+	batt20 = oslLoadImageFile("system/home/icons/20.png", OSL_IN_VRAM, OSL_PF_8888);
+	batt10 = oslLoadImageFile("system/home/icons/10.png", OSL_IN_VRAM, OSL_PF_8888);
+	batt0 = oslLoadImageFile("system/home/icons/0.png", OSL_IN_VRAM, OSL_PF_8888);
+	battcharge = oslLoadImageFile("system/home/icons/charge.png", OSL_IN_VRAM, OSL_PF_8888);
 	pointer = oslLoadImageFilePNG("system/home/icons/pointer.png", OSL_IN_RAM, OSL_PF_8888);
 	pointer1 = oslLoadImageFilePNG("system/home/icons/pointer1.png", OSL_IN_RAM, OSL_PF_8888);
 	backicon = oslLoadImageFilePNG("system/home/icons/backicon.png", OSL_IN_RAM, OSL_PF_8888);
@@ -521,7 +530,7 @@ int main()
 	transbackground = oslLoadImageFilePNG("system/home/icons/transbackground.png", OSL_IN_RAM, OSL_PF_8888);
 	DroidSans = oslLoadIntraFontFile("system/fonts/DroidSans.pgf", INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8);
 
-	//Debugger
+	//Debugger - Displays an error message if the following resources are missing.
 	if (!background || !cursor || !ic_allapps || !ic_allapps_pressed || !navbar || !wificon || !apollo || !gmail || !messengericon || !browser || !google || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
@@ -533,8 +542,8 @@ int main()
 	
 	setfont();
 	
-	makeDownloadDir();
-	deleteUpdateFile();
+	makeDownloadDir(); //Created Download directory if there isn't any - PSP/Game/CyanogenMod/Downloads
+	deleteUpdateFile(); //Delete update.zip
 	
 	//Main loop to run the program
 	while (!osl_quit)
@@ -555,7 +564,7 @@ int main()
 		oslDrawImageXY(messengericon, 160, 190);
 		oslDrawImageXY(pointer, 230, 180);
 		
-		digitaltime(420,4,458);
+		digitaltime(420,4,458); //Draws digital time (based on your local psp time) on the top right corner. 
 
 		//Sets the transparency color (black)
 		oslSetTransparentColor(RGB(0,0,0));
@@ -571,48 +580,48 @@ int main()
 		firstBootMessage();
 		oslDrawImage(cursor);
 
-		if (osl_pad.held.home)
+		if (osl_pad.held.square) //Opens the power menu
 		{
 			 powermenu();
 		}
 				
 		//Launching the browser
-		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross) //Launches the internet
 		{
 			unloadicons();
 			internet();
 		}
 		
-		if (cursor->x >= 100 && cursor->x <= 154 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
+		if (cursor->x >= 100 && cursor->x <= 154 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross) //Opens apollo MP3 player
 		{
 			unloadicons();
 			mp3player();
 		}
 		
-		if (cursor->x >= 155 && cursor->x <= 210 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
+		if (cursor->x >= 155 && cursor->x <= 210 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross) //Opens messenger
 		{
 			unloadicons();
 			messenger();
 		}
 			
-		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
+		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross) //Opens app drawer
 		{
 			unloadicons();
 			appdrawer();
 		}
 		
-		if (osl_pad.held.L)
+		if (osl_pad.held.L) //Locks the screen
 		{
 			lockscreen();
         }
 		
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross) // Opens multi-task menu
 		{
 			unloadicons();
 			multitask();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_pad.held.triangle) //Takes screenshot
 		{
 			screenshot();
 		}
