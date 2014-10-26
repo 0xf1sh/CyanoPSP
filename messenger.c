@@ -269,16 +269,6 @@ void newmessage()
 		android_notif();
 		oslDrawImage(cursor);
 		
-		if (osl_pad.held.square)
-		{
-			powermenu();
-		}
-		
-		if (osl_pad.held.L)
-		{
-			lockscreen();
-        }
-		
 		if (osl_pad.held.circle)
 		{
 			oslDeleteImage(new_message);
