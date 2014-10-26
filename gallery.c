@@ -63,10 +63,17 @@ void galleryDisplay()
 
 void showImage(const char * path)
 {
-	 OSL_IMAGE * image = oslLoadImageFile(path, OSL_IN_RAM, OSL_PF_8888);
+	int zoomIn = 0, zoomOut = 0;
+
+	OSL_IMAGE * image = oslLoadImageFile(path, OSL_IN_RAM, OSL_PF_8888);
 	 
-	 if(!image)
+	if(!image)
 		return 0;
+	
+	//Draw image in the centre
+	oslSetImageRotCenter(image);
+	image->x = OSL_SCREEN_WIDTH / 2;
+	image->y = OSL_SCREEN_HEIGHT / 2;
 		
 	while (!osl_quit) {
 
@@ -74,13 +81,25 @@ void showImage(const char * path)
 		oslStartDrawing();	
 		
 		oslClearScreen(RGB(255,255,255));
-		oslDrawImageXY(image, 240 - oslGetImageWidth(image) / 2, 136 - oslGetImageHeight(image) / 2);//draw image
+		oslDrawImage(image);//draw image
 		oslDrawImageXY(gallerybar,0,0);
 		oslDrawStringf(40,12,folderIcons[current].name);
 		
 		oslEndDrawing(); 
 		oslEndFrame(); 
 		oslSyncFrame();	
+		
+		if(osl_keys->analogY <= -50)
+		{
+			image->stretchX = image->sizeX * zoomIn++;
+			image->stretchY = image->sizeY * zoomOut++;
+		}
+		
+		if(osl_keys->analogY >= 50)
+		{
+			image->stretchX = image->sizeX * zoomIn--;
+			image->stretchY = image->sizeY * zoomOut--;
+		}
 		
 		if (osl_keys->pressed.circle) 
 		{
