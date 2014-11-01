@@ -9,6 +9,9 @@
 #include <pspiofilemgr.h>
 #include <stdlib.h>
 #include <oslib/oslib.h>
+#include <systemctrl.h>
+#include <psploadexec.h>
+#include <psploadexec_kernel.h>
 #include "apollo.h"
 #include "fm.h"
 #include "clock.h"
@@ -311,6 +314,8 @@ char *getTextFromFile()
 
 void displayTextFromFile()
 {
+	textview = oslLoadImageFilePNG("system/app/filemanager/textview.png", OSL_IN_RAM, OSL_PF_8888);
+
 	while (!osl_quit)
   {
 
@@ -328,6 +333,7 @@ void displayTextFromFile()
 
 	if(osl_keys->pressed.circle)
 	{
+		oslDeleteImage(textview);
 		return;
 	}
 				
@@ -541,18 +547,17 @@ void dirControls() //Controls
 	
 	if (((ext) != NULL) && ((strcmp(ext ,".PBP") == 0) || ((strcmp(ext ,".pbp") == 0))) && (osl_keys->pressed.cross))
 	{
-			struct SceKernelLoadExecParam param;
-
-			memset(&param, 0, sizeof(param));
-			
-			param.size = sizeof(param);
-			param.args = strlen(folderIcons[current].filePath)+1;
-			param.argp = folderIcons[current].filePath;
-			param.key = "updater";
-
-			printf("Starting program...\n");
-
-			sceKernelLoadExec(folderIcons[current].filePath, &param);
+		struct SceKernelLoadExecVSHParam param;
+		int apitype = 0x141;
+		char *program = "ms0:/PSP/GAME/aplicacion/EBOOT.PBP";
+ 
+		memset(&param, 0, sizeof(param));
+		param.size = sizeof(param);
+		param.args = strlen(program)+1;
+		param.argp = program;
+		param.key = "game";
+ 
+		sctrlKernelLoadExecVSHWithApitype(apitype, program, &param);
 	}
 	
 	if (((ext) != NULL) && ((strcmp(ext ,".mp3") == 0) || ((strcmp(ext ,".MP3") == 0))) && (osl_keys->pressed.cross))
@@ -635,13 +640,12 @@ void filemanager_unload()
 	oslDeleteImage(mp3icon);
 	oslDeleteImage(txticon);
 	oslDeleteImage(unknownicon);
-	oslDeleteImage(textview);
 	oslDeleteImage(bar);
 	oslDeleteImage(documenticon);
 	oslDeleteImage(binaryicon);
 	oslDeleteImage(videoicon);
 	oslDeleteImage(archiveicon);
-	oslDeleteImage(gallerybar);
+	oslDeleteFont(pgfFont);
 }
 
 int filemanage(int argc, char *argv[])
@@ -652,13 +656,11 @@ int filemanage(int argc, char *argv[])
 	mp3icon = oslLoadImageFilePNG("system/app/filemanager/mp3.png", OSL_IN_RAM, OSL_PF_8888);
 	txticon = oslLoadImageFilePNG("system/app/filemanager/txt.png", OSL_IN_RAM, OSL_PF_8888);
 	unknownicon = oslLoadImageFilePNG("system/app/filemanager/unknownfile.png", OSL_IN_RAM, OSL_PF_8888);
-	textview = oslLoadImageFilePNG("system/app/filemanager/textview.png", OSL_IN_RAM, OSL_PF_8888);
 	bar = oslLoadImageFilePNG("system/app/filemanager/bar.png", OSL_IN_RAM, OSL_PF_8888);
 	documenticon = oslLoadImageFilePNG("system/app/filemanager/documenticon.png", OSL_IN_RAM, OSL_PF_8888);
 	binaryicon = oslLoadImageFilePNG("system/app/filemanager/binaryicon.png", OSL_IN_RAM, OSL_PF_8888);
 	videoicon = oslLoadImageFilePNG("system/app/filemanager/videoicon.png", OSL_IN_RAM, OSL_PF_8888);
 	archiveicon = oslLoadImageFilePNG("system/app/filemanager/archiveicon.png", OSL_IN_RAM, OSL_PF_8888);
-	gallerybar = oslLoadImageFilePNG("system/app/gallery/galleryBar.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(0,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);

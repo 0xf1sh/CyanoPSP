@@ -166,6 +166,8 @@ void ShowPage3()
 	
 	u32 value;
 	
+	recoverybg = oslLoadImageFilePNG("android_bootable_recovery/res/images/recoverybg.png", OSL_IN_RAM, OSL_PF_8888);
+	
 	while (!osl_quit)
 	{
 		LowMemExit();
@@ -249,10 +251,12 @@ void ShowPage3()
 		
 		if (osl_keys->pressed.L)
 		{
+			oslDeleteImage(recoverybg);
 			ShowPage2();
         }
 		if (osl_keys->pressed.R)
 		{
+			oslDeleteImage(recoverybg);
 			ShowPage4();
         }
 		if (osl_keys->pressed.cross)
@@ -261,6 +265,7 @@ void ShowPage3()
         }
 		if (osl_keys->pressed.circle)
 		{
+			oslDeleteImage(recoverybg);
 			mainRecoveryMenu();
 		}
 		
@@ -274,6 +279,8 @@ void ShowPage3()
 void ShowPage2()
 {
     int batser, batmode;
+	
+	recoverybg = oslLoadImageFilePNG("android_bootable_recovery/res/images/recoverybg.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	while (!osl_quit)
 	{
@@ -314,10 +321,12 @@ void ShowPage2()
 
 		if (osl_keys->pressed.L)
 		{
+			oslDeleteImage(recoverybg);
 			ShowPage1();
         }
 		if (osl_keys->pressed.R)
 		{
+			oslDeleteImage(recoverybg);
 			ShowPage3();
         }
 		if (osl_keys->pressed.cross)
@@ -326,6 +335,7 @@ void ShowPage2()
         }
 		if (osl_keys->pressed.circle)
 		{
+			oslDeleteImage(recoverybg);
 			mainRecoveryMenu();
 		}
 		
@@ -464,6 +474,8 @@ void ShowPage1()
     int baryon, pommel, tachyon, fuseid, fusecfg, mb, model, type, region;
 	char *unk_minor = "-";
 	
+	recoverybg = oslLoadImageFilePNG("android_bootable_recovery/res/images/recoverybg.png", OSL_IN_RAM, OSL_PF_8888);
+	
 	while (!osl_quit)
 	{
 		LowMemExit();
@@ -500,14 +512,17 @@ void ShowPage1()
 		
 		if (osl_keys->pressed.L)
 		{
+			oslDeleteImage(recoverybg);
 			ShowPage5();
         }
 		if (osl_keys->pressed.R)
 		{
+			oslDeleteImage(recoverybg);
 			ShowPage2();
         }
 		if (osl_keys->pressed.circle)
 		{
+			oslDeleteImage(recoverybg);
 			mainRecoveryMenu();
 		}
 	   
@@ -519,6 +534,8 @@ void ShowPage1()
 
 void ShowVersionTxt()
 {
+	recoverybg = oslLoadImageFilePNG("android_bootable_recovery/res/images/recoverybg.png", OSL_IN_RAM, OSL_PF_8888);
+	
 	while (!osl_quit)
 	{
 		LowMemExit();
@@ -543,6 +560,7 @@ void ShowVersionTxt()
 
 		if (osl_keys->pressed.circle)
 		{
+			oslDeleteImage(recoverybg);
 		    mainRecoveryMenu();
 		}
 		
@@ -564,6 +582,9 @@ void ConfigurationMenu()
 	int selection = 0;
 	
 	sctrlSEGetConfig(&config);
+	
+	recoverybg = oslLoadImageFilePNG("android_bootable_recovery/res/images/recoverybg.png", OSL_IN_RAM, OSL_PF_8888);
+	Selector = oslLoadImageFile("android_bootable_recovery/res/images/selector.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	while (!osl_quit)
 	{
@@ -620,11 +641,13 @@ void ConfigurationMenu()
 		
 		if (MenuSelection == 5 && osl_keys->pressed.cross)
         {
+			unloadRecoveryMenuRes();
 			mainRecoveryMenu();
         }
 		
 		if (osl_keys->pressed.circle)
 		{
+			unloadRecoveryMenuRes();
 		    mainRecoveryMenu();
 		}	
 	oslEndDrawing(); 
@@ -647,6 +670,9 @@ void ShowAdvancedCnfMenu(void)
 	int selection = 0;
 	
 	sctrlSEGetConfig(&config);
+	
+	recoverybg = oslLoadImageFilePNG("android_bootable_recovery/res/images/recoverybg.png", OSL_IN_RAM, OSL_PF_8888);
+	Selector = oslLoadImageFile("android_bootable_recovery/res/images/selector.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	while (!osl_quit)
 	{
@@ -721,10 +747,12 @@ void ShowAdvancedCnfMenu(void)
         }
 		if (MenuSelection == 6 && osl_keys->pressed.cross)
         {
+			unloadRecoveryMenuRes();
 		    ConfigurationMenu();
         }	
 		if (osl_keys->pressed.circle)
 		{
+			unloadRecoveryMenuRes();
 		    ConfigurationMenu();
 		}		
 	oslEndDrawing(); 
@@ -746,6 +774,9 @@ void ShowCnfMenu(void)
 	int selection = 0;
 	
 	sctrlSEGetConfig(&config);
+	
+	recoverybg = oslLoadImageFilePNG("android_bootable_recovery/res/images/recoverybg.png", OSL_IN_RAM, OSL_PF_8888);
+	Selector = oslLoadImageFile("android_bootable_recovery/res/images/selector.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	while (!osl_quit)
 	{
@@ -909,6 +940,7 @@ void ShowCnfMenu(void)
         }
         if (MenuSelection == 14 && osl_keys->pressed.cross)
         {
+			unloadRecoveryMenuRes();
 		    ConfigurationMenu();
         }	
 		if (osl_keys->pressed.L)
@@ -921,6 +953,7 @@ void ShowCnfMenu(void)
         }
 		if (osl_keys->pressed.circle)
 		{
+			unloadRecoveryMenuRes();
 		    ConfigurationMenu();
 		}			
 	oslEndDrawing(); 
@@ -940,6 +973,9 @@ void ShowSystemMenu(void)
 	int numMenuItems = 6; //Amount of items in the menu
 
 	int selection = 0;
+	
+	recoverybg = oslLoadImageFilePNG("android_bootable_recovery/res/images/recoverybg.png", OSL_IN_RAM, OSL_PF_8888);
+	Selector = oslLoadImageFile("android_bootable_recovery/res/images/selector.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	while (!osl_quit)
 	{
@@ -1007,6 +1043,7 @@ void ShowSystemMenu(void)
         }
 		if (MenuSelection == 6 && osl_keys->pressed.cross)
         {
+			unloadRecoveryMenuRes();
 		    ConfigurationMenu();
         } 
 		if (osl_keys->pressed.L)
@@ -1019,6 +1056,7 @@ void ShowSystemMenu(void)
         }
 		if (osl_keys->pressed.circle)
 		{
+			unloadRecoveryMenuRes();
 		    ConfigurationMenu();
 		}		
 	oslEndDrawing(); 
@@ -1040,6 +1078,10 @@ void ShowBatteryMenu(void)
 	int numMenuItems = 5; //Amount of items in the menu
 		
 	int selection = 0;
+	
+	recoverybg = oslLoadImageFilePNG("android_bootable_recovery/res/images/recoverybg.png", OSL_IN_RAM, OSL_PF_8888);
+	Selector = oslLoadImageFile("android_bootable_recovery/res/images/selector.png", OSL_IN_RAM, OSL_PF_8888);
+	
     
 	while (!osl_quit)
 	{
@@ -1113,6 +1155,7 @@ void ShowBatteryMenu(void)
         }
 		if (MenuSelection == 5 && osl_keys->pressed.cross)
         {
+			unloadRecoveryMenuRes();
 		    ConfigurationMenu();
         } 
 		if (osl_keys->pressed.L)
@@ -1125,6 +1168,7 @@ void ShowBatteryMenu(void)
         }
 		if (osl_keys->pressed.circle)
 		{
+			unloadRecoveryMenuRes();
 		    ConfigurationMenu();
 		}	
 	oslEndDrawing(); 
@@ -1138,7 +1182,6 @@ void unloadRecoveryMenuRes()
 {
 	oslDeleteImage(recoverybg);
 	oslDeleteImage(Selector);
-	oslDeleteFont(roboto);
 }
 
 int mainRecoveryMenu()
@@ -1220,9 +1263,10 @@ int mainRecoveryMenu()
 		
 		if (MenuSelection == 6 && osl_keys->pressed.cross)
 		{
+			unloadRecoveryMenuRes();
+			oslDeleteFont(roboto);
 			oslSyncFrame();
 			sceKernelDelayThread(3*1000000);
-			unloadRecoveryMenuRes();
 			home();
 		}
 		

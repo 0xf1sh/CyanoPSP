@@ -24,7 +24,7 @@ int calculator()
 	
 	setfont();
 
-	if (!calcbackground || !cursor || !wificon)
+	if (!calcbackground)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 		
 	while (!osl_quit)
@@ -76,7 +76,6 @@ int calculator()
 		oslDrawString(35,27,"0");
 
 		battery();
-		navbar_buttons();
 		android_notif();
 		oslDrawImage(cursor);
 	

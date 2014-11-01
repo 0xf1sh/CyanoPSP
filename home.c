@@ -6,15 +6,19 @@
 #include "power_menu.h"
 #include "screenshot.h"
 
-OSL_IMAGE *background, *cursor, *appicon, *appicon2, *wificon, *apollo, *gmail, *messengericon, *browser, *google, *notif, *batt100, *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon;
+OSL_IMAGE *background, *cursor, *ic_allapps, *ic_allapps_pressed, *wificon, *apollo, *gmail, *messengericon, *browser, *google, *pointer, *pointer1, 
+		  *backicon, *homeicon, *multicon;
+
+void homeUnload()
+{
+	oslDeleteImage(ic_allapps);
+	oslDeleteImage(ic_allapps_pressed);
+}
 
 int home()
 {	
-	loadicons();
-	background = oslLoadImageFilePNG("system/framework/framework-res/res/background.png", OSL_IN_RAM, OSL_PF_8888);
-	
-	if (!background || !cursor || !wificon || !apollo || !gmail || !messengericon || !browser || !google|| !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	ic_allapps = oslLoadImageFilePNG("system/framework/framework-res/res/drawable-hdpi/ic_allapps.png", OSL_IN_RAM, OSL_PF_8888);
+	ic_allapps_pressed = oslLoadImageFile("system/framework/framework-res/res/drawable-hdpi/ic_allapps_pressed.png", OSL_IN_RAM, OSL_PF_8888);
 
 	setfont();
 
@@ -25,10 +29,9 @@ int home()
 		oslStartDrawing();
 
 		controls();	
-
-		oslDrawImage(background);		
+		
+		oslDrawImage(background);	
 		oslDrawImageXY(wificon, 375, 1);
-		oslDrawImageXY(google, 22, 26);
 		oslDrawImageXY(apollo, 105, 190);
 		oslDrawImageXY(browser, 276, 190);
 		oslDrawImageXY(gmail, 331, 190);
@@ -49,36 +52,37 @@ int home()
 
 		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
 		{
-			unloadicons();
-			oslDeleteImage(background);
+			homeUnload();
 			internet();
+		}
+		
+		if (cursor->x >= 330 && cursor->x <= 374 && cursor->y >= 190 && cursor->y <= 240 && osl_pad.held.cross)
+		{
+			homeUnload();
+			openGmail();
 		}
 		
 		if (cursor->x >= 100 && cursor->x <= 154 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
 		{
-			unloadicons();
-			oslDeleteImage(background);
+			homeUnload();
 			mp3player();
 		}
 		
 		if (cursor->x >= 155 && cursor->x <= 210 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
 		{
-			unloadicons();
-			oslDeleteImage(background);
+			homeUnload();
 			messenger();
 		}
 			
 		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
 		{
-			unloadicons();
-			oslDeleteImage(background);
+			homeUnload();
 			appdrawer();
 		}
-		
+
 		if (osl_pad.held.L)
 		{	
 			lockscreen();
-			oslDeleteImage(background);
         }
 		
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)

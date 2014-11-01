@@ -30,7 +30,7 @@
 
 #define ADDRESS "www.google.com"
 
-PSP_MODULE_INFO("CyanoPSP - C",  1, 2, 2);
+PSP_MODULE_INFO("CyanoPSP - C",  1, 2, 3);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU); 
 PSP_HEAP_SIZE_KB(20*1024);
 
@@ -375,6 +375,22 @@ void android_notif()
 			notif_down = 0;
 			lockscreen();
 		}
+		if (cursor->x >= 445 && cursor->x <= 473 && cursor->y >= 9 && cursor->y <= 33 && osl_pad.held.cross && notif_down == 1)
+		{	
+			notif_2();
+		}
+	}
+}
+
+void notif_2()
+{
+	while(!osl_quit)
+	{
+		oslStartDrawing();
+		oslCopyImageTo(notif,notif2);	
+		oslEndDrawing();
+        oslEndFrame(); 
+		oslSyncFrame();	
 	}
 }
 
@@ -410,6 +426,49 @@ void internet() //Draws the browser
 		{
             oslReadKeys();
             int res = oslBrowserInit("http://www.google.com", "/PSP/GAME/CyanogenMod/downloads", 5*1024*1024, //Downloads will be saved into this directory
+                                         PSP_UTILITY_HTMLVIEWER_DISPLAYMODE_SMART_FIT,
+                                         PSP_UTILITY_HTMLVIEWER_DISABLE_STARTUP_LIMITS,
+                                         PSP_UTILITY_HTMLVIEWER_INTERFACEMODE_FULL,
+                                         PSP_UTILITY_HTMLVIEWER_CONNECTMODE_MANUAL_ALL);
+			memset(message, 0, sizeof(message));
+
+        }
+    }
+	oslNetTerm();
+}
+
+void openGmail() //Opens GMAIL in the browser.
+{
+	int skip = 0;
+    int browser = 0;
+	
+	oslNetInit();
+
+    while(!osl_quit)
+	{
+        browser = oslBrowserIsActive();
+		if (!skip)
+		{
+            oslStartDrawing();
+
+            if (browser)
+			{
+                oslDrawBrowser();
+                if (oslGetBrowserStatus() == PSP_UTILITY_DIALOG_NONE)
+				{
+                    oslEndBrowser();
+					home();
+                }
+            }
+            oslEndDrawing();
+		}
+		oslEndFrame();
+		skip = oslSyncFrame();
+
+        if (!browser)
+		{
+            oslReadKeys();
+            int res = oslBrowserInit("https://mail.google.com/mail/x/", "/PSP/GAME/CyanogenMod/downloads", 5*1024*1024,
                                          PSP_UTILITY_HTMLVIEWER_DISPLAYMODE_SMART_FIT,
                                          PSP_UTILITY_HTMLVIEWER_DISABLE_STARTUP_LIMITS,
                                          PSP_UTILITY_HTMLVIEWER_INTERFACEMODE_FULL,
@@ -457,10 +516,11 @@ void firstBootMessage()
 		
 	if (firstBoot == 0)
 	{
-		home();
 		oslDeleteImage(welcome);
 		oslDeleteImage(ok);
 		oslDeleteImage(transbackground);
+		unloadicons();
+		home();
 	}
 }
 
@@ -509,9 +569,8 @@ int main()
 	gmail = oslLoadImageFilePNG("system/home/icons/gmail.png", OSL_IN_RAM, OSL_PF_8888);
 	messengericon = oslLoadImageFilePNG("system/home/icons/message.png", OSL_IN_RAM, OSL_PF_8888);
 	browser = oslLoadImageFile("system/home/icons/browser.png", OSL_IN_RAM, OSL_PF_8888);
-	google = oslLoadImageFile("system/home/icons/google.png", OSL_IN_RAM, OSL_PF_8888);
 	notif = oslLoadImageFile("system/home/menu/notif2.png", OSL_IN_VRAM, OSL_PF_8888);
-	notif2 = oslLoadImageFile("system/home/menu/notif2.png", OSL_IN_RAM, OSL_PF_8888);
+	notif2 = oslLoadImageFile("system/home/menu/notif.png", OSL_IN_RAM, OSL_PF_8888);
 	batt100 = oslLoadImageFile("system/home/icons/100.png", OSL_IN_VRAM, OSL_PF_8888);
 	batt80 = oslLoadImageFile("system/home/icons/80.png", OSL_IN_VRAM, OSL_PF_8888);
 	batt60 = oslLoadImageFile("system/home/icons/60.png", OSL_IN_VRAM, OSL_PF_8888);
@@ -531,7 +590,7 @@ int main()
 	DroidSans = oslLoadIntraFontFile("system/fonts/DroidSans.pgf", INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8);
 
 	//Debugger - Displays an error message if the following resources are missing.
-	if (!background || !cursor || !ic_allapps || !ic_allapps_pressed || !navbar || !wificon || !apollo || !gmail || !messengericon || !browser || !google || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
+	if (!background || !cursor || !ic_allapps || !ic_allapps_pressed || !navbar || !wificon || !apollo || !gmail || !messengericon || !browser || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	loadConfig();
@@ -557,7 +616,6 @@ int main()
 		//Print the images onto the screen
 		oslDrawImage(background);		
 		oslDrawImageXY(wificon, 375, 1);
-		oslDrawImageXY(google, 22, 26);
 		oslDrawImageXY(apollo, 105, 190);
 		oslDrawImageXY(browser, 276, 190);
 		oslDrawImageXY(gmail, 331, 190);
@@ -586,19 +644,26 @@ int main()
 		}
 				
 		//Launching the browser
-		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross) //Launches the internet
+		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 190 && cursor->y <= 240 && osl_pad.held.cross) //Launches the internet
 		{
 			unloadicons();
 			internet();
 		}
 		
-		if (cursor->x >= 100 && cursor->x <= 154 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross) //Opens apollo MP3 player
+		
+		if (cursor->x >= 330 && cursor->x <= 374 && cursor->y >= 190 && cursor->y <= 240 && osl_pad.held.cross) //Opens Gmail
+		{
+			unloadicons();
+			openGmail();
+		}
+		
+		if (cursor->x >= 100 && cursor->x <= 154 && cursor->y >= 190 && cursor->y <= 240 && osl_pad.held.cross) //Opens apollo MP3 player
 		{
 			unloadicons();
 			mp3player();
 		}
 		
-		if (cursor->x >= 155 && cursor->x <= 210 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross) //Opens messenger
+		if (cursor->x >= 155 && cursor->x <= 210 && cursor->y >= 190 && cursor->y <= 240 && osl_pad.held.cross) //Opens messenger
 		{
 			unloadicons();
 			messenger();

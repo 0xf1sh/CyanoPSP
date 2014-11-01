@@ -1,5 +1,5 @@
 #define MAX_GALLERY_DISPLAY			3 // max amount of files displayed on-screen.
-#define GALLERY_DISPLAY_Y			78 // X value of where the filebrowser is displayed.
+#define GALLERY_DISPLAY_X			78 // X value of where the filebrowser is displayed.
 #define GALLERY_DISPLAY_Y			82 // Y value of the filebrowser is displayed.
 #define GALLERY_CURR_DISPLAY_Y     	62 
 #define THUMBNAIL_DISPLAY_Y      	65 

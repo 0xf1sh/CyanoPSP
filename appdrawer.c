@@ -7,11 +7,11 @@
 #include "gallery.h"
 #include "screenshot.h"
 
-OSL_IMAGE *background, *cursor, *wificon, *apollo, *gmail, *messengericon, *browser, *google, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *fb, *settings,*pointer, *pointer1, *isoloadericon;
+OSL_IMAGE *background, *cursor, *wificon, *apollo, *gmail, *messengericon, *browser, *google, *calc, *clockx, *email, *people, *calendar, *phone, 
+		  *gallery, *fb, *settings,*pointer, *pointer1, *isoloadericon, *backicon, *homeicon, *multicon;
 
 void appdrawer_loadImages()
 {
-	background = oslLoadImageFilePNG("system/framework/framework-res/res/background.png", OSL_IN_RAM, OSL_PF_8888);
 	clockx = oslLoadImageFilePNG("system/home/icons/clock.png", OSL_IN_RAM, OSL_PF_8888);
 	email = oslLoadImageFilePNG("system/home/icons/email.png", OSL_IN_RAM, OSL_PF_8888);
 	fb = oslLoadImageFilePNG("system/home/icons/fb.png", OSL_IN_RAM, OSL_PF_8888);
@@ -26,7 +26,6 @@ void appdrawer_loadImages()
 
 void appdrawer_deleteImages()
 {
-	oslDeleteImage(background);
 	oslDeleteImage(clockx);
 	oslDeleteImage(email);
 	oslDeleteImage(fb);
@@ -214,6 +213,12 @@ int appdrawer()
 			internet();
 		}
 		
+		if (cursor->x >= 96 && cursor->x <= 140 && cursor->y >= 118 && cursor->y <= 165 && osl_pad.held.cross) 
+		{
+			appdrawer_deleteImages();
+			openGmail();
+		}
+		
 		if (cursor->x >= 18 && cursor->x <= 65 && cursor->y >= 110 && cursor->y <= 155 && osl_pad.held.cross)
 		{
 			appdrawer_deleteImages();
@@ -227,8 +232,8 @@ int appdrawer()
 		
 		if (osl_pad.held.circle)
 		{
-			home();
 			appdrawer_deleteImages();
+			home();
 		}
 		
 		if (cursor->x >= 142 && cursor->x <= 177 && cursor->y >= 44 && cursor->y <= 60 && osl_pad.held.cross)

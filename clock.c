@@ -9,7 +9,7 @@
 #include "power_menu.h"
 #include "screenshot.h"
 
-OSL_IMAGE *clockbg, *cursor, *wificon, *stop_watch;
+OSL_IMAGE *clockbg, *cursor, *wificon, *stop_watch,  *backicon, *homeicon, *multicon;
 OSL_FONT *clockFont;
 
 int hour = 0;
@@ -304,8 +304,8 @@ void stopWatch()
 int pspclock()
 {
 	clockbg = oslLoadImageFilePNG("system/app/clock/clockbg.png", OSL_IN_RAM, OSL_PF_8888);
-
-	if (!clockbg || !cursor || !wificon)
+	
+	if (!clockbg)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	setfont();

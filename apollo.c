@@ -196,6 +196,8 @@ void MP3Status()
 void MP3Play(char * path)
 {	
 	nowplaying = oslLoadImageFilePNG("system/app/apollo/nowplaying.png", OSL_IN_RAM, OSL_PF_8888);
+	mp3playicon = oslLoadImageFilePNG("system/app/apollo/play.png", OSL_IN_RAM, OSL_PF_8888);
+	mp3pauseicon = oslLoadImageFilePNG("system/app/apollo/pause.png", OSL_IN_RAM, OSL_PF_8888);
 
 	if (!nowplaying)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
@@ -343,7 +345,9 @@ void mp3Controls() //Controls
 
 	if (osl_pad.held.circle)
 	{
-		apolloUnload();
+		oslDeleteImage(mp3bg);
+		oslDeleteImage(mp3_select);
+		oslDeleteFont(pgfFont);
 		appdrawer();
 	}
 	
@@ -409,22 +413,12 @@ char * mp3Browse(const char * path)
 	return returnMe;
 }
 
-void apolloUnload()
-{
-	oslDeleteImage(mp3bg);
-	oslDeleteImage(mp3_select);
-	oslDeleteFont(pgfFont);
-}
-
 int mp3player()
 {	
-	nowplaying = oslLoadImageFilePNG("system/app/apollo/nowplaying.png", OSL_IN_RAM, OSL_PF_8888);
 	mp3bg = oslLoadImageFilePNG("system/app/apollo/mp3bg.png", OSL_IN_RAM, OSL_PF_8888);
 	mp3_select = oslLoadImageFilePNG("system/app/apollo/mp3_select.png", OSL_IN_RAM, OSL_PF_8888);
-	mp3playicon = oslLoadImageFilePNG("system/app/apollo/play.png", OSL_IN_RAM, OSL_PF_8888);
-	mp3pauseicon = oslLoadImageFilePNG("system/app/apollo/pause.png", OSL_IN_RAM, OSL_PF_8888);
-
-	if (!mp3bg || !cursor || !wificon || !nowplaying)
+	
+	if (!mp3bg)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
