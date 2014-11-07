@@ -53,6 +53,7 @@ SceCtrlData pad, oldpad;
 
 int folderScan(const char* path);
 int runFile(const char* path, char* type );
+int openDir(const char* path, char* type);
 void refresh();
 void OptionMenu();
 void DeleteFile(const char * path);

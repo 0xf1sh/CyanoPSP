@@ -113,15 +113,22 @@ int folderScan(const char* path )
 int runFile(const char* path, char* type)
 {
 	// Folders
+	openDir(path, type);
+	
+	// '..' or 'dotdot'
+	if (strcmp(type, "dotdot")==0){
+		current = 1;
+		dirBack();
+	}		
+	return 1;
+}
+
+int openDir(const char* path, char* type)
+{
 	if (strcmp(type, "fld")==0) {
 		current = 1;
 		folderScan(path);
 	}
-	// '..' or 'dotdot'
-	else if (strcmp(type, "dotdot")==0){
-		current = 1;
-		dirBack();
-	}		
 	return 1;
 }
 

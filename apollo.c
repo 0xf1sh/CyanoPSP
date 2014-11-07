@@ -334,21 +334,28 @@ void mp3Controls() //Controls
 				current = 1;
 			}
 		}
+		if ((pad.Buttons & PSP_CTRL_CROSS) && (!(oldpad.Buttons & PSP_CTRL_CROSS))) {
+			openDir(folderIcons[current].filePath, folderIcons[current].fileType);
+		}
 	}
 	
 	char * ext = strrchr(folderIcons[current].filePath, '.'); 
 	
-	if (((ext) != NULL) && ((strcmp(ext ,".mp3") == 0) || ((strcmp(ext ,".MP3") == 0))) && (osl_keys->pressed.cross))
+	if (!(stricmp(lastDir, "ms0:/MUSIC")==0) && osl_keys->pressed.circle)
 	{
-		MP3Play(folderIcons[current].filePath);
+			dirBack();
 	}
-
-	if (osl_pad.held.circle)
+	else if (osl_keys->pressed.circle)
 	{
 		oslDeleteImage(mp3bg);
 		oslDeleteImage(mp3_select);
 		oslDeleteFont(pgfFont);
 		appdrawer();
+	}
+	
+	if (((ext) != NULL) && ((strcmp(ext ,".mp3") == 0) || ((strcmp(ext ,".MP3") == 0))) && (osl_keys->pressed.cross))
+	{
+		MP3Play(folderIcons[current].filePath);
 	}
 	
 	if (osl_pad.held.square)

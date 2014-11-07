@@ -139,6 +139,9 @@ void galleryControls() //Controls
 				current = 1;
 			}
 		}
+		if ((pad.Buttons & PSP_CTRL_CROSS) && (!(oldpad.Buttons & PSP_CTRL_CROSS))) {
+			openDir(folderIcons[current].filePath, folderIcons[current].fileType);
+		}
 	}
 	
 	if (osl_keys->pressed.cross)
@@ -146,7 +149,11 @@ void galleryControls() //Controls
 		showImage(folderIcons[current].filePath);
 	}
 	
-	if (osl_keys->pressed.circle)
+	if (!((stricmp(lastDir, "ms0:/PICTURE")==0) || (stricmp(lastDir, "ms0:/PSP/PHOTO")==0) || (stricmp(lastDir, "ms0:/PSP/GAME/CyanogenMod/screenshots")==0)) && osl_keys->pressed.circle)
+	{
+			dirBack();
+	}
+	else if (osl_keys->pressed.circle)
 	{
 		galleryApp();
 	}
