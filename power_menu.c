@@ -38,18 +38,18 @@ int powermenu()
 	
 		oslDrawImage(cursor);
 
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{
 			
 			return;
 		}
 			
-		if (cursor->x >= 128 && cursor->x <= 354 && cursor->y >= 25 && cursor->y <= 86 && osl_pad.held.cross)
+		if (cursor->x >= 128 && cursor->x <= 354 && cursor->y >= 25 && cursor->y <= 86 && osl_keys->pressed.cross)
 		{
 			sceKernelExitGame();
 		}
 		
-		if (cursor->x >= 128 && cursor->x <= 354 && cursor->y >= 88 && cursor->y <= 140 && osl_pad.held.cross)
+		if (cursor->x >= 128 && cursor->x <= 354 && cursor->y >= 88 && cursor->y <= 140 && osl_keys->pressed.cross)
 		{
 			oslSyncFrame();
 			sceKernelDelayThread(3*1000000);
@@ -57,12 +57,12 @@ int powermenu()
 			mainRecoveryMenu();
 		}
 		
-		if (cursor->x >= 128 && cursor->x <= 354 && cursor->y >= 192 && cursor->y <= 242 && osl_pad.held.cross)
+		if (cursor->x >= 128 && cursor->x <= 354 && cursor->y >= 192 && cursor->y <= 242 && osl_keys->pressed.cross)
 		{	
 			screenshot();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}

@@ -247,40 +247,40 @@ int calculator()
 			}
 		}
 
-		if (osl_pad.held.square)
+		if (osl_keys->pressed.square)
 		{
 			powermenu();
 		}
 		
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{	
 			oslDeleteImage(calcbackground);
 			appdrawer();
 		}
 		
-		if (osl_pad.held.L)
+		if (osl_keys->pressed.L)
 		{	
 			lockscreen();
         }
 		
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			oslDeleteImage(calcbackground);
 			appdrawer();
 		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(calcbackground);
 			home();
 		}
 
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			multitask();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}

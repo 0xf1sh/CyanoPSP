@@ -109,7 +109,7 @@ void showImage(const char * path)
 			return;
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}
@@ -158,7 +158,17 @@ void galleryControls() //Controls
 		galleryApp();
 	}
 	
-	if (osl_pad.held.R && osl_pad.held.triangle)
+	if (osl_keys->pressed.square)
+	{
+		powermenu();
+	}
+		
+	if (osl_keys->pressed.L)
+	{
+		lockscreen();
+    }
+	
+	if (osl_pad.held.R && osl_keys->pressed.triangle)
 	{
 		screenshot();
 	}
@@ -281,7 +291,17 @@ int galleryApp()
 			appdrawer();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_keys->pressed.square)
+		{
+			powermenu();
+		}
+		
+		if (osl_keys->pressed.L)
+		{
+			lockscreen();
+		}
+	
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}

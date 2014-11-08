@@ -226,7 +226,7 @@ void MP3Play(char * path)
 		oslPrintText(250,71,0.5,folderIcons[current].name,RGB(255,255,255));
 		display_mp3_info(folderIcons[current].name);
 		
-		if(osl_pad.held.select) 
+		if(osl_keys->pressed.select) 
 		{
 			oslDeleteImage(nowplaying);
 			oslDeleteImage(mp3pauseicon);
@@ -234,7 +234,7 @@ void MP3Play(char * path)
 			return;
 		}
 		
-		else if(osl_pad.held.cross) 
+		else if(osl_keys->pressed.cross) 
 		{
 			MP3_Pause();
 			for(i=0; i<10; i++) 
@@ -258,6 +258,21 @@ void MP3Play(char * path)
 			oslDeleteImage(mp3playicon);
 			return;
 		}
+		
+		if (osl_keys->pressed.square)
+		{
+			powermenu();
+		}
+		
+		if (osl_keys->pressed.L)
+		{
+			lockscreen();
+		}
+	
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
+		{
+			screenshot();
+		}	
 		
 		oslEndDrawing(); 
         oslEndFrame(); 
@@ -358,17 +373,17 @@ void mp3Controls() //Controls
 		MP3Play(folderIcons[current].filePath);
 	}
 	
-	if (osl_pad.held.square)
+	if (osl_keys->pressed.square)
 	{
 		powermenu();
 	}
 		
-	if (osl_pad.held.L)
+	if (osl_keys->pressed.L)
 	{
 		lockscreen();
     }
 	
-	if (osl_pad.held.R && osl_pad.held.triangle)
+	if (osl_pad.held.R && osl_keys->pressed.triangle)
 	{
 		screenshot();
 	}

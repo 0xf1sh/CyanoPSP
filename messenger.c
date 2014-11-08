@@ -269,30 +269,30 @@ void newmessage()
 		android_notif();
 		oslDrawImage(cursor);
 		
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{
 			oslDeleteImage(new_message);
 			messenger();
 		}
 
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(new_message);
 			messenger();
 		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(new_message);
 			home();
 		}
 
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			multitask();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}
@@ -319,7 +319,7 @@ void newmessage()
 			oslReadKeys();
 			if (osl_keys->pressed.circle){
 				return;
-			}else if (cursor->x >= 12 && cursor->x <= 415 && cursor->y >= 233 && cursor->y <= 270 && osl_pad.held.cross){
+			}else if (cursor->x >= 12 && cursor->x <= 415 && cursor->y >= 233 && cursor->y <= 270 && osl_keys->pressed.cross){
 				oslInitOsk("Type Message", "", 128, 1, -1);
 				memset(message, 0, sizeof(message));
 			}
@@ -360,45 +360,45 @@ int messenger()
 		android_notif();
 		oslDrawImage(cursor);
 		
-		if (osl_pad.held.square)
+		if (osl_keys->pressed.square)
 		{
 			powermenu();
 		}
 		
-		if (osl_pad.held.L)
+		if (osl_keys->pressed.L)
 		{
 			lockscreen();
         }
 		
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{
 			oslDeleteImage(messengerbg);
 			appdrawer();
 		}
 
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(messengerbg);
 			appdrawer();
 		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(messengerbg);
 			home();
 		}
 
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			multitask();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}
 		
-		if (cursor->x >= 275 && cursor->x <= 376 && cursor->y >= 20 && cursor->y <= 52 && osl_pad.held.cross)
+		if (cursor->x >= 275 && cursor->x <= 376 && cursor->y >= 20 && cursor->y <= 52 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(messengerbg);
 			newmessage();

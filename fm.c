@@ -496,6 +496,21 @@ void dirDisplay()
 	}
 }
 
+void runGame()
+{
+struct SceKernelLoadExecVSHParam param;
+		int apitype = 0x141;
+		char *program = "ms0:/PSP/GAME/aplicacion/EBOOT.PBP";
+ 
+		memset(&param, 0, sizeof(param));
+		param.size = sizeof(param);
+		param.args = strlen(program)+1;
+		param.argp = program;
+		param.key = "game";
+ 
+		sctrlKernelLoadExecVSHWithApitype(apitype, program, &param);
+}
+
 void dirControls() //Controls
 {
 	oslReadKeys();	
@@ -549,22 +564,12 @@ void dirControls() //Controls
 	
 	if (((ext) != NULL) && ((strcmp(ext ,".png") == 0) || (strcmp(ext ,".jpg") == 0) || (strcmp(ext ,".jpeg") == 0) || (strcmp(ext ,".gif") == 0) || (strcmp(ext ,".PNG") == 0) || (strcmp(ext ,".JPG") == 0) || (strcmp(ext ,".JPEG") == 0) || (strcmp(ext ,".GIF") == 0)) && (osl_keys->pressed.cross))
 	{
-			showImage(folderIcons[current].filePath);
+		showImage(folderIcons[current].filePath);
 	}
 	
 	if (((ext) != NULL) && ((strcmp(ext ,".PBP") == 0) || ((strcmp(ext ,".pbp") == 0))) && (osl_keys->pressed.cross))
 	{
-		struct SceKernelLoadExecVSHParam param;
-		int apitype = 0x141;
-		char *program = "ms0:/PSP/GAME/aplicacion/EBOOT.PBP";
- 
-		memset(&param, 0, sizeof(param));
-		param.size = sizeof(param);
-		param.args = strlen(program)+1;
-		param.argp = program;
-		param.key = "game";
- 
-		sctrlKernelLoadExecVSHWithApitype(apitype, program, &param);
+		runGame();
 	}
 	
 	if (((ext) != NULL) && ((strcmp(ext ,".mp3") == 0) || ((strcmp(ext ,".MP3") == 0))) && (osl_keys->pressed.cross))
@@ -577,6 +582,21 @@ void dirControls() //Controls
 		displayTextFromFile(folderIcons[current].filePath);
 	}
 	
+	if (osl_keys->pressed.square)
+	{
+		powermenu();
+	}
+		
+	if (osl_keys->pressed.L)
+	{
+		lockscreen();
+	}
+	
+	if (osl_pad.held.R && osl_keys->pressed.triangle)
+	{
+		screenshot();
+	}	
+	
 	timer++;
 	if ((timer > 30) && (pad.Buttons & PSP_CTRL_UP)) {
 		dirUp();
@@ -588,7 +608,6 @@ void dirControls() //Controls
 
 	if (current < 1) current = 1; // Stop the ">" from moving past the minimum files
 	if (current > MAX_FILES) current = MAX_FILES; // Stop the ">" from moving past the max files
-
 }
 
 void dirBack()

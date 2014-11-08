@@ -45,52 +45,52 @@ int home()
 		android_notif();
 		oslDrawImage(cursor);
 			
-		if (osl_pad.held.square)
+		if (osl_keys->pressed.square)
 		{
 			powermenu();
 		}
 
-		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_keys->pressed.cross)
 		{
 			homeUnload();
 			internet();
 		}
 		
-		if (cursor->x >= 330 && cursor->x <= 374 && cursor->y >= 190 && cursor->y <= 240 && osl_pad.held.cross)
+		if (cursor->x >= 330 && cursor->x <= 374 && cursor->y >= 190 && cursor->y <= 240 && osl_keys->pressed.cross)
 		{
 			homeUnload();
 			openGmail();
 		}
 		
-		if (cursor->x >= 100 && cursor->x <= 154 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
+		if (cursor->x >= 100 && cursor->x <= 154 && cursor->y >= 195 && cursor->y <= 240 && osl_keys->pressed.cross)
 		{
 			homeUnload();
 			mp3player();
 		}
 		
-		if (cursor->x >= 155 && cursor->x <= 210 && cursor->y >= 195 && cursor->y <= 240 && osl_pad.held.cross)
+		if (cursor->x >= 155 && cursor->x <= 210 && cursor->y >= 195 && cursor->y <= 240 && osl_keys->pressed.cross)
 		{
 			homeUnload();
 			messenger();
 		}
 			
-		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross)
+		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_keys->pressed.cross)
 		{
 			homeUnload();
 			appdrawer();
 		}
 
-		if (osl_pad.held.L)
+		if (osl_keys->pressed.L)
 		{	
 			lockscreen();
         }
 		
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			multitask();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}

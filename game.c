@@ -431,26 +431,26 @@ int gamemenu(int argc, char *argv[])
 
 		android_notif();
 		
-		 if ((osl_pad.held.cross) ||  (osl_pad.held.circle))
+		 if ((osl_keys->pressed.cross) ||  (osl_keys->pressed.circle))
 		 { // if the cross or circle button is pressed
             //LOGSTR0("Menu sets EBOOT path: ");
             setEboot();			
          }
-		 else if ((osl_pad.held.down) && (currentFile < nbFiles - 1))
+		 else if ((osl_keys->pressed.down) && (currentFile < nbFiles - 1))
 		 {
             currentFile++;
 			if(currentFile >= (MAXMENUSIZE + menuOffSet) && (nbFiles - 1) >= (MAXMENUSIZE + menuOffSet))
 				menuOffSet++;
 				refreshMenu(menuOffSet, &menuEntry[0][0], loadSucess);
         }
-		else if ((osl_pad.held.up) && (currentFile > 0) )
+		else if ((osl_keys->pressed.up) && (currentFile > 0) )
 		{
             currentFile--;
 			if(currentFile ==  menuOffSet && menuOffSet != 0)
 				menuOffSet--;
 			refreshMenu(menuOffSet, &menuEntry[0][0], loadSucess);
         }
-		else if(osl_pad.held.triangle) 
+		else if(osl_keys->pressed.triangle) 
 		{
             strcpy(ebootPath, "quit");
             sceKernelExitGame();
@@ -462,41 +462,41 @@ int gamemenu(int argc, char *argv[])
 		oslDrawStringf(30, 0 , buffer, 0x00FFFFFF);
 		oslDrawStringf(21, 0 ,"/", 0x00FFFFFF);
 
-		if (osl_pad.held.square)
+		if (osl_keys->pressed.square)
 		{
 			powermenu();
 		}
 		
-		if (osl_pad.held.L)
+		if (osl_keys->pressed.L)
 		{	
 			lockscreen();
         }
 		
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{
 			oslDeleteImage(gamebg);
 			appdrawer();
 		}
 		
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			oslDeleteImage(gamebg);
 			appdrawer();
 		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(gamebg);
 			home();
 		}
 
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(gamebg);
 			multitask();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}

@@ -131,7 +131,7 @@ int lockscreen()
 		}
 		oslDrawImage(cursor);
 
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}

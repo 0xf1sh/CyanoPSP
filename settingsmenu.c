@@ -133,7 +133,7 @@ int OnlineUpdater()
 			memset(message, 0, sizeof(message));
 
         }
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}
@@ -261,38 +261,38 @@ void pspgetcpu_bus()
 	}
 }
 
-void pspgetmodel()
+void pspgetmodel(int x, int y)
 {
 	char pspmodel = kuKernelGetModel();
 	
 	if(pspmodel == 0)
 	{
-		oslDrawString(37,133,"Model: PSP 1000");
+		oslDrawString(x,y,"Model: PSP 1000");
 	}
    
 	else if(pspmodel == 1)
 	{
-		oslDrawString(37,133,"Model: PSP 2000");
+		oslDrawString(x,y,"Model: PSP 2000");
 	}
    
 	else if (pspmodel == 2)
 	{
-		oslDrawString(37,133,"Model: PSP 3000");
+		oslDrawString(x,y,"Model: PSP 3000");
 	}
    
 	else if(pspmodel == 3)
 	{
-		oslDrawString(37,133,"Model: PSP 3000");
+		oslDrawString(x,y,"Model: PSP 3000");
 	}
 		
 	else if (pspmodel == 4)
 	{
-		oslDrawString(37,133,"Model: PSP Go N1000");
+		oslDrawString(x,y,"Model: PSP Go N1000");
 	}
    
 	else
 	{
-		oslDrawString(37,133,"Model: PS Vita");
+		oslDrawString(x,y,"Model: PS Vita");
 	}
 }
 
@@ -321,7 +321,7 @@ void about_menu()
 
 		oslDrawString(37,73,"CyanoPSP Updates");
 		oslDrawString(37,87,"Click for, view or install available updates");
-		pspgetmodel();
+		pspgetmodel(37,133);
 		oslDrawStringf(37,119,"CyanoPSP: %s",Version);
 		oslDrawString(37,147,"Build Date - Fri Oct 31 11:20 PM EST 2014");
 		oslDrawString(37,172,"Kernel Version");
@@ -341,7 +341,7 @@ void about_menu()
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 95 && cursor->y <= 151)
 		{
 			oslDrawImageXY(highlight, 15, 110);
-			pspgetmodel();
+			pspgetmodel(37,133);
 			oslDrawStringf(37,119,"CyanoPSP: %s",Version);
 			oslDrawString(37,147,"Build Date - Fri Oct 31 11:20 PM EST 2014");
 		}
@@ -350,67 +350,67 @@ void about_menu()
 		android_notif();
 		oslDrawImage(cursor);
 		
-		if (osl_pad.held.square)
+		if (osl_keys->pressed.square)
 		{
 			powermenu();
 		}
 		
-		if (osl_pad.held.L)
+		if (osl_keys->pressed.L)
 		{
 			lockscreen();
         }
 		
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{	
 			oslDeleteImage(aboutbg);
 			oslDeleteImage(highlight);
 			settingsmenu();	
 		}
 
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			oslDeleteImage(aboutbg);
 			oslDeleteImage(highlight);
 			settingsmenu();	
 		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			oslDeleteImage(aboutbg);
 			oslDeleteImage(highlight);
 			home();	
 		}
 
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			multitask();
 		}
 		
-		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 50 && cursor->y <= 94 && osl_pad.held.cross)
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 50 && cursor->y <= 94 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(aboutbg);
 			oslDeleteImage(highlight);
 			updates_menu();
 		}
 		
-		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 95 && cursor->y <= 151 && osl_pad.held.cross)
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 95 && cursor->y <= 151 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(aboutbg);
 			oslDeleteImage(highlight);
 			EasterEgg();
 		}
 		
-		if(osl_pad.held.select)
+		if(osl_keys->pressed.select)
 		{
 			enableUsb();
 		}
 		
-		else if(osl_pad.held.select)
+		else if(osl_keys->pressed.select)
 		{	
 			disableUsb();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}
@@ -434,7 +434,7 @@ void EasterEgg()
 		controls();
 		oslDrawImageXY(easteregg, 0, 0);
 		
-		if(osl_pad.held.circle)
+		if(osl_keys->pressed.circle)
 		{
 			oslDeleteImage(easteregg);
 			about_menu();
@@ -480,7 +480,7 @@ void updates_menu()
 			oslDrawString(37,73,"Check for Updates");
 		}
 		
-		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 45 && cursor->y <= 90 && osl_pad.held.cross)
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 45 && cursor->y <= 90 && osl_keys->pressed.cross)
 		{
 			OnlineUpdater();
 		}
@@ -489,43 +489,43 @@ void updates_menu()
 		android_notif();
 		oslDrawImage(cursor);
 		
-		if (osl_pad.held.square)
+		if (osl_keys->pressed.square)
 		{
 			powermenu();
 		}
 		
-		if (osl_pad.held.L)
+		if (osl_keys->pressed.L)
 		{
 			lockscreen();
         }
 		
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{
 			oslDeleteImage(updatesbg);
 			oslDeleteImage(highlight);
 			about_menu();
 		}
 
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(updatesbg);
 			oslDeleteImage(highlight);
 			about_menu();
 		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(updatesbg);
 			oslDeleteImage(highlight);
 			home();
 		}
 
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			multitask();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}
@@ -582,57 +582,57 @@ void performance_menu()
 		android_notif();
 		oslDrawImage(cursor);
 		
-		if (osl_pad.held.square)
+		if (osl_keys->pressed.square)
 		{
 			powermenu();
 		}
 		
-		if (osl_pad.held.L)
+		if (osl_keys->pressed.L)
 		{
 			lockscreen();
         }
 		
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{
 			oslDeleteImage(highlight);
 			oslDeleteImage(performancebg);
 			settingsmenu();
 		}
 
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(highlight);
 			oslDeleteImage(performancebg);
 			settingsmenu();
 		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(highlight);
 			oslDeleteImage(performancebg);
 			home();
 		}
 		
-		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 80 && cursor->y <= 138 && osl_pad.held.cross)
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 80 && cursor->y <= 138 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(highlight);
 			oslDeleteImage(performancebg);
 			processor_menu();
 		}
 
-		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 140 && cursor->y <= 196 && osl_pad.held.cross)
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 140 && cursor->y <= 196 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(highlight);
 			oslDeleteImage(performancebg);
 			ram_menu();
 		}
 		
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			multitask();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}
@@ -728,7 +728,7 @@ void processor_menu(int argc, char *argv[])
 			oslDrawString(35,156,"Press triangle to reset to default, 222/111");
 		}
 
-		if (osl_pad.held.triangle)
+		if (osl_keys->pressed.triangle)
 		{
 		 setclock = 6;
 		 scePowerSetClockFrequency(222, 222, 111);
@@ -758,38 +758,38 @@ void processor_menu(int argc, char *argv[])
 		android_notif();
 		oslDrawImage(cursor);
 		
-		if (osl_pad.held.square)
+		if (osl_keys->pressed.square)
 		{
 			powermenu();
 		}
 		
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{
 			oslDeleteImage(processorbg);
 			oslDeleteImage(highlight);
 			performance_menu();
 		}
 
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			oslDeleteImage(processorbg);
 			oslDeleteImage(highlight);
 			performance_menu();
 		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(processorbg);
 			oslDeleteImage(highlight);
 			home();
 		}
 
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			multitask();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}
@@ -835,38 +835,38 @@ void ram_menu(int argc, char *argv[])
 		android_notif();
 		oslDrawImage(cursor);
 		
-		if (osl_pad.held.square)
+		if (osl_keys->pressed.square)
 		{
 			powermenu();
 		}
 		
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{
 			oslDeleteImage(highlight);
 			oslDeleteImage(performancebg);
 			performance_menu();
 		}
 
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			oslDeleteImage(highlight);
 			oslDeleteImage(performancebg);
 			performance_menu();
 		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(highlight);
 			oslDeleteImage(performancebg);
 			home();
 		}
 
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			multitask();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}
@@ -1048,40 +1048,40 @@ void theme_menu()
 		android_notif();
 		oslDrawImage(cursor);
 		
-		if (osl_pad.held.square)
+		if (osl_keys->pressed.square)
 		{
 			powermenu();
 		}
 		
-		if (osl_pad.held.L)
+		if (osl_keys->pressed.L)
 		{
 			lockscreen();
         }
 		
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{
 			oslDeleteImage(themebg);
 			settingsmenu();
 		}
 
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(themebg);
 			settingsmenu();
 		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(themebg);
 			home();
 		}
 
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			multitask();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}
@@ -1166,17 +1166,17 @@ void wifi_menu()
 		
 		oslDrawImage(cursor);
 		
-		if (osl_pad.held.square)
+		if (osl_keys->pressed.square)
 		{
 			powermenu();
 		}
 		
-		if (osl_pad.held.L)
+		if (osl_keys->pressed.L)
 		{
 			lockscreen();
         }
 		
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{	
 			oslDeleteImage(wifibg);	
 			oslDeleteImage(offswitch);	
@@ -1184,7 +1184,7 @@ void wifi_menu()
 			settingsmenu();
 		}
 
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(wifibg);	
 			oslDeleteImage(offswitch);	
@@ -1192,7 +1192,7 @@ void wifi_menu()
 			settingsmenu();
 		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(wifibg);	
 			oslDeleteImage(offswitch);	
@@ -1200,12 +1200,12 @@ void wifi_menu()
 			home();
 		}
 
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			multitask();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}	
@@ -1282,17 +1282,17 @@ void developer_menu()
 		navbar_buttons();
 		oslDrawImage(cursor);
 		
-		if (osl_pad.held.square)
+		if (osl_keys->pressed.square)
 		{
 			powermenu();
 		}
 		
-		if (osl_pad.held.L)
+		if (osl_keys->pressed.L)
 		{
 			lockscreen();
         }
 		
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{
 			oslDeleteImage(developerbg);
 			oslDeleteImage(check);
@@ -1300,7 +1300,7 @@ void developer_menu()
 			settingsmenu();
 		}
 		
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(developerbg);
 			oslDeleteImage(check);
@@ -1308,7 +1308,7 @@ void developer_menu()
 			settingsmenu();
 		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(developerbg);
 			oslDeleteImage(check);
@@ -1316,40 +1316,40 @@ void developer_menu()
 			home();
 		}
 
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			multitask();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}
 		
-		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 109 && cursor->y <= 165 && osl_pad.held.cross)
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 109 && cursor->y <= 165 && osl_keys->pressed.cross)
 		{
 
 			LoadStartModule("modules/psplink.prx");
 			PSPDebug = 1;
 			
-			if(PSPDebug == 1  && osl_pad.held.triangle)
+			if(PSPDebug == 1  && osl_keys->pressed.triangle)
 			{	
 				StopUnloadModule("modules/psplink.prx");			
 			}
 		}
 		
-		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 55 && cursor->y <= 108 && osl_pad.held.cross)
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 55 && cursor->y <= 108 && osl_keys->pressed.cross)
 		{	
 			RJL = 1;
 			LoadStartModule("modules/RemoteJoyLite.prx");
 
-			if(RJL == 1 && osl_pad.held.triangle)
+			if(RJL == 1 && osl_keys->pressed.triangle)
 			{	
 				StopUnloadModule("modules/RemoteJoyLite.prx");
 			}
 		}
 		
-		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 222 && cursor->y <= 278 && osl_pad.held.cross)
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 222 && cursor->y <= 278 && osl_keys->pressed.cross)
 		{
 			backupPassword();
 		}
@@ -1449,79 +1449,79 @@ int settingsmenu()
 		navbar_buttons();
 		oslDrawImage(cursor);
 		
-		if (osl_pad.held.square)
+		if (osl_keys->pressed.square)
 		{
 			powermenu();
 		}
 		
-		if (osl_pad.held.L)
+		if (osl_keys->pressed.L)
 		{
 			lockscreen();
         }
 		
-		if (osl_pad.held.select)
+		if (osl_keys->pressed.select)
 		{
 			enableUsb();
 		}
-		else if (osl_pad.held.select)
+		else if (osl_keys->pressed.select)
 		{
 			disableUsb();
 		}
 		
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{	
 			settings_deleteImages();
 			appdrawer();
 		}
 			
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			settings_deleteImages();
 			appdrawer();
 		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			settings_deleteImages();
 			home();
 		}
 
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			multitask();
 		}
 			
-		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 53 && cursor->y <= 98 && osl_pad.held.cross)
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 53 && cursor->y <= 98 && osl_keys->pressed.cross)
 		{	
 			settings_deleteImages();
 			wifi_menu();
 		}
 		
-		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 99 && cursor->y <= 141 && osl_pad.held.cross)
+		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 99 && cursor->y <= 141 && osl_keys->pressed.cross)
 		{	
 			settings_deleteImages();
 			developer_menu();
 		}
 		
-		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 142 && cursor->y <= 183 && osl_pad.held.cross)
+		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 142 && cursor->y <= 183 && osl_keys->pressed.cross)
 		{	
 			settings_deleteImages();
 			theme_menu();
 		}
 		
-		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 184 && cursor->y <= 227 && osl_pad.held.cross)
+		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 184 && cursor->y <= 227 && osl_keys->pressed.cross)
 		{
 			settings_deleteImages();
 			performance_menu();
 		}
 				
-		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 228 && cursor->y <= 250 && osl_pad.held.cross)
+		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 228 && cursor->y <= 250 && osl_keys->pressed.cross)
 		{	
 			settings_deleteImages();
 			about_menu();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}

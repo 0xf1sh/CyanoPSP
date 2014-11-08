@@ -506,7 +506,7 @@ void firstBootMessage()
 		oslDrawImageXY(ok, 360, 200);
 		fclose(firstBootTxt);
 	
-		if (cursor->x >= 360 && cursor->x <= 460 && cursor->y >= 200 && cursor->y <= 250 && osl_pad.held.cross)
+		if (cursor->x >= 360 && cursor->x <= 460 && cursor->y >= 200 && cursor->y <= 250 && osl_keys->pressed.cross)
 		{
 			firstBootTxt = fopen("system/firstBoot.txt", "w"); 
 			fprintf(firstBootTxt, "0", firstBoot);
@@ -638,55 +638,55 @@ int main()
 		firstBootMessage();
 		oslDrawImage(cursor);
 
-		if (osl_pad.held.square) //Opens the power menu
+		if (osl_keys->pressed.square) //Opens the power menu
 		{
 			 powermenu();
 		}
 				
 		//Launching the browser
-		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 190 && cursor->y <= 240 && osl_pad.held.cross) //Launches the internet
+		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 190 && cursor->y <= 240 && osl_keys->pressed.cross) //Launches the internet
 		{
 			unloadicons();
 			internet();
 		}
 		
 		
-		if (cursor->x >= 330 && cursor->x <= 374 && cursor->y >= 190 && cursor->y <= 240 && osl_pad.held.cross) //Opens Gmail
+		if (cursor->x >= 330 && cursor->x <= 374 && cursor->y >= 190 && cursor->y <= 240 && osl_keys->pressed.cross) //Opens Gmail
 		{
 			unloadicons();
 			openGmail();
 		}
 		
-		if (cursor->x >= 100 && cursor->x <= 154 && cursor->y >= 190 && cursor->y <= 240 && osl_pad.held.cross) //Opens apollo MP3 player
+		if (cursor->x >= 100 && cursor->x <= 154 && cursor->y >= 190 && cursor->y <= 240 && osl_keys->pressed.cross) //Opens apollo MP3 player
 		{
 			unloadicons();
 			mp3player();
 		}
 		
-		if (cursor->x >= 155 && cursor->x <= 210 && cursor->y >= 190 && cursor->y <= 240 && osl_pad.held.cross) //Opens messenger
+		if (cursor->x >= 155 && cursor->x <= 210 && cursor->y >= 190 && cursor->y <= 240 && osl_keys->pressed.cross) //Opens messenger
 		{
 			unloadicons();
 			messenger();
 		}
 			
-		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_pad.held.cross) //Opens app drawer
+		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_keys->pressed.cross) //Opens app drawer
 		{
 			unloadicons();
 			appdrawer();
 		}
 		
-		if (osl_pad.held.L) //Locks the screen
+		if (osl_keys->pressed.L) //Locks the screen
 		{
 			lockscreen();
         }
 		
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross) // Opens multi-task menu
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross) // Opens multi-task menu
 		{
 			unloadicons();
 			multitask();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle) //Takes screenshot
+		if (osl_pad.held.R && osl_keys->pressed.triangle) //Takes screenshot
 		{
 			screenshot();
 		}

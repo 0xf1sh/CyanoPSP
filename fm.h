@@ -1,6 +1,6 @@
 #define rootdir "ms0:/"
 
-#define MAX_FILES			255 // max amount of files needed to load.
+#define MAX_FILES			256 // max amount of files needed to load.
 #define MAX_DISPLAY			5 // max amount of files displayed on-screen.
 #define DISPLAY_X			85 // X value of where the filebrowser is displayed.
 #define DISPLAY_Y			70 // Y value of the filebrowser is displayed.
@@ -14,9 +14,9 @@ typedef struct fileIcon {
 
 	int		active;
 
-	char	name[255];
-	char	filePath[255];
-	char	fileType[255];
+	char	name[256];
+	char	filePath[256];
+	char	fileType[256];
 
 	int		x;
 	int		y;
@@ -29,8 +29,8 @@ typedef struct File {
 
 	int exist;
 
-	char path[255];
-	char name[255];
+	char path[256];
+	char name[256];
 
 	int size;
 	int directory;

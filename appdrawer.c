@@ -142,7 +142,7 @@ int appdrawer()
 		android_notif();
 		oslDrawImage(cursor);
 			
-		if (osl_pad.held.left && (osl_pad.held.cross))
+		if (osl_pad.held.left && (osl_keys->pressed.cross))
 		{
 			apollo_x = apollo_x-10;
 			browser_x = browser_x-10;
@@ -172,7 +172,7 @@ int appdrawer()
 			settings_text_x = settings_text_x-10;
 		}
 		
-		else if (osl_pad.held.right && (osl_pad.held.cross))
+		else if (osl_pad.held.right && (osl_keys->pressed.cross))
 		{
 			apollo_x = apollo_x+10;
 			browser_x = browser_x+10;
@@ -202,47 +202,47 @@ int appdrawer()
 			settings_text_x = settings_text_x+10;
 		}
 		
-		if (osl_pad.held.square)
+		if (osl_keys->pressed.square)
 		{
 			powermenu();
 		}
 
-		if (cursor->x >= 78 && cursor->x <= 120 && cursor->y >= 24 && cursor->y <= 70 && osl_pad.held.cross)
+		if (cursor->x >= 78 && cursor->x <= 120 && cursor->y >= 24 && cursor->y <= 70 && osl_keys->pressed.cross)
 		{
 			appdrawer_deleteImages();
 			internet();
 		}
 		
-		if (cursor->x >= 96 && cursor->x <= 140 && cursor->y >= 118 && cursor->y <= 165 && osl_pad.held.cross) 
+		if (cursor->x >= 96 && cursor->x <= 140 && cursor->y >= 118 && cursor->y <= 165 && osl_keys->pressed.cross) 
 		{
 			appdrawer_deleteImages();
 			openGmail();
 		}
 		
-		if (cursor->x >= 18 && cursor->x <= 65 && cursor->y >= 110 && cursor->y <= 155 && osl_pad.held.cross)
+		if (cursor->x >= 18 && cursor->x <= 65 && cursor->y >= 110 && cursor->y <= 155 && osl_keys->pressed.cross)
 		{
 			appdrawer_deleteImages();
 			galleryApp();
 		}
 		
-		if (osl_pad.held.L)
+		if (osl_keys->pressed.L)
 		{
 			lockscreen();
         }
 		
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{
 			appdrawer_deleteImages();
 			home();
 		}
 		
-		if (cursor->x >= 142 && cursor->x <= 177 && cursor->y >= 44 && cursor->y <= 60 && osl_pad.held.cross)
+		if (cursor->x >= 142 && cursor->x <= 177 && cursor->y >= 44 && cursor->y <= 60 && osl_keys->pressed.cross)
 		{
 			appdrawer_deleteImages();
 			calculator();
 		}
 		
-		if (cursor->x >= 142 && cursor->x <= 177 && cursor->y >= 44 && cursor->y <= 60 && osl_pad.held.triangle)
+		if (cursor->x >= 142 && cursor->x <= 177 && cursor->y >= 44 && cursor->y <= 60 && osl_keys->pressed.triangle)
 		{
 			highlight = 1;
 			if (highlight == 1)
@@ -251,60 +251,60 @@ int appdrawer()
 			}
 		}
 		
-		if (cursor->x >= 385 && cursor->x <= 430 && cursor->y >= 103 && cursor->y <= 151 && osl_pad.held.cross)
+		if (cursor->x >= 385 && cursor->x <= 430 && cursor->y >= 103 && cursor->y <= 151 && osl_keys->pressed.cross)
 		{
 			appdrawer_deleteImages();
 			settingsmenu();
 		}
 		
-		if (cursor->x >= 266 && cursor->x <= 311 && cursor->y >= 25 && cursor->y <= 70 && osl_pad.held.cross)
+		if (cursor->x >= 266 && cursor->x <= 311 && cursor->y >= 25 && cursor->y <= 70 && osl_keys->pressed.cross)
 		{
 			appdrawer_deleteImages();
 			pspclock();
 		}
 		
-		if (cursor->x >= 18 && cursor->x <= 65 && cursor->y >= 25 && cursor->y <= 70 && osl_pad.held.cross)
+		if (cursor->x >= 18 && cursor->x <= 65 && cursor->y >= 25 && cursor->y <= 70 && osl_keys->pressed.cross)
 		{
 			appdrawer_deleteImages();
 			mp3player();
 		}
 		
-		if (cursor->x >= 210 && cursor->x <= 268 && cursor->y >= 118 && cursor->y <= 170 && osl_pad.held.cross)
+		if (cursor->x >= 210 && cursor->x <= 268 && cursor->y >= 118 && cursor->y <= 170 && osl_keys->pressed.cross)
 		{
 			appdrawer_deleteImages();
 			messenger();
 		}
 		
-		if (cursor->x >= 147 && cursor->x <= 191 && cursor->y >= 112 && cursor->y <= 154 && osl_pad.held.cross)
+		if (cursor->x >= 147 && cursor->x <= 191 && cursor->y >= 112 && cursor->y <= 154 && osl_keys->pressed.cross)
 		{
 			appdrawer_deleteImages();
 			gamemenu();
 		}
 		
-		if (cursor->x >= 387 && cursor->x <= 432 && cursor->y >= 25 && cursor->y <= 70 && osl_pad.held.cross)
+		if (cursor->x >= 387 && cursor->x <= 432 && cursor->y >= 25 && cursor->y <= 70 && osl_keys->pressed.cross)
 		{
 			appdrawer_deleteImages();
 			filemanage();
 		}
 		
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			appdrawer_deleteImages();
 			home();
 		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			appdrawer_deleteImages();
 			home();
 		}
 		
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			multitask();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}

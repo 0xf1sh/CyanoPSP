@@ -228,46 +228,46 @@ void stopWatch()
 		digitaltime(420,4,458);
 		oslDrawImage(cursor);
 
-		if (osl_pad.held.square)
+		if (osl_keys->pressed.square)
 		{	
 			powermenu();
 		}
 		
-		if (osl_pad.held.L)
+		if (osl_keys->pressed.L)
 		{
 			lockscreen();
         }
 		
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{
 			oslDeleteImage(stop_watch);
 			appdrawer();
 		}
 
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			oslDeleteImage(stop_watch);
 			appdrawer();
 		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(stop_watch);
 			home();
 		}
 
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			multitask();
 		}
 		
-		if (cursor->x >= 114 && cursor->x <= 150  && cursor->y >= 19 && cursor->y <= 50 && osl_pad.held.cross)
+		if (cursor->x >= 114 && cursor->x <= 150  && cursor->y >= 19 && cursor->y <= 50 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(stop_watch);
 			pspclock();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}
@@ -329,46 +329,46 @@ int pspclock()
 		digitaltime(420,4,458);
 		oslDrawImage(cursor);
 
-		if (osl_pad.held.square)
+		if (osl_keys->pressed.square)
 		{	
 			powermenu();
 		}
 		
-		if (osl_pad.held.L)
+		if (osl_keys->pressed.L)
 		{
 			lockscreen();
         }
 		
-		if (osl_pad.held.circle)
+		if (osl_keys->pressed.circle)
 		{
 			oslDeleteImage(clockbg);
 			appdrawer();
 		}
 
-		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			oslDeleteImage(clockbg);
 			appdrawer();
 		}
 		
-		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(clockbg);
 			home();
 		}
 
-		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_pad.held.cross)
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			multitask();
 		}
 		
-		if (cursor->x >= 285 && cursor->x <= 332  && cursor->y >= 19 && cursor->y <= 50 && osl_pad.held.cross)
+		if (cursor->x >= 285 && cursor->x <= 332  && cursor->y >= 19 && cursor->y <= 50 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(clockbg);
 			stopWatch();
 		}
 		
-		if (osl_pad.held.R && osl_pad.held.triangle)
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
 		}
