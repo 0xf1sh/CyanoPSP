@@ -260,8 +260,6 @@ void newmessage()
 		oslDrawImageXY(new_message, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 		
-		oslDrawString(30, 200, message);
-		
 		digitaltime(420,4,458);
 
 		battery();
@@ -297,7 +295,7 @@ void newmessage()
 			screenshot();
 		}
 		
-		oslDrawString(12, 230, message);
+		oslDrawString(14, 245, message);
 		
 		if (oslOskIsActive()){
 				oslDrawOsk();
@@ -319,7 +317,7 @@ void newmessage()
 			oslReadKeys();
 			if (osl_keys->pressed.circle){
 				return;
-			}else if (cursor->x >= 12 && cursor->x <= 415 && cursor->y >= 233 && cursor->y <= 270 && osl_keys->pressed.cross){
+			}else if (cursor->x >= 12 && cursor->x <= 415 && cursor->y >= 233 && cursor->y <= 270 && osl_pad.held.cross){
 				oslInitOsk("Type Message", "", 128, 1, -1);
 				memset(message, 0, sizeof(message));
 			}
