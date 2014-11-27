@@ -34,7 +34,7 @@ int multitask()
 		digitaltime(420,4,458);
 		battery();
 		navbar_buttons();
-		android_notif();
+		androidQuickSettings();
 		oslDrawImage(cursor);
 		
 		if (osl_pad.held.square)

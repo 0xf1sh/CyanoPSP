@@ -139,10 +139,10 @@ int appdrawer()
 			oslDrawImageXY(pointer1, 243, 222);
 		}
 		
-		android_notif();
+		androidQuickSettings();
 		oslDrawImage(cursor);
 			
-		if (osl_pad.held.left && (osl_keys->pressed.cross))
+		if (osl_pad.held.left && (osl_pad.held.cross))
 		{
 			apollo_x = apollo_x-10;
 			browser_x = browser_x-10;
@@ -172,7 +172,7 @@ int appdrawer()
 			settings_text_x = settings_text_x-10;
 		}
 		
-		else if (osl_pad.held.right && (osl_keys->pressed.cross))
+		else if (osl_pad.held.right && (osl_pad.held.cross))
 		{
 			apollo_x = apollo_x+10;
 			browser_x = browser_x+10;

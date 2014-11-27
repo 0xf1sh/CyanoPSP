@@ -42,7 +42,7 @@ int home()
 		appdrawericon();
 		battery();
 		navbar_buttons();
-		android_notif();
+		androidQuickSettings();
 		oslDrawImage(cursor);
 			
 		if (osl_keys->pressed.square)

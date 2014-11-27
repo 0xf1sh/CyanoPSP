@@ -52,9 +52,7 @@ char name;
 int setclock;
 int setclockrlimit = 0;
 int setclockllimit = 9;
-int RJL = 0;
-int PSPDebug = 0;
-char Version[10] = "2.3";
+char Version[10] = "2.4";
 char lang[12] = "Uk English";
 char theme_bootanim[10] = "";
 char theme_icons[10] = "";
@@ -347,7 +345,7 @@ void about_menu()
 		}
 		
 		navbar_buttons();
-		android_notif();
+		androidQuickSettings();
 		oslDrawImage(cursor);
 		
 		if (osl_keys->pressed.square)
@@ -486,7 +484,7 @@ void updates_menu()
 		}
 		
 		navbar_buttons();
-		android_notif();
+		androidQuickSettings();
 		oslDrawImage(cursor);
 		
 		if (osl_keys->pressed.square)
@@ -579,7 +577,7 @@ void performance_menu()
 		}
 		
 		navbar_buttons();
-		android_notif();
+		androidQuickSettings();
 		oslDrawImage(cursor);
 		
 		if (osl_keys->pressed.square)
@@ -755,7 +753,7 @@ void processor_menu(int argc, char *argv[])
 		oslDrawStringf(35,87,"%d/%d",cpu_list[current],bus_list[current]);
 		
 		navbar_buttons();
-		android_notif();
+		androidQuickSettings();
 		oslDrawImage(cursor);
 		
 		if (osl_keys->pressed.square)
@@ -832,7 +830,7 @@ void ram_menu(int argc, char *argv[])
 		navbar_buttons();
 		digitaltime(420,4,458);
 		battery();
-		android_notif();
+		androidQuickSettings();
 		oslDrawImage(cursor);
 		
 		if (osl_keys->pressed.square)
@@ -1014,7 +1012,7 @@ void SetZipName()
 
 */
 
-void theme_menu()
+void DisplayMenu()
 {	
 	themebg = oslLoadImageFilePNG("system/settings/themebg.png", OSL_IN_RAM, OSL_PF_8888);
 
@@ -1036,7 +1034,7 @@ void theme_menu()
 		oslDrawImageXY(themebg, 0, 19);
 		oslDrawImageXY(wificon, 375, 1);
 
-		oslDrawString(65,74,"Theme Packs");
+		oslDrawString(65,74,"Themes");
 		oslDrawString(65,128,"Styles");
 		oslDrawString(65,184,"Icons");
 		oslDrawString(65,236,"Fonts");
@@ -1045,7 +1043,7 @@ void theme_menu()
 
 		battery();
 		navbar_buttons();
-		android_notif();
+		androidQuickSettings();
 		oslDrawImage(cursor);
 		
 		if (osl_keys->pressed.square)
@@ -1147,7 +1145,7 @@ void wifi_menu()
 
 		battery();
 		navbar_buttons();
-		android_notif();
+		androidQuickSettings();
 		
 		if (osl_keys->released.cross)
 		{
@@ -1218,6 +1216,9 @@ void wifi_menu()
 
 void developer_menu()
 {
+	int RJL = 0;
+	int PSPDebug = 0;
+
 	developerbg = oslLoadImageFilePNG("system/settings/developerbg.png", OSL_IN_RAM, OSL_PF_8888);
 	backicon = oslLoadImageFilePNG("system/home/icons/backicon.png", OSL_IN_RAM, OSL_PF_8888);
 	homeicon = oslLoadImageFilePNG("system/home/icons/homeicon.png", OSL_IN_RAM, OSL_PF_8888);
@@ -1278,7 +1279,7 @@ void developer_menu()
 			oslDrawString(35,236,"Backup Password");
 		}
 		
-		android_notif();
+		androidQuickSettings();
 		navbar_buttons();
 		oslDrawImage(cursor);
 		
@@ -1378,7 +1379,7 @@ void settings_highlight()
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 142 && cursor->y <= 183)
 		{
 			oslDrawImageXY(themes, 16, 148);
-			oslDrawString(55,161,"Themes");
+			oslDrawString(55,161,"Display");
 		}
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 184 && cursor->y <= 227)
@@ -1438,14 +1439,14 @@ int settingsmenu()
 		wlanstatus();
 		oslDrawString(55,76,"Wi-Fi");
 		oslDrawString(55,118,"Developer Options");
-		oslDrawString(55,161,"Themes");
+		oslDrawString(55,161,"Display");
 		oslDrawString(55,204,"Performance");
 		oslDrawString(55,246,"About PSP");
 		
 		digitaltime(420,4,458);
 		battery();
 		settings_highlight();
-		android_notif();
+		androidQuickSettings();
 		navbar_buttons();
 		oslDrawImage(cursor);
 		
@@ -1506,7 +1507,7 @@ int settingsmenu()
 		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 142 && cursor->y <= 183 && osl_keys->pressed.cross)
 		{	
 			settings_deleteImages();
-			theme_menu();
+			DisplayMenu();
 		}
 		
 		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 184 && cursor->y <= 227 && osl_keys->pressed.cross)

@@ -264,7 +264,7 @@ void newmessage()
 
 		battery();
 		navbar_buttons();
-		android_notif();
+		androidQuickSettings();
 		oslDrawImage(cursor);
 		
 		if (osl_keys->pressed.circle)
@@ -355,7 +355,7 @@ int messenger()
 		battery();
 		digitaltime(420,4,458);
 		navbar_buttons();
-		android_notif();
+		androidQuickSettings();
 		oslDrawImage(cursor);
 		
 		if (osl_keys->pressed.square)

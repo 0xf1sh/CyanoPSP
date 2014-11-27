@@ -10,10 +10,11 @@ int yLine1 = -272;
 int yLine2 = -272;
 
 //function declarations
+void oslPrintTextDiffColors(int x, int y, char * text, OSL_COLOR color);
 void controls();
 void internet();
-void android_notif();
-void android_notif2();
+void androidQuickSettings();
+void notif_2();
 void battery();
 void appdrawericon();
 void loadicons();

@@ -429,7 +429,7 @@ int gamemenu(int argc, char *argv[])
 
 		oslDrawImageXY(gamebg, 0,0);
 
-		android_notif();
+		androidQuickSettings();
 		
 		 if ((osl_keys->pressed.cross) ||  (osl_keys->pressed.circle))
 		 { // if the cross or circle button is pressed

@@ -163,6 +163,8 @@ void startCounter()
 
 	while (!osl_quit)
 	{
+		oslStartDrawing();
+		
 		oldPad = newPad;
 		sceCtrlReadBufferPositive(&newPad, 1);
 		if (newPad.Buttons != oldPad.Buttons)
@@ -195,6 +197,9 @@ void startCounter()
 		oslDrawStringf(200,200,"%d:%d:%d.%d       ", hour, minute, second, milisec);
 		milisec++;
 	}
+	oslEndDrawing(); 
+	oslEndFrame(); 
+	oslSyncFrame();
 }
 
 void stopWatch()
@@ -224,7 +229,7 @@ void stopWatch()
 
 		battery();
 		navbar_buttons();
-		android_notif();
+		androidQuickSettings();
 		digitaltime(420,4,458);
 		oslDrawImage(cursor);
 
@@ -276,7 +281,7 @@ void stopWatch()
 		sceCtrlReadBufferPositive(&newPad, 1);
 
 		if (newPad.Buttons != oldPad.Buttons)
-		{
+		{	
 			if (newPad.Buttons & PSP_CTRL_CROSS)
 			{
 				if (counter == 0)
@@ -286,13 +291,13 @@ void stopWatch()
 				}
 			}
 			if (newPad.Buttons & PSP_CTRL_RTRIGGER)
-			{
-				hour = 0;
-				minute = 0;
-				second = 0;
-				milisec = 0;
-				oslDrawStringf(211,175, "0:0:0.00       ");
-				counter = 0;
+			{	
+			hour = 0;
+			minute = 0;
+			second = 0;
+			milisec = 0;
+			oslDrawStringf(211,175, "0:0:0.00       ");
+			counter = 0;
 			}
 		}
 		oslEndDrawing(); 
@@ -325,7 +330,7 @@ int pspclock()
 
 		battery();
 		navbar_buttons();
-		android_notif();
+		androidQuickSettings();
 		digitaltime(420,4,458);
 		oslDrawImage(cursor);
 

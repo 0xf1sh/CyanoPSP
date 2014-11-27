@@ -152,6 +152,13 @@ int connectToAP(int config) //Internet stuff
     oslDisconnectFromAP();
     return 0;
 } 
+
+void oslPrintTextDiffColors(int x, int y, char * text, OSL_COLOR color) {
+	oslSetTextColor(color);
+	oslIntraFontSetStyle(pgfFont, 0.5, color, RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
+	oslSetBkColor(RGBA(0,0,0,0));
+	oslDrawString(x,y,text);
+}
  
 void controls() //Main controller function - allows cursor movement
 {
@@ -262,8 +269,8 @@ void navbar_buttons() //Draws the navbar buttons in the bottom as seen on androi
 		oslDrawImageXY(navbar,109, 237);
 }
 
-void android_notif()
-{		
+void androidQuickSettings()
+{
 	oslDrawImageXY(notif,0,notif_y);
 		
 	getDayOfWeek(65,yPos1);
@@ -282,102 +289,63 @@ void android_notif()
 	oslDrawStringf(95,yLine2+10, "ENABLED");
 		
 	digitaltime(2,yPos1,40);
-				
-	if ((osl_pad.held.cross && notif_y == 0 && cursor->x >= 0 && cursor->x <= 480 && cursor->y <= 1) || (osl_pad.held.cross && notif_y == 0 && cursor->y >= 246))
-	{
-		notif_up = 1;
-		notif_down = 0;
-	}
-		
-	if (notif_up == 1) 
-	{
-		notif_y = notif_y-10;
-		yPos1 = yPos1-10;
-		yPos2 = yPos2-10;
-		yLine1 = yLine1-10;
-		yLine2 = yLine2-10;
-	}
-		
-	if (notif_y <= -272) 
-	{
-		notif_y = -272;
-		yPos1 = -272;
-		yPos2 = -272;
-		yLine1 = -272;
-		yLine2 = -272;
-		notif_enable = 0;
-		notif_up = 0;
-	}
-
-	if (notif_y < -272)
-	{
-		notif_y = -272;
-		yPos1 = -272;
-		yPos2 = -272;
-		yLine1 = -272;
-		yLine2 = -272;
-	}
-		
-	if (osl_pad.held.cross && cursor->x >= 0 && cursor->x <= 480  && cursor->y <= 1 && notif_y == -272) 
+	
+	if (osl_pad.held.cross && cursor->x >= 0 && cursor->x <= 480 && cursor->y <= 1) 
 	{
 		notif_down = 1;
-		notif_up = 0;
-		notif_enable = 1;
 	}
-		
-	if (notif_down == 1) 
+	
+	if (osl_pad.held.cross && cursor->x >= 0 && cursor->x <= 480&& cursor->y >= 250 && notif_y == 0)
 	{
-		notif_y = notif_y+10;
-		yPos1 = yPos1+10;
-		yPos2 = yPos2+10;
-		yLine1 = yLine1+10;
-		yLine2 = yLine2+10;
+		notif_up = 1;
 	}
-		
-	if (notif_y == 0)
+	
+	if (notif_down == 1)
 	{
-		notif_down = 0;
-		notif_enable = 1;
-	}
-		
-	if (notif_y > 0) 
-	{
-		notif_y = 0;
-		yPos1 = 10;
-		yPos2 = 20;
-		yLine1 = 110;
-		yLine2 = 200;
-		
-		if (cursor->x >= 80 && cursor->x <= 158 && cursor->y >= 41 && cursor->y <= 135 && osl_pad.held.cross)
-		{	
-			notif_up = 1;
-			notif_down = 0;
-			settingsmenu();
-		}
-		
-		if (cursor->x >= 162 && cursor->x <= 239 && cursor->y >= 41 && cursor->y <= 135 && osl_pad.held.cross)
-		{	
-			notif_up = 1;
-			notif_down = 0;
-			wifi_menu();
-		}
-		
-		if (cursor->x >= 405 && cursor->x <= 480 && cursor->y >= 41 && cursor->y <= 135 && osl_pad.held.cross)
-		{	
-			notif_up = 1;
-			notif_down = 0;
-			standby_device();
-		}
-		
-		if (cursor->x >= 1 && cursor->x <= 78 && cursor->y >= 138 && cursor->y <= 232 && osl_pad.held.cross)
-		{	
-			notif_up = 1;
-			notif_down = 0;
-			lockscreen();
-		}
 		if (cursor->x >= 445 && cursor->x <= 473 && cursor->y >= 9 && cursor->y <= 33 && osl_pad.held.cross && notif_down == 1)
 		{	
 			notif_2();
+		}
+		
+		if (osl_pad.held.cross && osl_keys->analogY >= 50)
+		{
+			notif_y = notif_y+10;
+			yPos1 = yPos1+10;
+			yPos2 = yPos2+10;
+			yLine1 = yLine1+10;
+			yLine2 = yLine2+10;
+		}
+			if (notif_y >= 0)
+			{
+				notif_y = 0;
+			}
+			if (yPos1 >= 10)
+			{
+				yPos1 = 10;
+			}
+			if (yPos2 >= 20)
+			{
+				yPos2 = 20;
+			}
+			if (yLine1 >= 110)
+			{
+				yLine1 = 110;
+			}
+			if (yLine2 >= 200)
+			{
+				yLine2 = 200;
+			}
+	}
+	
+	if (notif_up == 1)
+	{
+		if (osl_pad.held.cross && osl_keys->analogY <= -50)
+		{
+			notif_y = notif_y-10;
+			yPos1 = yPos1-10;
+			yPos2 = yPos2-10;
+			yLine1 = yLine1-10;
+			yLine2 = yLine2-10;
 		}
 	}
 }
@@ -634,7 +602,7 @@ int main()
 		
 		battery();
 		navbar_buttons();
-		android_notif();
+		androidQuickSettings();
 		firstBootMessage();
 		oslDrawImage(cursor);
 
