@@ -1,5 +1,6 @@
 #include <pspkernel.h>
 #include <oslib/oslib.h>
+#include "fm.h"
 #include "clock.h"
 #include "lock.h"
 #include "multi.h"
@@ -8,10 +9,39 @@
 
 OSL_IMAGE *cursor, *calcbackground, *wificon;
 
-OSL_COLOR black = RGB(0,0,0),red = RGB(255,0,0), white = RGB(255,255,255);
+OSL_FONT *pgfFont;
+
+OSL_COLOR black = RGB(0,0,0), red = RGB(255,0,0), white = RGB(255,255,255);
+
+char x1[4][20] = {
+	{"sin"},
+	{"1/x"},
+	{"."},
+	{"."},
+};
+
+char x2[5][10] = {
+	{"cos"},
+	{"sqr"},
+	{"."},
+	{"."},
+	{"C"},
+};
+
+char x3[4][10] = {
+	{"tan"},
+	{"^"},
+	{""},
+	{""},
+};
+
+int variable, selection;
  
 int calculator()
 {
+	pgfFont = oslLoadFontFile("flash0:/font/ltn0.pgf");
+    oslSetFont(pgfFont);
+
 	int result;
 	int x;
 	int y;
@@ -21,8 +51,6 @@ int calculator()
 	int Number = 0;
 
 	calcbackground = oslLoadImageFile("system/app/calculator/calcbg.png", OSL_IN_RAM, OSL_PF_8888);
-	
-	setfont();
 
 	if (!calcbackground)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
@@ -39,214 +67,43 @@ int calculator()
 
 		oslDrawImageXY(calcbackground, 0, 19);		
 
-		oslDrawImageXY(wificon, 375, 1);
-		
-		oslDrawString(40,77,"sin");
-		oslDrawString(94,77,"cos");
-		oslDrawString(148,77,"tan");
-		oslDrawString(218,82,"7");
-		oslDrawString(272,82,"8");
-		oslDrawString(326,82,"9");
-		oslDrawString(380,82,"/");
-
-		oslDrawString(40,120,"1/x");
-		oslDrawString(94,120,"sqr");
-		oslDrawString(150,120,"^");
-		oslDrawString(218,133,"4");
-		oslDrawString(272,133,"5");
-		oslDrawString(326,133,"6");
-		oslDrawString(380,133,"x");
-
-		oslDrawString(298,240,"");
-		oslDrawString(298,240,"");
-		oslDrawString(298,240,"");
-		oslDrawString(218,184,"1");
-		oslDrawString(272,184,"2");
-		oslDrawString(326,184,"3");
-		oslDrawString(380,184,"-");
-
-		oslDrawString(298,240,"");
-		oslDrawString(95,242,"C");
-		oslDrawString(298,240,"");
-		oslDrawString(246,232,"0");
-		oslDrawString(328,232,".");
-		oslDrawString(380,237,"+");
-		oslDrawString(433,210,"=");
-
-		oslDrawString(35,27,"0");
-
-		battery();
-		android_notif();
-		oslDrawImage(cursor);
-	
-		if (osl_pad.pressed.left)
-		x = x - 1;
-		if (x == 0)
-		x = 8;
-
-		if (osl_pad.pressed.right)
-		x = x + 1;
-		if (x == 9)
-		x = 1;
-
-		if (osl_pad.pressed.up)
-		y = y - 1;
-		if (y == 0)
-		y = 4;
-
-		if (osl_pad.pressed.down)
-		y = y + 1;
-		if (y == 5)
-		y = 1;
+		oslDrawImageXY(wificon, 350, 1);
 		
 		x = 1;
-		y = 1;
 		
-		if (y == 1)
+		if (osl_keys->pressed.right)
 		{
-			if (x ==1)
-			{
-			oslDrawString(40,77,"sin");
-			}
-			else if (x == 2)
-			{
-				oslDrawString(94,77,"cos");
-			}
-			else if (x  == 3) 
-			{
-				oslDrawString(148,77,"tan");
-			}
-			else if (x == 4)
-			{
-				oslDrawString(218,82,"7");
-			}
-			else if (x == 5)
-			{
-				oslDrawString(272,82,"8");
-			}
-			else if (x  == 6) 
-			{
-				oslDrawString(326,82,"9");
-			}
-			else if (x  == 7)
-			{
-				oslDrawString(380,82,"/");
-			}
-			else if (x  == 8)
-			{
-				oslDrawString(380,82,"");
-			}
+		x+=1;
 		}
 		
-		
-		else if (y == 2)
+		if (x == 1)
 		{
-			if (x == 1)
-			{
-				oslDrawString(40,120,"1/x");
-			}
-			else if (x == 2) 
-			{
-				oslDrawString(94,120,"sqr");
-			}
-			else if (x == 3)
-			{
-				oslDrawString(150,120,"^");
-			}
-			else if (x == 4) 
-			{
-				oslDrawString(218,133,"4");
-			}
-			else if (x == 5)
-			{
-				oslDrawString(272,133,"5");
-			}
-			else if (x  == 6) 
-			{
-				oslDrawString(326,133,"6");
-			}
-			else if (x  == 7)
-			{
-				oslDrawString(380,133,"x");
-			}
-			else if (x  == 8)
-			{
-				oslDrawString(380,82,"");
-			}
+		
+		for(variable=0;variable<4;variable++) {
+			oslPrintTextDiffColors(40,variable*42+77,x1[variable],white);
+		}
+		oslPrintTextDiffColors(40,selection*42+77,x1[selection],red);
+		
+		if ((osl_keys->pressed.up) && (selection > 0))
+			selection--;
+		if ((osl_keys->pressed.down) && (selection < 3))
+			selection++;
 		}
 		
-		else if (y == 3) 
+		if (x == 2)
 		{
-			if (x == 1)
-			{
-				oslDrawString(298,240,"");
-			}
-			else if (x == 2)
-			{
-				oslDrawString(298,240,"");
-			}
-			else if (x == 3)
-			{
-				oslDrawString(298,240,"");
-			}
-			else if (x == 4)
-			{
-				oslDrawString(218,184,"1");
-			}
-			else if (x == 5)
-			{
-				oslDrawString(272,184,"2");
-			}
-			else if (x  == 6)
-			{
-				oslDrawString(326,184,"3");
-			}
-			else if (x  == 7)
-			{
-				oslDrawString(380,184,"-");
-			}
-			else if (x  == 8)
-			{
-				oslDrawString(380,82,"");
-			}
+		
+		for(variable=0;variable<5;variable++) {
+			oslPrintTextDiffColors(94,variable*42+77,x2[variable],white);
+		}
+		oslPrintTextDiffColors(94,selection*42+77,x2[selection],red);
+		
+		if ((osl_keys->pressed.up) && (selection > 0))
+			selection--;
+		if ((osl_keys->pressed.down) && (selection < 4))
+			selection++;
 		}
 		
-		else if (y == 4)
-		{
-			if (x == 1)
-			{
-				oslDrawString(298,240,"");
-			}
-			else if (x == 2)
-			{
-				oslDrawString(95,242,"C");
-			}
-			else if (x == 3)
-			{
-				oslDrawString(298,240,"");
-			}
-			else if (x == 4)
-			{
-				oslDrawString(246,232,"0");
-			}
-			else if (x == 5)
-			{
-				oslDrawString(328,232,".");
-			}
-			else if (x  == 6) 
-			{
-				oslDrawString(380,237,"+");
-			}
-			else if (x  == 7)
-			{
-				oslDrawString(433,210,"=");
-			}
-			else if (x  == 8)
-			{
-				oslDrawString(380,82,"");
-			}
-		}
-
 		if (osl_keys->pressed.square)
 		{
 			powermenu();

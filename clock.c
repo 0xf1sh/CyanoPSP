@@ -225,7 +225,7 @@ void stopWatch()
 		controls();	
 		
 		oslDrawImageXY(stop_watch, 0, 19);
-		ooslDrawImageXY(wificon, 350, 1);
+		oslDrawImageXY(wificon, 350, 1);
 
 		battery();
 		navbar_buttons();
@@ -326,7 +326,7 @@ int pspclock()
 		controls();	
 		
 		oslDrawImageXY(clockbg, 0, 19);
-		ooslDrawImageXY(wificon, 350, 1);
+		oslDrawImageXY(wificon, 350, 1);
 
 		battery();
 		navbar_buttons();

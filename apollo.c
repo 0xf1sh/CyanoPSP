@@ -211,6 +211,8 @@ void MP3Play(char * path)
 	MP3_Load(path);
 	MP3_Play();
 	
+	setfont();
+	
 	while (!osl_quit)
 	{
 		LowMemExit();
@@ -223,7 +225,7 @@ void MP3Play(char * path)
 		
 		oslDrawImageXY(nowplaying, 0, 19);
 		MP3Status();
-		oslPrintText(250,71,0.5,folderIcons[current].name,RGB(255,255,255));
+		oslDrawStringf(250,71,folderIcons[current].name);
 		display_mp3_info(folderIcons[current].name);
 		
 		if(osl_keys->pressed.select) 
@@ -360,7 +362,8 @@ void mp3Controls() //Controls
 	{
 			dirBack();
 	}
-	else if (osl_keys->pressed.circle)
+	
+	else if ((stricmp(lastDir, "ms0:/MUSIC")==0) && osl_keys->pressed.circle)
 	{
 		oslDeleteImage(mp3bg);
 		oslDeleteImage(mp3_select);

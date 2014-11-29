@@ -24,7 +24,7 @@ int powermenu()
 		controls();	
 		
 		oslDrawImage(background);
-		ooslDrawImageXY(wificon, 350, 1);
+		oslDrawImageXY(wificon, 350, 1);
 		oslDrawImageXY(apollo, 105, 190);
 		oslDrawImageXY(browser, 276, 190);
 		oslDrawImageXY(gmail, 331, 190);

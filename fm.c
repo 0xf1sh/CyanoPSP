@@ -285,11 +285,6 @@ void fpaste(char * destination)
 	fwrite(buffer,1,size,dst);
 	fclose(dst);
 }
-    
-void oslPrintText(int x, int y, float size, char * text, OSL_COLOR color) {
-   oslIntraFontSetStyle(pgfFont, size, color, RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
-   oslDrawStringf(x,y,text);
-}	
 
 int checkTextFile(char *textfile)
 {
@@ -410,10 +405,15 @@ void dirDownx5()
 	}
 }
 
+void oslPrintText(int x, int y, float size, char * text, OSL_COLOR color) {
+   oslIntraFontSetStyle(pgfFont, size, color, RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
+   oslDrawStringf(x,y,text);
+}
+
 void dirDisplay()
 {	
 	oslDrawImageXY(filemanagerbg, 0, 19);
-	oslDrawStringf(66, 29, lastDir); // Displays the current directory.
+	oslDrawStringf(66, 29, lastDir,RGB(0,0,0)); // Displays the current directory.
 	oslDrawImageXY(bar,0,(current - curScroll)*44+CURR_DISPLAY_Y);
 
 	// Displays the directories, while also incorporating the scrolling
@@ -633,6 +633,10 @@ char * dirBrowse(const char * path)
 {
 	folderScan(path);
 	dirVars();
+	
+	pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
+	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(0,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
+	oslSetFont(pgfFont);
 	
 	while (!osl_quit)
 	{		

@@ -86,7 +86,7 @@ int appdrawer()
 
 		oslDrawImage(background);
 		
-		ooslDrawImageXY(wificon, 350, 1);
+		oslDrawImageXY(wificon, 350, 1);
 		oslDrawImageXY(apollo, apollo_x, 35);
 		oslDrawString(apollo_x,85,"Apollo");
 		oslDrawImageXY(browser, browser_x, 35);
