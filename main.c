@@ -30,7 +30,7 @@
 
 #define ADDRESS "www.google.com"
 
-PSP_MODULE_INFO("CyanoPSP - C",  1, 2, 3);
+PSP_MODULE_INFO("CyanoPSP - C",  PSP_MODULE_KERNEL, 2, 3);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU); 
 PSP_HEAP_SIZE_KB(20*1024);
 
@@ -212,7 +212,7 @@ void controls() //Main controller function - allows cursor movement
 
 void battery() // Draws the battery icon depending on its percentage. 
 {
-	int batx = 400;
+	int batx = 370;
 	int baty = 2;
 	int batteryLife;
 	
@@ -234,7 +234,9 @@ void battery() // Draws the battery icon depending on its percentage.
 		oslDrawImageXY(batt0,batx,baty);
 			
 	if (scePowerIsBatteryCharging() == 1) // If the battery's charging, draw the charging icon on the battery icon.
-		oslDrawImageXY(battcharge,batx,baty);	
+		oslDrawImageXY(battcharge,batx,baty);
+
+	oslDrawStringf(383, 4,"%d%%",scePowerGetBatteryLifePercent());
 }
 
 void appdrawericon() //Draws the app drawer icon. Draws a different icon of the same size once hovered with the cursor.
@@ -583,7 +585,7 @@ int main()
 			
 		//Print the images onto the screen
 		oslDrawImage(background);		
-		oslDrawImageXY(wificon, 375, 1);
+		oslDrawImageXY(wificon, 350, 1);
 		oslDrawImageXY(apollo, 105, 190);
 		oslDrawImageXY(browser, 276, 190);
 		oslDrawImageXY(gmail, 331, 190);

@@ -258,7 +258,7 @@ void newmessage()
 		controls();	
 
 		oslDrawImageXY(new_message, 0, 19);
-		oslDrawImageXY(wificon, 375, 1);
+		ooslDrawImageXY(wificon, 350, 1);
 		
 		digitaltime(420,4,458);
 
@@ -350,7 +350,7 @@ int messenger()
 		controls();	
 
 		oslDrawImageXY(messengerbg, 0, 19);
-		oslDrawImageXY(wificon, 375, 1);
+		ooslDrawImageXY(wificon, 350, 1);
 
 		battery();
 		digitaltime(420,4,458);

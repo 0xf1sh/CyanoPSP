@@ -317,7 +317,7 @@ void about_menu()
 		controls();	
 
 		oslDrawImageXY(aboutbg, 0, 19);
-		oslDrawImageXY(wificon, 375, 1);
+		oslDrawImageXY(wificon, 350, 1);
 
 		oslDrawString(37,73,"CyanoPSP Updates");
 		oslDrawString(37,87,"Click for, view or install available updates");
@@ -473,7 +473,7 @@ void updates_menu()
 		controls();	
 
 		oslDrawImageXY(updatesbg, 0, 19);
-		oslDrawImageXY(wificon, 375, 1);
+		oslDrawImageXY(wificon, 350, 1);
 		
 		oslDrawString(35,73,"Check for Updates");
 				
@@ -563,7 +563,7 @@ void performance_menu()
 		controls();	
 
 		oslDrawImageXY(performancebg, 0, 19);
-		oslDrawImageXY(wificon, 375, 1);
+		oslDrawImageXY(wificon, 350, 1);
 
 		oslDrawString(40,98,"Processor");
 		oslDrawString(40,161,"Ram Management");
@@ -713,7 +713,7 @@ void processor_menu(int argc, char *argv[])
 		sceCtrlPeekBufferPositive(&pad, 1);
 		
 		oslDrawImageXY(processorbg, 0, 19);
-		oslDrawImageXY(wificon, 375, 1);
+		oslDrawImageXY(wificon, 350, 1);
 		
 		oslDrawString(35,74,"Current CPU Frequency");
 		pspgetcpu_bus();
@@ -831,7 +831,7 @@ void ram_menu(int argc, char *argv[])
 		sceCtrlPeekBufferPositive(&pad, 1);
 		
 		oslDrawImageXY(performancebg, 0, 19);
-		oslDrawImageXY(wificon, 375, 1);
+		oslDrawImageXY(wificon, 350, 1);
 		
 		oslDrawStringf(40,98,"RAM Avilable: %d MB Available\n",oslGetRamStatus().maxAvailable/1000000); 
 	
@@ -1040,7 +1040,7 @@ void DisplayMenu()
 		controls();	
 
 		oslDrawImageXY(themebg, 0, 19);
-		oslDrawImageXY(wificon, 375, 1);
+		oslDrawImageXY(wificon, 350, 1);
 
 		oslDrawString(65,74,"Themes");
 		oslDrawString(65,128,"Styles");
@@ -1137,7 +1137,7 @@ void wifi_menu()
 		controls();	
 
 		oslDrawImageXY(wifibg, 0, 19);
-		oslDrawImageXY(wificon, 375, 1);
+		oslDrawImageXY(wificon, 350, 1);
 
 		if (enabled)
 		{
@@ -1250,7 +1250,7 @@ void developer_menu()
 		controls();	
 
 		oslDrawImageXY(developerbg, 0, 19);
-		oslDrawImageXY(wificon, 375, 1);
+		oslDrawImageXY(wificon, 350, 1);
 		oslDrawImageXY(check, 422, 177);
 
 		oslDrawString(35,62,"Toggle Remote Joy Lite");
@@ -1442,7 +1442,7 @@ int settingsmenu()
 		controls();	
 
 		oslDrawImageXY(settingsbg, 0, 19);
-		oslDrawImageXY(wificon, 375, 1);
+		oslDrawImageXY(wificon, 350, 1);
 
 		wlanstatus();
 		oslDrawString(55,76,"Wi-Fi");

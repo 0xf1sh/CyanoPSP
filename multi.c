@@ -26,7 +26,7 @@ int multitask()
 		controls();
 
 		oslDrawImageXY(background, 0,0);
-		oslDrawImageXY(wificon, 375, 1);
+		oslDrawImageXY(wificon, 350, 1);
 		oslDrawImageXY(multi_task, 0,10);
 		
 		oslDrawString(200,136,"No recent apps");
