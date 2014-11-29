@@ -303,6 +303,8 @@ void about_menu()
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 	
 	setfont();
+	
+	int n = 0;
 
 	while (!osl_quit)
 	{
@@ -391,11 +393,17 @@ void about_menu()
 			updates_menu();
 		}
 		
+		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 95 && cursor->y <= 151 && osl_keys->pressed.cross)
 		{
-			oslDeleteImage(aboutbg);
-			oslDeleteImage(highlight);
-			EasterEgg();
+			if  (osl_keys->pressed.cross)
+				n+=1;
+			if (n == 4)
+			{
+				oslDeleteImage(aboutbg);
+				oslDeleteImage(highlight);
+				EasterEgg();
+			}
 		}
 		
 		if(osl_keys->pressed.select)

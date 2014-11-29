@@ -309,11 +309,11 @@ void androidQuickSettings()
 		
 		if (osl_pad.held.cross && osl_keys->analogY >= 50)
 		{
-			notif_y = notif_y+10;
-			yPos1 = yPos1+10;
-			yPos2 = yPos2+10;
-			yLine1 = yLine1+10;
-			yLine2 = yLine2+10;
+			notif_y = notif_y+6;
+			yPos1 = yPos1+6;
+			yPos2 = yPos2+6;
+			yLine1 = yLine1+6;
+			yLine2 = yLine2+6;
 		}
 			if (notif_y >= 0)
 			{
@@ -341,11 +341,11 @@ void androidQuickSettings()
 	{
 		if (osl_pad.held.cross && osl_keys->analogY <= -50)
 		{
-			notif_y = notif_y-10;
-			yPos1 = yPos1-10;
-			yPos2 = yPos2-10;
-			yLine1 = yLine1-10;
-			yLine2 = yLine2-10;
+			notif_y = notif_y-6;
+			yPos1 = yPos1-6;
+			yPos2 = yPos2-6;
+			yLine1 = yLine1-6;
+			yLine2 = yLine2-6;
 		}
 	}
 }
