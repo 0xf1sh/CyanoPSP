@@ -498,7 +498,7 @@ void ShowPage1()
 		region = chGetRegion();		
 
 		oslDrawStringf(10,20,"Kernel Version: %s (0x%08X)\n\n", FWs[type], sceKernelDevkitVersion());
-		pspgetmodel();
+		pspgetmodel(10,30);
 		oslDrawStringf(10,60,"Module:         %s\n", Modules[model]);      
 		oslDrawStringf(10,70,"Motherboard:    %s\n\n", MBs[mb]);
 		oslDrawStringf(10,80,"Tachyon:        0x%08X\n", tachyon);

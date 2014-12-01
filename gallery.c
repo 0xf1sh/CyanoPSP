@@ -32,6 +32,9 @@ void galleryDisplay()
 	oslDrawImageXY(gallerySelection,15,(current - curScroll)*56+GALLERY_CURR_DISPLAY_Y);
 	oslDrawStringf(56,32,"Photo");
 	
+	battery();
+	digitaltime(420,4,458);
+	
 	// Displays the directories, while also incorporating the scrolling
 	for(i=curScroll;i<MAX_GALLERY_DISPLAY+curScroll;i++) {
 	
@@ -149,13 +152,27 @@ void galleryControls() //Controls
 		showImage(folderIcons[current].filePath);
 	}
 	
-	if (!((stricmp(lastDir, "ms0:/PICTURE")==0) || (stricmp(lastDir, "ms0:/PSP/PHOTO")==0) || (stricmp(lastDir, "ms0:/PSP/GAME/CyanogenMod/screenshots")==0)) && osl_keys->pressed.circle)
-	{
-			dirBack();
-	}
-	else if (osl_keys->pressed.circle)
-	{
-		galleryApp();
+	if (osl_keys->pressed.circle)
+	{		
+			if(!strcmp("ms0:/PICTURE", lastDir)) 
+			{
+				filemanager_unload();
+				appdrawer();
+			}
+			if(!strcmp("ms0:/PSP/PHOTO", lastDir)) 
+			{
+				filemanager_unload();
+				appdrawer();
+			}
+			if(!strcmp("ms0:/PSP/GAME/CyanogenMod/screenshots", lastDir)) 
+			{
+				filemanager_unload();
+				appdrawer();
+			}
+			else
+			{
+				galleryApp();
+			}		
 	}
 	
 	if (osl_keys->pressed.square)
@@ -259,6 +276,9 @@ int galleryApp()
 		oslDrawStringf(25,89,"PICTURE");
 		oslDrawStringf(25,145,"PSP/PHOTO");
 		oslDrawStringf(25,201,"PSP/GAME/CyanogenMod/screenshot");
+		
+		battery();
+		digitaltime(420,4,458);
 		
 		gallerySelection->x = selector_image_x; //Sets the selection coordinates
         gallerySelection->y = selector_image_y; //Sets the selection coordinates

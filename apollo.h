@@ -16,7 +16,7 @@
 #define MP3_CURR_DISPLAY_Y     	90 
 #define MP3DISPLAY_X        20
 
-OSL_IMAGE *mp3bg, *cursor, *wificon, *nowplaying, *mp3_select, *mp3playicon, *mp3pauseicon;
+OSL_IMAGE *mp3bg, *cursor, *nowplaying, *mp3_select, *mp3playicon, *mp3pauseicon;
 OSL_FONT *pgfFont;
 
 int MP3Scan(const char* path);

@@ -7,7 +7,7 @@
 #include "gallery.h"
 #include "screenshot.h"
 
-OSL_IMAGE *background, *cursor, *wificon, *apollo, *gmail, *messengericon, *browser, *google, *calc, *clockx, *email, *people, *calendar, *phone, 
+OSL_IMAGE *background, *cursor, *apollo, *gmail, *messengericon, *browser, *google, *calc, *clockx, *email, *people, *calendar, *phone, 
 		  *gallery, *fb, *settings,*pointer, *pointer1, *isoloadericon, *backicon, *homeicon, *multicon;
 
 void appdrawer_loadImages()
@@ -85,8 +85,6 @@ int appdrawer()
 		controls();	
 
 		oslDrawImage(background);
-		
-		oslDrawImageXY(wificon, 350, 1);
 		oslDrawImageXY(apollo, apollo_x, 35);
 		oslDrawString(apollo_x,85,"Apollo");
 		oslDrawImageXY(browser, browser_x, 35);

@@ -6,7 +6,7 @@
 #include "power_menu.h"
 #include "screenshot.h"
 
-OSL_IMAGE *background, *cursor, *multi_task, *wificon;
+OSL_IMAGE *background, *cursor, *multi_task;
 
 int multitask()
 {	
@@ -26,7 +26,6 @@ int multitask()
 		controls();
 
 		oslDrawImageXY(background, 0,0);
-		oslDrawImageXY(wificon, 350, 1);
 		oslDrawImageXY(multi_task, 0,10);
 		
 		oslDrawString(200,136,"No recent apps");

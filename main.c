@@ -30,7 +30,7 @@
 
 #define ADDRESS "www.google.com"
 
-PSP_MODULE_INFO("CyanoPSP - C",  1, 2, 3);
+PSP_MODULE_INFO("CyanoPSP - C",  1, 2, 4);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU); 
 PSP_HEAP_SIZE_KB(20*1024);
 
@@ -212,11 +212,26 @@ void controls() //Main controller function - allows cursor movement
 
 void battery() // Draws the battery icon depending on its percentage. 
 {
-	int batx = 370;
-	int baty = 2;
+	int batx;
+	int baty;
 	int batteryLife;
 	
 	batteryLife = scePowerGetBatteryLifePercent(); //Gets battery percentage
+	
+	if (batteryLife <= 99)
+	{
+		batx = 376;
+		baty = 2;
+		oslDrawStringf(392, 4,"%d%%",batteryLife);
+		oslDrawImageXY(wificon, 354, 1);
+	}
+	else 
+	{
+	batx = 370;
+	baty = 2;
+	oslDrawStringf(384, 4,"%d%%",batteryLife);
+	oslDrawImageXY(wificon, 351, 1);
+	}
  
 	if (batteryLife == 100)
 		oslDrawImageXY(batt100,batx,baty);
@@ -236,7 +251,7 @@ void battery() // Draws the battery icon depending on its percentage.
 	if (scePowerIsBatteryCharging() == 1) // If the battery's charging, draw the charging icon on the battery icon.
 		oslDrawImageXY(battcharge,batx,baty);
 
-	oslDrawStringf(383, 4,"%d%%",scePowerGetBatteryLifePercent());
+	
 }
 
 void appdrawericon() //Draws the app drawer icon. Draws a different icon of the same size once hovered with the cursor.
@@ -273,6 +288,8 @@ void navbar_buttons() //Draws the navbar buttons in the bottom as seen on androi
 
 void androidQuickSettings()
 {
+	int clickItem = 0;
+
 	oslDrawImageXY(notif,0,notif_y);
 		
 	getDayOfWeek(65,yPos1);
@@ -304,10 +321,38 @@ void androidQuickSettings()
 	
 	if (notif_down == 1)
 	{
-		if (cursor->x >= 445 && cursor->x <= 473 && cursor->y >= 9 && cursor->y <= 33 && osl_pad.held.cross && notif_down == 1)
-		{	
-			notif_2();
-		}
+		if (cursor->x >= 80 && cursor->x <= 158 && cursor->y >= 41 && cursor->y <= 135 && osl_keys->pressed.cross)
+				{	
+					notif_up = 1;
+					notif_down = 0;
+					clickItem = 1;
+					settingsmenu();
+				}
+		
+				if (cursor->x >= 162 && cursor->x <= 239 && cursor->y >= 41 && cursor->y <= 135 && osl_keys->pressed.cross)
+				{	
+					notif_up = 1;
+					notif_down = 0;
+					clickItem = 1;
+					wifi_menu();
+				}
+		
+				if (cursor->x >= 405 && cursor->x <= 480 && cursor->y >= 41 && cursor->y <= 135 && osl_keys->pressed.cross)
+				if (cursor->x >= 445 && cursor->x <= 473 && cursor->y >= 9 && cursor->y <= 33 && osl_keys->pressed.cross && notif_down == 1)
+				{	
+					notif_up = 1;
+					notif_down = 0;
+					clickItem = 1;
+					standby_device();
+				}
+ 		
+				if (cursor->x >= 1 && cursor->x <= 78 && cursor->y >= 138 && cursor->y <= 232 && osl_keys->pressed.cross)
+				{	
+					notif_up = 1;
+					notif_down = 0;
+					clickItem = 1;
+					lockscreen();
+				}
 		
 		if (osl_pad.held.cross && osl_keys->analogY >= 50)
 		{
@@ -321,6 +366,7 @@ void androidQuickSettings()
 			{
 				notif_y = 0;
 			}
+			
 			if (yPos1 >= 10)
 			{
 				yPos1 = 10;
@@ -350,6 +396,15 @@ void androidQuickSettings()
 			yLine2 = yLine2-6;
 		}
 	}
+	
+	if (clickItem == 1)
+		{
+			notif_y = notif_y-6;
+			yPos1 = yPos1-6;
+			yPos2 = yPos2-6;
+			yLine1 = yLine1-6;
+			yLine2 = yLine2-6;
+		}
 }
 
 void notif_2()
@@ -585,7 +640,6 @@ int main()
 			
 		//Print the images onto the screen
 		oslDrawImage(background);		
-		oslDrawImageXY(wificon, 350, 1);
 		oslDrawImageXY(apollo, 105, 190);
 		oslDrawImageXY(browser, 276, 190);
 		oslDrawImageXY(gmail, 331, 190);

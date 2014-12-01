@@ -7,7 +7,7 @@
 #include "power_menu.h"
 #include "screenshot.h"
 
-OSL_IMAGE *cursor, *calcbackground, *wificon;
+OSL_IMAGE *cursor, *calcbackground;
 
 OSL_FONT *pgfFont;
 
@@ -65,9 +65,7 @@ int calculator()
 		
 		controls();	
 
-		oslDrawImageXY(calcbackground, 0, 19);		
-
-		oslDrawImageXY(wificon, 350, 1);
+		oslDrawImageXY(calcbackground, 0, 19);
 		
 		x = 1;
 		

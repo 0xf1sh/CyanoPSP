@@ -1,4 +1,6 @@
 #include <pspkernel.h>
+#include <pspsdk.h>
+#include <psppower.h>
 #include <pspdebug.h>
 #include <pspdisplay.h>
 #include <pspctrl.h>
@@ -415,6 +417,9 @@ void dirDisplay()
 	oslDrawImageXY(filemanagerbg, 0, 19);
 	oslDrawStringf(66, 29, lastDir,RGB(0,0,0)); // Displays the current directory.
 	oslDrawImageXY(bar,0,(current - curScroll)*44+CURR_DISPLAY_Y);
+	
+	battery();
+	digitaltime(420,4,458);
 
 	// Displays the directories, while also incorporating the scrolling
 	for(i=curScroll;i<MAX_DISPLAY+curScroll;i++) {
@@ -496,19 +501,23 @@ void dirDisplay()
 	}
 }
 
-void runGame()
+void LoadExecPBP(char* file)
 {
-struct SceKernelLoadExecVSHParam param;
-		int apitype = 0x141;
-		char *program = "ms0:/PSP/GAME/aplicacion/EBOOT.PBP";
- 
-		memset(&param, 0, sizeof(param));
-		param.size = sizeof(param);
-		param.args = strlen(program)+1;
-		param.argp = program;
-		param.key = "game";
- 
-		sctrlKernelLoadExecVSHWithApitype(apitype, program, &param);
+	struct SceKernelLoadExecVSHParam param;
+	char argp[256];
+	int args;
+
+	strcpy(argp, file);
+	args = strlen(file)+1;
+
+	memset(&param, 0, sizeof(param));
+	param.size = sizeof(param);
+	param.args = args;
+	param.argp = argp;
+	param.key = NULL;
+	param.vshmain_args_size = 0;
+	param.vshmain_args = NULL;
+	sctrlKernelLoadExecVSHMs2(file,&param);
 }
 
 void dirControls() //Controls
@@ -551,15 +560,18 @@ void dirControls() //Controls
 			OptionMenu();
 	}
 	
-	if (osl_keys->pressed.circle && (!(stricmp(lastDir, "ms0:")==0) || (stricmp(lastDir, "ms0:/")==0)))
-	{
-			dirBack();
-	}
+	if (osl_keys->pressed.circle)
+	{		
+			if((!strcmp("ms0:/", lastDir)) || (!strcmp("ms0:", lastDir))) //If pressed circle in root folder
+			{
+				filemanager_unload();
+				appdrawer();
+			}
 	
-	else if(osl_keys->pressed.circle)
-	{
-		filemanager_unload();
-		appdrawer();
+			else
+			{
+				dirBack();
+			}		
 	}
 	
 	if (((ext) != NULL) && ((strcmp(ext ,".png") == 0) || (strcmp(ext ,".jpg") == 0) || (strcmp(ext ,".jpeg") == 0) || (strcmp(ext ,".gif") == 0) || (strcmp(ext ,".PNG") == 0) || (strcmp(ext ,".JPG") == 0) || (strcmp(ext ,".JPEG") == 0) || (strcmp(ext ,".GIF") == 0)) && (osl_keys->pressed.cross))
@@ -569,7 +581,7 @@ void dirControls() //Controls
 	
 	if (((ext) != NULL) && ((strcmp(ext ,".PBP") == 0) || ((strcmp(ext ,".pbp") == 0))) && (osl_keys->pressed.cross))
 	{
-		runGame();
+		LoadExecPBP(folderIcons[current].filePath);
 	}
 	
 	if (((ext) != NULL) && ((strcmp(ext ,".mp3") == 0) || ((strcmp(ext ,".MP3") == 0))) && (osl_keys->pressed.cross))

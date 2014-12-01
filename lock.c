@@ -45,8 +45,6 @@ int lockscreen()
 		controls();	
 
 		oslDrawImage(background);	
-		
-		oslDrawImageXY(wificon, 350, 1);
 		oslDrawImageXY(circles, 223, 240);
 		
 		battery();

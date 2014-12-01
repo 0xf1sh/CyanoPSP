@@ -228,6 +228,9 @@ void MP3Play(char * path)
 		oslDrawStringf(250,71,folderIcons[current].name);
 		display_mp3_info(folderIcons[current].name);
 		
+		battery();
+		digitaltime(420,4,458);
+		
 		if(osl_keys->pressed.select) 
 		{
 			oslDeleteImage(nowplaying);
@@ -358,17 +361,19 @@ void mp3Controls() //Controls
 	
 	char * ext = strrchr(folderIcons[current].filePath, '.'); 
 	
-	if (!(stricmp(lastDir, "ms0:/MUSIC")==0) && osl_keys->pressed.circle)
-	{
-			dirBack();
-	}
-	
-	else if ((stricmp(lastDir, "ms0:/MUSIC")==0) && osl_keys->pressed.circle)
-	{
-		oslDeleteImage(mp3bg);
-		oslDeleteImage(mp3_select);
-		oslDeleteFont(pgfFont);
-		appdrawer();
+	if (osl_keys->pressed.circle)
+	{		
+			if(!strcmp("ms0:/MUSIC", lastDir))
+			{
+				oslDeleteImage(mp3bg);
+			oslDeleteImage(mp3_select);
+			oslDeleteFont(pgfFont);
+			appdrawer();
+			}
+			else
+			{
+				dirBack();
+			}		
 	}
 	
 	if (((ext) != NULL) && ((strcmp(ext ,".mp3") == 0) || ((strcmp(ext ,".MP3") == 0))) && (osl_keys->pressed.cross))
@@ -410,7 +415,7 @@ void mp3Controls() //Controls
 
 char * mp3Browse(const char * path)
 {
-	MP3Scan(path);
+	folderScan(path);
 	dirVars();
 	
 	while (!osl_quit)

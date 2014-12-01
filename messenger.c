@@ -7,7 +7,7 @@
 #include "power_menu.h"
 #include "screenshot.h"
 
-OSL_IMAGE *messengerbg, *new_message, *cursor, *wificon;
+OSL_IMAGE *messengerbg, *new_message, *cursor;
 OSL_FONT *pgfFont;
 
 //Prints some info:
@@ -258,7 +258,6 @@ void newmessage()
 		controls();	
 
 		oslDrawImageXY(new_message, 0, 19);
-		oslDrawImageXY(wificon, 350, 1);
 		
 		digitaltime(420,4,458);
 
@@ -293,6 +292,11 @@ void newmessage()
 		if (osl_pad.held.R && osl_keys->pressed.triangle)
 		{
 			screenshot();
+		}
+		
+		if (cursor->x >= 7 && cursor->x <= 435 && cursor->y >= 55 && cursor->y <= 86 && osl_keys->pressed.cross)
+		{
+			doServer();
 		}
 		
 		oslDrawString(14, 245, message);
@@ -350,7 +354,6 @@ int messenger()
 		controls();	
 
 		oslDrawImageXY(messengerbg, 0, 19);
-		oslDrawImageXY(wificon, 350, 1);
 
 		battery();
 		digitaltime(420,4,458);
@@ -400,6 +403,12 @@ int messenger()
 		{
 			oslDeleteImage(messengerbg);
 			newmessage();
+		}
+		
+		if (cursor->x >= 378 && cursor->x <= 434 && cursor->y >= 20 && cursor->y <= 52 && osl_keys->pressed.cross)
+		{
+			oslDeleteImage(messengerbg);
+			doClient();
 		}
 
         if (osl_keys->released.triangle && oslIsWlanPowerOn())

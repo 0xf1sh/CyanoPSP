@@ -6,7 +6,7 @@
 #include "power_menu.h"
 #include "screenshot.h"
 
-OSL_IMAGE *background, *cursor, *ic_allapps, *ic_allapps_pressed, *wificon, *apollo, *gmail, *messengericon, *browser, *google, *pointer, *pointer1, 
+OSL_IMAGE *background, *cursor, *ic_allapps, *ic_allapps_pressed, *apollo, *gmail, *messengericon, *browser, *google, *pointer, *pointer1, 
 		  *backicon, *homeicon, *multicon;
 
 void homeUnload()
@@ -25,13 +25,12 @@ int home()
 	while (!osl_quit)
 	{
 		LowMemExit();
-	
+		
 		oslStartDrawing();
 
 		controls();	
 		
 		oslDrawImage(background);	
-		oslDrawImageXY(wificon, 350, 1);
 		oslDrawImageXY(apollo, 105, 190);
 		oslDrawImageXY(browser, 276, 190);
 		oslDrawImageXY(gmail, 331, 190);

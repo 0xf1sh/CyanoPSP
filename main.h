@@ -10,6 +10,7 @@ int yLine1 = -272;
 int yLine2 = -272;
 
 //function declarations
+SceSize sysKernelPartitionMaxFreeMemSize(int pid);
 void oslPrintTextDiffColors(int x, int y, char * text, OSL_COLOR color);
 void controls();
 void internet();

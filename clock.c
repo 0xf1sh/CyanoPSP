@@ -9,7 +9,7 @@
 #include "power_menu.h"
 #include "screenshot.h"
 
-OSL_IMAGE *clockbg, *cursor, *wificon, *stop_watch,  *backicon, *homeicon, *multicon;
+OSL_IMAGE *clockbg, *cursor, *stop_watch,  *backicon, *homeicon, *multicon;
 OSL_FONT *clockFont;
 
 int hour = 0;
@@ -225,7 +225,6 @@ void stopWatch()
 		controls();	
 		
 		oslDrawImageXY(stop_watch, 0, 19);
-		oslDrawImageXY(wificon, 350, 1);
 
 		battery();
 		navbar_buttons();
@@ -326,7 +325,6 @@ int pspclock()
 		controls();	
 		
 		oslDrawImageXY(clockbg, 0, 19);
-		oslDrawImageXY(wificon, 350, 1);
 
 		battery();
 		navbar_buttons();

@@ -1,7 +1,7 @@
 #include "power_menu.h"
 #include "lock.h"
 
-OSL_IMAGE *background, *cursor, *wificon, *power, *apollo, *gmail, *messengericon, *browser, *pointer;
+OSL_IMAGE *background, *cursor, *power, *apollo, *gmail, *messengericon, *browser, *pointer;
 
 void power_off()
 {
@@ -12,7 +12,7 @@ int powermenu()
 {	
 	power = oslLoadImageFilePNG("system/home/menu/power.png", OSL_IN_RAM, OSL_PF_8888);
 
-	if (!cursor || !wificon || !power)
+	if (!power)
 		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
 
 	while (!osl_quit)
@@ -24,7 +24,6 @@ int powermenu()
 		controls();	
 		
 		oslDrawImage(background);
-		oslDrawImageXY(wificon, 350, 1);
 		oslDrawImageXY(apollo, 105, 190);
 		oslDrawImageXY(browser, 276, 190);
 		oslDrawImageXY(gmail, 331, 190);
