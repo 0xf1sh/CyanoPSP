@@ -37,7 +37,7 @@ PSP_HEAP_SIZE_KB(20*1024);
 //declaration
 OSL_IMAGE *background, *cursor, *ic_allapps, *ic_allapps_pressed, *navbar, *wificon, *apollo, *gmail, *messengericon, *browser, *google, *notif, *batt100, 
 		  *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon, *usbdebug, 
-		  *recoverybg, *welcome, *ok, *transbackground, *notif2 , *wifibg;
+		  *recoverybg, *welcome, *ok, *transbackground, *notif2 , *wifibg, *playing;
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -250,7 +250,9 @@ void battery() // Draws the battery icon depending on its percentage.
 			
 	if (scePowerIsBatteryCharging() == 1) // If the battery's charging, draw the charging icon on the battery icon.
 		oslDrawImageXY(battcharge,batx,baty);
-
+	
+	if (isPlaying == 1)
+		oslDrawImageXY(playing,5,5);
 	
 }
 
@@ -288,8 +290,6 @@ void navbar_buttons() //Draws the navbar buttons in the bottom as seen on androi
 
 void androidQuickSettings()
 {
-	int clickItem = 0;
-
 	oslDrawImageXY(notif,0,notif_y);
 		
 	getDayOfWeek(65,yPos1);
@@ -314,46 +314,15 @@ void androidQuickSettings()
 		notif_down = 1;
 	}
 	
-	if (osl_pad.held.cross && cursor->x >= 0 && cursor->x <= 480&& cursor->y >= 250 && notif_y == 0)
+	if (osl_pad.held.cross && cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 250 && notif_y == 0)
 	{
 		notif_up = 1;
 	}
 	
 	if (notif_down == 1)
 	{
-		if (cursor->x >= 80 && cursor->x <= 158 && cursor->y >= 41 && cursor->y <= 135 && osl_keys->pressed.cross)
-				{	
-					notif_up = 1;
-					notif_down = 0;
-					clickItem = 1;
-					settingsmenu();
-				}
-		
-				if (cursor->x >= 162 && cursor->x <= 239 && cursor->y >= 41 && cursor->y <= 135 && osl_keys->pressed.cross)
-				{	
-					notif_up = 1;
-					notif_down = 0;
-					clickItem = 1;
-					wifi_menu();
-				}
-		
-				if (cursor->x >= 405 && cursor->x <= 480 && cursor->y >= 41 && cursor->y <= 135 && osl_keys->pressed.cross)
-				if (cursor->x >= 445 && cursor->x <= 473 && cursor->y >= 9 && cursor->y <= 33 && osl_keys->pressed.cross && notif_down == 1)
-				{	
-					notif_up = 1;
-					notif_down = 0;
-					clickItem = 1;
-					standby_device();
-				}
- 		
-				if (cursor->x >= 1 && cursor->x <= 78 && cursor->y >= 138 && cursor->y <= 232 && osl_keys->pressed.cross)
-				{	
-					notif_up = 1;
-					notif_down = 0;
-					clickItem = 1;
-					lockscreen();
-				}
-		
+	
+	
 		if (osl_pad.held.cross && osl_keys->analogY >= 50)
 		{
 			notif_y = notif_y+6;
@@ -383,10 +352,51 @@ void androidQuickSettings()
 			{
 				yLine2 = 200;
 			}
+			
+				if (cursor->x >= 80 && cursor->x <= 158 && cursor->y >= 41 && cursor->y <= 135 && osl_keys->pressed.cross)
+				{	
+					notif_y = notif_y-272;
+					yPos1 = yPos1-272;
+					yPos2 = yPos2-272;
+					yLine1 = yLine1-272;
+					yLine2 = yLine2-272;
+					settingsmenu();
+				}
+		
+				if (cursor->x >= 162 && cursor->x <= 239 && cursor->y >= 41 && cursor->y <= 135 && osl_keys->pressed.cross)
+				{	
+					notif_y = notif_y-272;
+					yPos1 = yPos1-272;
+					yPos2 = yPos2-272;
+					yLine1 = yLine1-272;
+					yLine2 = yLine2-272;
+					wifi_menu();
+				}
+				
+				if (cursor->x >= 445 && cursor->x <= 473 && cursor->y >= 9 && cursor->y <= 33 && osl_keys->pressed.cross && notif_down == 1)
+				{	
+					notif_y = notif_y-272;
+					yPos1 = yPos1-272;
+					yPos2 = yPos2-272;
+					yLine1 = yLine1-272;
+					yLine2 = yLine2-272;
+					standby_device();
+				}
+ 		
+				if (cursor->x >= 1 && cursor->x <= 78 && cursor->y >= 138 && cursor->y <= 232 && osl_keys->pressed.cross)
+				{	
+					notif_y = notif_y-272;
+					yPos1 = yPos1-272;
+					yPos2 = yPos2-272;
+					yLine1 = yLine1-272;
+					yLine2 = yLine2-272;
+					lockscreen();
+				}
+			
 	}
 	
 	if (notif_up == 1)
-	{
+	{		
 		if (osl_pad.held.cross && osl_keys->analogY <= -50)
 		{
 			notif_y = notif_y-6;
@@ -395,16 +405,16 @@ void androidQuickSettings()
 			yLine1 = yLine1-6;
 			yLine2 = yLine2-6;
 		}
-	}
-	
-	if (clickItem == 1)
-		{
-			notif_y = notif_y-6;
-			yPos1 = yPos1-6;
-			yPos2 = yPos2-6;
-			yLine1 = yLine1-6;
-			yLine2 = yLine2-6;
+		
+		if (notif_y <= -272)
+		{	
+			notif_y = -272;
+			yPos1 = -272;
+			yPos2 = -272;
+			yLine1 = -272;
+			yLine2 = -272;
 		}
+	}
 }
 
 void notif_2()
@@ -612,6 +622,8 @@ int main()
 	welcome = oslLoadImageFilePNG("system/home/icons/welcome.png", OSL_IN_RAM, OSL_PF_8888);
 	ok = oslLoadImageFilePNG("system/home/icons/ok.png", OSL_IN_RAM, OSL_PF_8888);
 	transbackground = oslLoadImageFilePNG("system/home/icons/transbackground.png", OSL_IN_RAM, OSL_PF_8888);
+	playing = oslLoadImageFilePNG("system/home/icons/playing.png", OSL_IN_RAM, OSL_PF_8888);
+	
 	DroidSans = oslLoadIntraFontFile("system/fonts/DroidSans.pgf", INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8);
 
 	//Debugger - Displays an error message if the following resources are missing.
