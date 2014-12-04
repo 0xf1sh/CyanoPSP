@@ -36,7 +36,7 @@ PSP_HEAP_SIZE_KB(20*1024);
 
 //declaration
 OSL_IMAGE *background, *cursor, *ic_allapps, *ic_allapps_pressed, *navbar, *wificon, *apollo, *gmail, *messengericon, *browser, *google, *notif, *batt100, 
-		  *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon, *usbdebug, 
+		  *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon, *usbdebug, *quickSettings,
 		  *recoverybg, *welcome, *ok, *transbackground, *notif2 , *wifibg, *playing;
 
 //definition of our sounds
@@ -256,7 +256,7 @@ void battery() // Draws the battery icon depending on its percentage.
 	
 }
 
-void appdrawericon() //Draws the app drawer icon. Draws a different icon of the same size once hovered with the cursor.
+void appDrawerIcon() //Draws the app drawer icon. Draws a different icon of the same size once hovered with the cursor.
 {
 	if (cursor->x  >= 215 && cursor->x  <= 243 && cursor->y >= 195 && cursor->y <= 230)
 		oslDrawImageXY(ic_allapps_pressed,218,197);
@@ -265,7 +265,7 @@ void appdrawericon() //Draws the app drawer icon. Draws a different icon of the 
 		oslDrawImageXY(ic_allapps,218,197);
 }
 
-void navbar_buttons() //Draws the navbar buttons in the bottom as seen on androids.
+void navbarButtons() //Draws the navbar buttons in the bottom as seen on androids.
 {		
 	oslDrawImageXY(navbar, 109, 237);
 		
@@ -290,7 +290,11 @@ void navbar_buttons() //Draws the navbar buttons in the bottom as seen on androi
 
 void androidQuickSettings()
 {
-	oslDrawImageXY(notif,0,notif_y);
+	int notif_up;
+	int notif_down;
+	int notif_enabled;
+
+	oslDrawImageXY(quickSettings,0,notif_y);
 		
 	getDayOfWeek(65,yPos1);
 	getMonthOfYear(65,yPos2+5);
@@ -309,20 +313,20 @@ void androidQuickSettings()
 		
 	digitaltime(2,yPos1,40);
 	
-	if (osl_pad.held.cross && cursor->x >= 0 && cursor->x <= 480 && cursor->y <= 1) 
+	notif_enabled = 0;
+	
+	if (osl_pad.held.cross && cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 0 && cursor->y <= 1) 
 	{
 		notif_down = 1;
 	}
-	
-	if (osl_pad.held.cross && cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 250 && notif_y == 0)
+
+	else if (osl_pad.held.cross && cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 250 && notif_y == 0)
 	{
 		notif_up = 1;
 	}
-	
+
 	if (notif_down == 1)
-	{
-	
-	
+	{				
 		if (osl_pad.held.cross && osl_keys->analogY >= 50)
 		{
 			notif_y = notif_y+6;
@@ -353,6 +357,14 @@ void androidQuickSettings()
 				yLine2 = 200;
 			}
 			
+			if (yLine2 == 200)
+			{
+				notif_enabled = 1;
+			}
+	}
+	
+	if (notif_enabled ==1)
+			{
 				if (cursor->x >= 80 && cursor->x <= 158 && cursor->y >= 41 && cursor->y <= 135 && osl_keys->pressed.cross)
 				{	
 					notif_y = notif_y-272;
@@ -360,7 +372,7 @@ void androidQuickSettings()
 					yPos2 = yPos2-272;
 					yLine1 = yLine1-272;
 					yLine2 = yLine2-272;
-					settingsmenu();
+					settingsMenu();
 				}
 		
 				if (cursor->x >= 162 && cursor->x <= 239 && cursor->y >= 41 && cursor->y <= 135 && osl_keys->pressed.cross)
@@ -370,7 +382,7 @@ void androidQuickSettings()
 					yPos2 = yPos2-272;
 					yLine1 = yLine1-272;
 					yLine2 = yLine2-272;
-					wifi_menu();
+					wifiMenu();
 				}
 				
 				if (cursor->x >= 445 && cursor->x <= 473 && cursor->y >= 9 && cursor->y <= 33 && osl_keys->pressed.cross && notif_down == 1)
@@ -380,7 +392,7 @@ void androidQuickSettings()
 					yPos2 = yPos2-272;
 					yLine1 = yLine1-272;
 					yLine2 = yLine2-272;
-					standby_device();
+					deviceStandby();
 				}
  		
 				if (cursor->x >= 1 && cursor->x <= 78 && cursor->y >= 138 && cursor->y <= 232 && osl_keys->pressed.cross)
@@ -392,11 +404,12 @@ void androidQuickSettings()
 					yLine2 = yLine2-272;
 					lockscreen();
 				}
-			
-	}
+			}
 	
 	if (notif_up == 1)
 	{		
+		notif_enabled = 0;
+		
 		if (osl_pad.held.cross && osl_keys->analogY <= -50)
 		{
 			notif_y = notif_y-6;
@@ -554,7 +567,7 @@ void firstBootMessage()
 		oslDeleteImage(welcome);
 		oslDeleteImage(ok);
 		oslDeleteImage(transbackground);
-		unloadicons();
+		unloadIcons();
 		home();
 	}
 }
@@ -565,13 +578,13 @@ void setfont() //Sets the main font (size and color) used in the app
 	oslSetFont(DroidSans);
 }
 
-void loadicons() // Loading the app drawer icons.
+void loadIcons() // Loading the app drawer icons.
 {
 	ic_allapps = oslLoadImageFilePNG("system/framework/framework-res/res/drawable-hdpi/ic_allapps.png", OSL_IN_RAM, OSL_PF_8888);
 	ic_allapps_pressed = oslLoadImageFile("system/framework/framework-res/res/drawable-hdpi/ic_allapps_pressed.png", OSL_IN_RAM, OSL_PF_8888);
 }
 
-void unloadicons() //Deleting the app drawer icons to save memory.
+void unloadIcons() //Deleting the app drawer icons to save memory.
 {
 	oslDeleteImage(ic_allapps);
 	oslDeleteImage(ic_allapps_pressed);
@@ -595,7 +608,7 @@ int main()
 	tone = oslLoadSoundFile("system/media/audio/ui/KeypressStandard.wav", OSL_FMT_NONE);
 
 	//Loads our images into memory
-	loadicons();
+	loadIcons();
 	background = oslLoadImageFilePNG("system/framework/framework-res/res/background.png", OSL_IN_RAM, OSL_PF_8888);
 	cursor = oslLoadImageFilePNG("system/cursor/cursor.png", OSL_IN_VRAM, OSL_PF_8888);
 	navbar = oslLoadImageFile("system/home/icons/nav.png", OSL_IN_VRAM, OSL_PF_8888);
@@ -604,8 +617,8 @@ int main()
 	gmail = oslLoadImageFilePNG("system/home/icons/gmail.png", OSL_IN_RAM, OSL_PF_8888);
 	messengericon = oslLoadImageFilePNG("system/home/icons/message.png", OSL_IN_RAM, OSL_PF_8888);
 	browser = oslLoadImageFile("system/home/icons/browser.png", OSL_IN_RAM, OSL_PF_8888);
-	notif = oslLoadImageFile("system/home/menu/notif2.png", OSL_IN_VRAM, OSL_PF_8888);
-	notif2 = oslLoadImageFile("system/home/menu/notif.png", OSL_IN_RAM, OSL_PF_8888);
+	quickSettings = oslLoadImageFile("system/home/menu/quickSettings.png", OSL_IN_VRAM, OSL_PF_8888);
+	notif = oslLoadImageFile("system/home/menu/notif.png", OSL_IN_RAM, OSL_PF_8888);
 	batt100 = oslLoadImageFile("system/home/icons/100.png", OSL_IN_VRAM, OSL_PF_8888);
 	batt80 = oslLoadImageFile("system/home/icons/80.png", OSL_IN_VRAM, OSL_PF_8888);
 	batt60 = oslLoadImageFile("system/home/icons/60.png", OSL_IN_VRAM, OSL_PF_8888);
@@ -663,13 +676,13 @@ int main()
 		//Sets the transparency color (black)
 		oslSetTransparentColor(RGB(0,0,0));
 		
-		appdrawericon();
+		appDrawerIcon();
 		
 		//Disables the transparent color
 		oslDisableTransparentColor();
 		
 		battery();
-		navbar_buttons();
+		navbarButtons();
 		androidQuickSettings();
 		firstBootMessage();
 		oslDrawImage(cursor);
@@ -682,32 +695,32 @@ int main()
 		//Launching the browser
 		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 190 && cursor->y <= 240 && osl_keys->pressed.cross) //Launches the internet
 		{
-			unloadicons();
+			unloadIcons();
 			internet();
 		}
 		
 		
 		if (cursor->x >= 330 && cursor->x <= 374 && cursor->y >= 190 && cursor->y <= 240 && osl_keys->pressed.cross) //Opens Gmail
 		{
-			unloadicons();
+			unloadIcons();
 			openGmail();
 		}
 		
 		if (cursor->x >= 100 && cursor->x <= 154 && cursor->y >= 190 && cursor->y <= 240 && osl_keys->pressed.cross) //Opens apollo MP3 player
 		{
-			unloadicons();
+			unloadIcons();
 			mp3player();
 		}
 		
 		if (cursor->x >= 155 && cursor->x <= 210 && cursor->y >= 190 && cursor->y <= 240 && osl_keys->pressed.cross) //Opens messenger
 		{
-			unloadicons();
+			unloadIcons();
 			messenger();
 		}
 			
 		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_keys->pressed.cross) //Opens app drawer
 		{
-			unloadicons();
+			unloadIcons();
 			appdrawer();
 		}
 		
@@ -718,7 +731,7 @@ int main()
 		
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross) // Opens multi-task menu
 		{
-			unloadicons();
+			unloadIcons();
 			multitask();
 		}
 		
