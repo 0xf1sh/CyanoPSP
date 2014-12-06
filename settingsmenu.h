@@ -1,6 +1,6 @@
+int benchmarkDebugActivate;
 void onlineUpdater();
-void wlanStatus();
-void wlanStatus1();
+void wlanStatus(int n);
 void loadConfig();
 void saveConfig();
 void changer(int set);

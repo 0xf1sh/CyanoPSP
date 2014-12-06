@@ -10,10 +10,10 @@ void powermenu()
 	power1 = oslLoadImageFilePNG("system/home/menu/power1.png", OSL_IN_RAM, OSL_PF_8888);
 	recovery1 = oslLoadImageFilePNG("system/home/menu/recovery1.png", OSL_IN_RAM, OSL_PF_8888);
 	screenshot1 = oslLoadImageFilePNG("system/home/menu/screenshot1.png", OSL_IN_RAM, OSL_PF_8888);
-		
+	
 	if (!power || !power1 || !recovery1 || !screenshot1)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");	
-		
+		debugDisplay();
+
 	while (!osl_quit)
 	{
 		LowMemExit();
@@ -103,7 +103,7 @@ void PowerOffMenu()
 	cancelPowerOff = oslLoadImageFilePNG("system/home/menu/cancelPowerOff.png", OSL_IN_RAM, OSL_PF_8888);
 		
 	if (!powerOff || !okPowerOff || !cancelPowerOff)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+		debugDisplay();
 
 	while (!osl_quit)
 	{

@@ -74,7 +74,7 @@ int appdrawer()
 	int highlight = 0;
 	
 	if (!clockx || !settings || !email || !gallery || !calc || !phone || !calendar || !people || !fb || !isoloadericon)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+		debugDisplay();
 		
 	while (!osl_quit)
 	{

@@ -53,7 +53,7 @@ int calculator()
 	calcbackground = oslLoadImageFile("system/app/calculator/calcbg.png", OSL_IN_RAM, OSL_PF_8888);
 
 	if (!calcbackground)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+		debugDisplay();
 		
 	while (!osl_quit)
 	{

@@ -9,13 +9,13 @@
 OSL_IMAGE *background, *cursor, *ic_allapps, *ic_allapps_pressed, *apollo, *gmail, *messengericon, *browser, *google, *pointer, *pointer1, 
 		  *backicon, *homeicon, *multicon;
 
-void homeUnload()
+void homeUnloadResources()
 {
 	oslDeleteImage(ic_allapps);
 	oslDeleteImage(ic_allapps_pressed);
 }
 
-int home()
+void home()
 {	
 	ic_allapps = oslLoadImageFilePNG("system/framework/framework-res/res/drawable-hdpi/ic_allapps.png", OSL_IN_RAM, OSL_PF_8888);
 	ic_allapps_pressed = oslLoadImageFile("system/framework/framework-res/res/drawable-hdpi/ic_allapps_pressed.png", OSL_IN_RAM, OSL_PF_8888);
@@ -36,7 +36,7 @@ int home()
 		oslDrawImageXY(gmail, 331, 190);
 		oslDrawImageXY(messengericon, 160, 190);
 		oslDrawImageXY(pointer, 230, 180);
-		
+				
 		digitaltime(420,4,458);
 		appDrawerIcon();
 		battery();
@@ -51,31 +51,31 @@ int home()
 
 		if (cursor->x >= 276 && cursor->x <= 321 && cursor->y >= 195 && cursor->y <= 240 && osl_keys->pressed.cross)
 		{
-			homeUnload();
+			homeUnloadResources();
 			internet();
 		}
 		
 		if (cursor->x >= 330 && cursor->x <= 374 && cursor->y >= 190 && cursor->y <= 240 && osl_keys->pressed.cross)
 		{
-			homeUnload();
+			homeUnloadResources();
 			openGmail();
 		}
 		
 		if (cursor->x >= 100 && cursor->x <= 154 && cursor->y >= 195 && cursor->y <= 240 && osl_keys->pressed.cross)
 		{
-			homeUnload();
+			homeUnloadResources();
 			mp3player();
 		}
 		
 		if (cursor->x >= 155 && cursor->x <= 210 && cursor->y >= 195 && cursor->y <= 240 && osl_keys->pressed.cross)
 		{
-			homeUnload();
+			homeUnloadResources();
 			messenger();
 		}
 			
 		if (cursor->x >= 215 && cursor->x <= 243 && cursor->y >= 195 && cursor->y <= 230 && osl_keys->pressed.cross)
 		{
-			homeUnload();
+			homeUnloadResources();
 			appdrawer();
 		}
 

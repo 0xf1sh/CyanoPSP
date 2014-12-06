@@ -69,10 +69,13 @@ void showImage(const char * path)
 	int zoomIn = 0, zoomOut = 0;
 
 	OSL_IMAGE * image = oslLoadImageFile(path, OSL_IN_RAM, OSL_PF_8888);
-	OSL_IMAGE * gallerybar = oslLoadImageFilePNG("system/app/gallery/galleryBar.png", OSL_IN_RAM, OSL_PF_8888);
+	OSL_IMAGE * galleryBar = oslLoadImageFilePNG("system/app/gallery/galleryBar.png", OSL_IN_RAM, OSL_PF_8888);
 	 
 	if(!image)
 		return 0;
+		
+	if (!galleryBar)
+		debugDisplay();
 	
 	//Draw image in the centre
 	oslSetImageRotCenter(image);
@@ -86,7 +89,7 @@ void showImage(const char * path)
 		
 		oslClearScreen(RGB(255,255,255));
 		oslDrawImage(image);//draw image
-		oslDrawImageXY(gallerybar,0,0);
+		oslDrawImageXY(galleryBar,0,0);
 		oslDrawStringf(40,12,folderIcons[current].name);
 		
 		oslEndDrawing(); 
@@ -108,7 +111,7 @@ void showImage(const char * path)
 		if (osl_keys->pressed.circle) 
 		{
 			oslDeleteImage(image);
-			oslDeleteImage(gallerybar);
+			oslDeleteImage(galleryBar);
 			return;
 		}
 		
@@ -251,6 +254,9 @@ int galleryApp()
 	pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
 	oslSetFont(pgfFont);
+	
+	if (!gallerybg || !gallerySelection || !galleryThumbnail)
+		debugDisplay();
 	
 	int MenuSelection = 1; // Pretty obvious
 	int selector_x = 15; //The x position of the first selection

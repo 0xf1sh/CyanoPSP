@@ -7,7 +7,7 @@
 #define galley_xSelection 0 //The distance between the X axis of the two selections
 #define galley_ySelection 56 //The distance between the Y axis of the two selections
 
-OSL_IMAGE *gallerybg, *gallerySelection, *galleryThumbnail, *gallerybar;
+OSL_IMAGE *gallerybg, *gallerySelection, *galleryThumbnail, *galleryBar;
 OSL_FONT *pgfFont;
 
 SceCtrlData pad, oldpad;

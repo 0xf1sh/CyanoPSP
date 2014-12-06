@@ -145,82 +145,91 @@ void OptionMenu()
 {
 	action = oslLoadImageFilePNG("system/app/filemanager/actions.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	while (!osl_quit) {
-	oslStartDrawing();	
-	oslDrawImageXY(action, 98,47);
-	oslDrawStringf(120,105,"Press X");
-	oslDrawStringf(120,115,"to Copy");
-	oslDrawStringf(260,105,"Press Triangle");
-	oslDrawStringf(260,115,"to Cut");
+	if (!action)
+		debugDisplay();
 	
-	oslDrawStringf(120,150,"Press Square");
-	oslDrawStringf(120,160,"to Delete");
-	oslDrawStringf(260,150,"Press Circle");
-	oslDrawStringf(260,160,"to Rename");
-	oslDrawStringf(165,200,"Press Select to Cancel");
-	
-	oslReadKeys();
-	
-	if (osl_keys->pressed.cross) 
+	while (!osl_quit)
 	{
+		oslStartDrawing();	
+		oslDrawImageXY(action, 98,47);
+		oslDrawStringf(120,105,"Press X");
+		oslDrawStringf(120,115,"to Copy");
+		oslDrawStringf(260,105,"Press Triangle");
+		oslDrawStringf(260,115,"to Cut");
+	
+		oslDrawStringf(120,150,"Press Square");
+		oslDrawStringf(120,160,"to Delete");
+		oslDrawStringf(260,150,"Press Circle");
+		oslDrawStringf(260,160,"to Rename");
+		oslDrawStringf(165,200,"Press Select to Cancel");
+	
+		oslReadKeys();
+	
+		if (osl_keys->pressed.cross) 
+		{
 			fcopy(folderIcons[current].filePath);
 			oslDeleteImage(action);
 			refresh();
-	}
+		}
 	
 
-	else if (osl_keys->pressed.triangle) 
-	{
+		else if (osl_keys->pressed.triangle) 
+		{
 			oslDeleteImage(action);
 			refresh();
-	}
+		}
 
-	else if (osl_keys->pressed.square) 
-	{
+		else if (osl_keys->pressed.square) 
+		{
 			DeleteFile(folderIcons[current].filePath);
-	}
+		}
 	
-	else if (osl_keys->pressed.circle) 
-	{
+		else if (osl_keys->pressed.circle) 
+		{
 			oslDeleteImage(action);
 			refresh();
-	}
+		}
 	
-	else if (osl_keys->pressed.select) 
-	{
+		else if (osl_keys->pressed.select) 
+		{
 			oslDeleteImage(action);
 			return;
-	}
-	
+		}
 	oslEndDrawing();
 	oslSyncFrame();	
 	}
-};
+}
 
 void DeleteFile(const char * path)
 {
 	deletion = oslLoadImageFilePNG("system/app/filemanager/deletion.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	while (!osl_quit) {
-	oslStartDrawing();	
-	oslDrawImageXY(deletion, 96,59);
-	oslDrawStringf(116,125,"This action cannot be undone. Do you");
-	oslDrawStringf(116,135,"want to continue?");
+	if (!deletion)
+		debugDisplay();
 	
-	oslDrawStringf(130,180,"Press circle");
-	oslDrawStringf(130,190,"to cancel");
-	oslDrawStringf(270,180,"Press cross");
-	oslDrawStringf(270,190,"to confirm");
+	while (!osl_quit) 
+	{
+		oslStartDrawing();	
+		oslDrawImageXY(deletion, 96,59);
+		oslDrawStringf(116,125,"This action cannot be undone. Do you");
+		oslDrawStringf(116,135,"want to continue?");
 	
-	oslReadKeys();
+		oslDrawStringf(130,180,"Press circle");
+		oslDrawStringf(130,190,"to cancel");
+		oslDrawStringf(270,180,"Press cross");
+		oslDrawStringf(270,190,"to confirm");
+		
+		oslReadKeys();
 	
-	if (osl_keys->pressed.cross) {
+		if (osl_keys->pressed.cross) 
+		{
 			sceIoRemove(path);
 			oslDeleteImage(deletion);
 			refresh();
 		}
 
-	else if (osl_keys->pressed.circle) {
+		else if (osl_keys->pressed.circle) 
+		{
 			oslDeleteImage(deletion);
 			return;
 		}
@@ -228,33 +237,33 @@ void DeleteFile(const char * path)
     oslEndFrame(); 
 	oslSyncFrame();	
 	}
-};
+}
 
 void recursiveDelete(const char *dir) 
 { 
- int fd; 
- SceIoDirent dirent; 
- fd = sceIoDopen(dir); 
- char fullname[512]; 
-
-  memset(&dirent, 0, sizeof dirent);
+int fd; 
+SceIoDirent dirent; 
+fd = sceIoDopen(dir); 
+char fullname[512]; 
+memset(&dirent, 0, sizeof dirent);
  
- while (!osl_quit) // && sceIoDread(fd, &dirent) > 0
- { 
-  sprintf(fullname, "%s/%s", dir, dirent.d_name); 
+	while (!osl_quit) // && sceIoDread(fd, &dirent) > 0
+	{ 
+		sprintf(fullname, "%s/%s", dir, dirent.d_name); 
  
-   if ((FIO_S_IFREG & (dirent.d_stat.st_mode & FIO_S_IFMT)) == 0) 
-      { 
-             recursiveDelete(fullname); 
-             printf("Deleting directory: %s\n", fullname); 
-             sceIoRmdir(fullname); 
-         } 
-  else 
-      { 
-      printf("Deleting file: %s %i\n", fullname, FIO_S_IFREG & (dirent.d_stat.st_mode & FIO_S_IFMT)); 
-      sceIoRemove(fullname); 
-      } 
-  } 
+		if ((FIO_S_IFREG & (dirent.d_stat.st_mode & FIO_S_IFMT)) == 0) 
+		{ 
+			recursiveDelete(fullname); 
+			printf("Deleting directory: %s\n", fullname); 
+			sceIoRmdir(fullname); 
+		} 
+	
+		else 
+		{ 
+			printf("Deleting file: %s %i\n", fullname, FIO_S_IFREG & (dirent.d_stat.st_mode & FIO_S_IFMT)); 
+			sceIoRemove(fullname); 
+		} 
+	}	 
  sceIoDclose(fd); 
  sceIoRmdir(dir); 
 }
@@ -319,41 +328,46 @@ char *getTextFromFile()
 void displayTextFromFile()
 {
 	textview = oslLoadImageFilePNG("system/app/filemanager/textview.png", OSL_IN_RAM, OSL_PF_8888);
+	
+	if (!textview)
+		debugDisplay();
 
 	while (!osl_quit)
-  {
-
-	oslStartDrawing();	
-	oslReadKeys();
-	
-	oslClearScreen(RGB(0,0,0));
-	oslDrawImageXY(textview,0,19);
-	
-	if(checkTextFile(folderIcons[current].filePath) == -1)
-	   oslDrawStringf(40,33,"Unable to Open");
-
-	oslDrawStringf(40,33,folderIcons[current].name);	
-    oslDrawStringf(10,55," \n%s", getTextFromFile());	
-
-	if(osl_keys->pressed.circle)
 	{
-		oslDeleteImage(textview);
-		return;
-	}
+
+		oslStartDrawing();	
+		oslReadKeys();
+		
+		oslClearScreen(RGB(0,0,0));
+		oslDrawImageXY(textview,0,19);
+	
+		if(checkTextFile(folderIcons[current].filePath) == -1)
+			oslDrawStringf(40,33,"Unable to Open");
+
+		oslDrawStringf(40,33,folderIcons[current].name);	
+		oslDrawStringf(10,55," \n%s", getTextFromFile());	
+
+		if(osl_keys->pressed.circle)
+		{
+			oslDeleteImage(textview);
+			return;
+		}	
 				
 	oslEndDrawing(); 
-    oslEndFrame(); 
+	oslEndFrame(); 
 	oslSyncFrame();
 	}
 }
 	
 void centerText(int centerX, int centerY, char * centerText, int centerLength)
 {
-	if (strlen(centerText) <= centerLength) {
+	if (strlen(centerText) <= centerLength) 
+	{
 		int center = ((centerX)-((strlen(centerText)/2)*8));
 		oslDrawStringf(center, centerY, centerText);
 	}
-	else {
+	else 
+	{
 		int center = ((centerX)-(centerLength/2)*8);
 		char str[255];
 		strncpy(str, centerText, centerLength);
@@ -708,8 +722,8 @@ int filemanage(int argc, char *argv[])
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(0,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
 	oslSetFont(pgfFont);
 
-	if (!filemanagerbg)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	if (!filemanagerbg || !diricon || !imageicon || !mp3icon || !txticon || !unknownicon || !bar || !documenticon || !binaryicon || !videoicon || !archiveicon)
+		debugDisplay();
 
 	char * testDirectory = dirBrowse("ms0:");
 	

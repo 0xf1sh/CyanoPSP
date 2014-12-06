@@ -8,7 +8,6 @@
 #include "screenshot.h"
 #include "include/utils.h"
 #include "id3.h"
-#include "file_struct.h"
 
 int MP3Scan(const char* path )
 {
@@ -139,6 +138,7 @@ void mp3Downx5()
 		curScroll += 5; // To do with how it scrolls
 	}
 }
+/*
 
 char *compact_str(char *s, int max_length) {
 	char *suffix;
@@ -164,10 +164,10 @@ void display_mp3_info(struct FILE_INFO *file) {
 	
 	int y_start = 25; //210
 
-	/*
+
 	if(file->cover != NULL)
-		blitImageToScreen(0, 0, file->cover->imageWidth, file->cover->imageHeight, file->cover, 305, 23);  
-   	*/
+		oslDrawImageXY(file->cover, 305, 23);  
+
 
 	//oslDrawStringf(MP3DISPLAY_X, 190, "ID3Tag: %s", file->mp3Info.ID3.versionfound);	 	
 
@@ -180,10 +180,23 @@ void display_mp3_info(struct FILE_INFO *file) {
 	oslDrawStringf(250, 81, "%s", compact_str(file->mp3Info.ID3.ID3Artist, 28));			 
 
 	//oslDrawStringf(MP3DISPLAY_X, 240, "Genre : %s", compact_str(file->mp3Info.ID3.ID3GenreText, 28));			 	
-		 	
-	
-	return 0;
 }
+*/
+/*
+
+void getMP3METagInfo(char *filename, struct fileInfo *targetInfo){
+    //ID3:
+    struct ID3Tag ID3;
+    ID3 = ParseID3(filename);
+    strcpy(targetInfo->title, ID3.ID3Title);
+    strcpy(targetInfo->artist, ID3.ID3Artist);
+    strcpy(targetInfo->album, ID3.ID3Album);
+    strcpy(targetInfo->year, ID3.ID3Year);
+    strcpy(targetInfo->genre, ID3.ID3GenreText);
+    strcpy(targetInfo->trackNumber, ID3.ID3TrackText);
+    targetInfo->length = ID3.ID3Length / 1000;
+}
+*/
 
 void MP3Status()
 {
@@ -200,8 +213,8 @@ void MP3Play(char * path)
 	mp3playicon = oslLoadImageFilePNG("system/app/apollo/play.png", OSL_IN_RAM, OSL_PF_8888);
 	mp3pauseicon = oslLoadImageFilePNG("system/app/apollo/pause.png", OSL_IN_RAM, OSL_PF_8888);
 
-	if (!nowplaying)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	if (!nowplaying || !mp3playicon || !mp3pauseicon)
+		debugDisplay();
 	
 	scePowerSetClockFrequency(333, 333, 166);
 	
@@ -227,7 +240,7 @@ void MP3Play(char * path)
 		oslDrawImageXY(nowplaying, 0, 19);
 		MP3Status();
 		oslDrawStringf(250,71,folderIcons[current].name);
-		display_mp3_info(folderIcons[current].name);
+		//display_mp3_info(folderIcons[current].name);
 		
 		battery();
 		digitaltime(420,4,458);
@@ -451,8 +464,8 @@ int mp3player()
 	mp3bg = oslLoadImageFilePNG("system/app/apollo/mp3bg.png", OSL_IN_RAM, OSL_PF_8888);
 	mp3_select = oslLoadImageFilePNG("system/app/apollo/mp3_select.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	if (!mp3bg)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	if (!mp3bg || !mp3_select)
+		debugDisplay();
 	
 	pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
 	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);

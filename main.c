@@ -37,7 +37,7 @@ PSP_HEAP_SIZE_KB(20*1024);
 //declaration
 OSL_IMAGE *background, *cursor, *ic_allapps, *ic_allapps_pressed, *navbar, *wificon, *apollo, *gmail, *messengericon, *browser, *google, *notif, *batt100, 
 		  *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon, *usbdebug, *quickSettings,
-		  *recoverybg, *welcome, *ok, *transbackground, *notif2 , *wifibg, *playing;
+		  *recoverybg, *welcome, *ok, *transbackground, *notif2 , *wifibg, *playing, *debug;
 
 //definition of our sounds
 OSL_SOUND *tone;
@@ -53,7 +53,6 @@ int initOSLib() //Intialize OsLib
     oslInitGfx(OSL_PF_8888, 1);
 	oslSetBilinearFilter(1);
     oslInitAudio();
-    oslSetQuitOnLoadFailure(1);
     oslSetKeyAutorepeatInit(40);
     oslSetKeyAutorepeatInterval(10);
     return 0;
@@ -153,7 +152,41 @@ int connectToAP(int config) //Internet stuff
     return 0;
 } 
 
-void oslPrintTextDiffColors(int x, int y, char * text, OSL_COLOR color) {
+void debugDisplay()
+{
+	debug = oslLoadImageFilePNG("system/debug/debug.png", OSL_IN_RAM, OSL_PF_8888);
+	transbackground = oslLoadImageFilePNG("system/home/icons/transbackground.png", OSL_IN_RAM, OSL_PF_8888);
+	
+	while (!osl_quit)
+	{	
+		oslStartDrawing();
+
+		controls();	
+
+		oslDrawImage(transbackground);
+		oslDrawImageXY(debug, 40, 48);
+		
+		if (benchmarkDebugActivate == 1 && benchmarkDebugActivate != 0)
+			oslSysBenchmarkDisplay();
+		
+		if (osl_keys->pressed.cross)
+		{
+			sceKernelExitGame();
+		}
+	
+		if (osl_pad.held.R && osl_keys->pressed.triangle) //Takes screenshot
+		{
+			screenshot();
+		}
+	
+		oslEndDrawing(); 
+		oslEndFrame(); 
+		oslSyncFrame();
+	}
+}
+
+void oslPrintTextDiffColors(int x, int y, char * text, OSL_COLOR color)
+ {
 	oslSetTextColor(color);
 	oslIntraFontSetStyle(pgfFont, 0.5, color, RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
 	oslSetBkColor(RGBA(0,0,0,0));
@@ -253,6 +286,9 @@ void battery() // Draws the battery icon depending on its percentage.
 	
 	if (isPlaying == 1)
 		oslDrawImageXY(playing,5,5);
+		
+	if (benchmarkDebugActivate == 1 && benchmarkDebugActivate != 0)
+	oslSysBenchmarkDisplay();
 	
 }
 
@@ -635,13 +671,13 @@ int main()
 	welcome = oslLoadImageFilePNG("system/home/icons/welcome.png", OSL_IN_RAM, OSL_PF_8888);
 	ok = oslLoadImageFilePNG("system/home/icons/ok.png", OSL_IN_RAM, OSL_PF_8888);
 	transbackground = oslLoadImageFilePNG("system/home/icons/transbackground.png", OSL_IN_RAM, OSL_PF_8888);
-	playing = oslLoadImageFilePNG("system/home/icons/playing.png", OSL_IN_RAM, OSL_PF_8888);
+	playing = oslLoadImageFilePNG("system/home/icons/playing.png", OSL_IN_VRAM, OSL_PF_8888);
 	
 	DroidSans = oslLoadIntraFontFile("system/fonts/DroidSans.pgf", INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8);
 
 	//Debugger - Displays an error message if the following resources are missing.
 	if (!background || !cursor || !ic_allapps || !ic_allapps_pressed || !navbar || !wificon || !apollo || !gmail || !messengericon || !browser || !notif || !batt100 || !batt80 || !batt60 || !batt40 || !batt20 || !batt10 || !batt0 || !battcharge || !pointer || !pointer1 || !backicon || !multicon || !homeicon)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+		debugDisplay();
 	
 	loadConfig();
 	

@@ -33,8 +33,8 @@ int lockscreen()
 	circles = oslLoadImageFilePNG("System/Lockscreen/circles.png", OSL_IN_RAM, OSL_PF_8888);
 	music2 = oslLoadImageFilePNG("System/Lockscreen/music2.png", OSL_IN_RAM, OSL_PF_8888);
 
-	if (!background || !cursor || !lock || !unlock || !circle || !messengericon1 || !music || !circles)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	if (!lock || !unlock || !circle || !messengericon1 || !music || !circles || !messengericon2 || !music2)
+		debugDisplay();
 
 	while (!osl_quit)
 	{	

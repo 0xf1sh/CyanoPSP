@@ -207,7 +207,7 @@ void stopWatch()
 	stop_watch = oslLoadImageFilePNG("system/app/clock/stop_watch.png", OSL_IN_RAM, OSL_PF_8888);
 
 	if (!stop_watch)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+		debugDisplay();
 	
 	setfont();
 	
@@ -310,7 +310,7 @@ int pspclock()
 	clockbg = oslLoadImageFilePNG("system/app/clock/clockbg.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	if (!clockbg)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+		debugDisplay();
 	
 	setfont();
 	

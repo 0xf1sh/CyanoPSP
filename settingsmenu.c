@@ -61,6 +61,9 @@ void onlineUpdater()
 	
 	recoverybg = oslLoadImageFilePNG("android_bootable_recovery/res/images/recoverybg.png", OSL_IN_RAM, OSL_PF_8888);
 	
+	if (!recoverybg)
+		debugDisplay();
+	
 	oslNetInit();
 
     while(!osl_quit)
@@ -123,24 +126,25 @@ void onlineUpdater()
 	oslNetTerm();
 }
 	
-void wlanStatus()
+void wlanStatus(int n)
 {
-	if (sceWlanGetSwitchState() == 0)
-		oslDrawImageXY(offswitch, 370, 62);
+	if (n == 1)
+	{
+		if (sceWlanGetSwitchState() == 0)
+			oslDrawImageXY(offswitch, 370, 62);
 	
-	else
-		oslDrawImageXY(onswitch, 370, 62);
+		else
+			oslDrawImageXY(onswitch, 370, 62);
+	}
 	
-}
-
-void wlanStatus1()
-{
-	if (sceWlanGetSwitchState() == 0)
-		oslDrawImageXY(offswitch, 222, 14);
-	
-	else
-		oslDrawImageXY(onswitch, 222, 14);
-	
+	else if (n == 2)
+	{
+		if (sceWlanGetSwitchState() == 0)
+			oslDrawImageXY(offswitch, 222, 14);
+		
+		else
+			oslDrawImageXY(onswitch, 222, 14);
+	}
 }
 
 void loadConfig()
@@ -283,8 +287,8 @@ void aboutMenu()
 	aboutbg = oslLoadImageFilePNG("system/settings/aboutbg.png", OSL_IN_RAM, OSL_PF_8888);
 	highlight = oslLoadImageFilePNG("system/settings/highlight.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	if (!aboutbg)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	if (!aboutbg || !highlight)
+		debugDisplay();
 	
 	setfont();
 	
@@ -306,7 +310,7 @@ void aboutMenu()
 		oslDrawString(37,87,"Click for, view or install available updates");
 		pspGetModel(37,133);
 		oslDrawStringf(37,119,"CyanoPSP: %s",Version);
-		oslDrawString(37,147,"Build Date - Fri Oct 31 11:20 PM EST 2014");
+		oslDrawString(37,147,"Build Date - Sat Dec 6 5:44 PM EST 2014");
 		oslDrawString(37,172,"Kernel Version");
 		oslDrawString(37,186,"Undefined-pspsdk_oslib");
 		oslDrawString(37,200,"joellovesanna@psp #1");
@@ -326,7 +330,7 @@ void aboutMenu()
 			oslDrawImageXY(highlight, 15, 110);
 			pspGetModel(37,133);
 			oslDrawStringf(37,119,"CyanoPSP: %s",Version);
-			oslDrawString(37,147,"Build Date - Fri Oct 31 11:20 PM EST 2014");
+			oslDrawString(37,147,"Build Date - Sat Dec 6 5:44 PM EST 2014");
 		}
 		
 		navbarButtons();
@@ -413,6 +417,9 @@ void aboutMenu()
 void easterEgg()
 {
 	easterEggImg = oslLoadImageFilePNG("system/settings/easteregg.png", OSL_IN_RAM, OSL_PF_8888);
+		
+	if (!easterEggImg)
+		debugDisplay();
 	
 	while (!osl_quit)
 	{
@@ -439,8 +446,8 @@ void updatesMenu()
 	updatesbg = oslLoadImageFilePNG("system/settings/updatesbg.png", OSL_IN_RAM, OSL_PF_8888);
 	highlight = oslLoadImageFilePNG("system/settings/highlight.png", OSL_IN_RAM, OSL_PF_8888);
 
-	if (!updatesbg)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	if (!updatesbg || highlight)
+		debugDisplay();
 	
 	setfont();
 
@@ -528,8 +535,8 @@ void performanceMenu()
 	performancebg = oslLoadImageFilePNG("system/settings/performancebg.png", OSL_IN_RAM, OSL_PF_8888);
 	highlight = oslLoadImageFilePNG("system/settings/highlight.png", OSL_IN_RAM, OSL_PF_8888);
 
-	if (!performancebg)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	if (!performancebg || !highlight)
+		debugDisplay();
 	
 	setfont();
 
@@ -672,8 +679,8 @@ void processorMenu()
 	processorbg = oslLoadImageFilePNG("system/settings/processorbg.png", OSL_IN_RAM, OSL_PF_8888);
 	highlight = oslLoadImageFilePNG("system/settings/highlight.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	if (!processorbg)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	if (!processorbg || !highlight)
+		debugDisplay();
 
 	setfont();
 	
@@ -788,8 +795,8 @@ void ramMenu()
 	performancebg = oslLoadImageFilePNG("system/settings/performancebg.png", OSL_IN_RAM, OSL_PF_8888);
 	highlight = oslLoadImageFilePNG("system/settings/highlight.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	if (!performancebg)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	if (!performancebg || !highlight)
+		debugDisplay();
 
 	setfont();
 	
@@ -1012,7 +1019,7 @@ void displayMenu()
 	themebg = oslLoadImageFilePNG("system/settings/themebg.png", OSL_IN_RAM, OSL_PF_8888);
 
 	if (!themebg)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+		debugDisplay();
 
 	setfont();
 
@@ -1090,7 +1097,7 @@ void wifiMenu()
 	onswitch = oslLoadImageFilePNG("system/settings/onswitch.png", OSL_IN_RAM, OSL_PF_8888);
 
 	if (!wifibg)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+		debugDisplay();
 	
 	setfont();
 
@@ -1134,7 +1141,7 @@ void wifiMenu()
 		
 		oslDrawString(30, 200, Settings_message);
 		
-		wlanStatus1();
+		wlanStatus(2);
 		digitaltime(420,4,458);
 
 		battery();
@@ -1214,14 +1221,11 @@ void developerMenu()
 	int PSPDebug = 0;
 
 	developerbg = oslLoadImageFilePNG("system/settings/developerbg.png", OSL_IN_RAM, OSL_PF_8888);
-	backicon = oslLoadImageFilePNG("system/home/icons/backicon.png", OSL_IN_RAM, OSL_PF_8888);
-	homeicon = oslLoadImageFilePNG("system/home/icons/homeicon.png", OSL_IN_RAM, OSL_PF_8888);
-	multicon = oslLoadImageFilePNG("system/home/icons/multicon.png", OSL_IN_RAM, OSL_PF_8888);
 	check = oslLoadImageFilePNG("system/settings/check.png", OSL_IN_RAM, OSL_PF_8888);
 	highlight = oslLoadImageFilePNG("system/settings/highlight.png", OSL_IN_RAM, OSL_PF_8888);
 
-	if (!developerbg || !check)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	if (!developerbg || !check || !highlight)
+		debugDisplay();
 	
 	setfont();
 
@@ -1246,7 +1250,7 @@ void developerMenu()
 		oslDrawString(35,174,"Advanced Reboot");
 		oslDrawString(35,188,"When unlocked, include option in the power menu for");
 		oslDrawString(35,202,"rebooting into recovery");
-		oslDrawString(35,236,"Backup Password");
+		oslDrawString(35,236,"Display system benchmark results. Press triangle to disable");
 			
 		digitaltime(420,4,458);
 		battery();
@@ -1269,7 +1273,7 @@ void developerMenu()
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 222 && cursor->y <= 278)
 		{
 			oslDrawImageXY(highlight, 15, 222);
-			oslDrawString(35,236,"Backup Password");
+			oslDrawString(35,236,"Display system benchmark results. Press triangle to disable");
 		}
 		
 		navbarButtons();
@@ -1322,30 +1326,31 @@ void developerMenu()
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 109 && cursor->y <= 165 && osl_keys->pressed.cross)
 		{
-
-			LoadStartModule("modules/psplink.prx");
 			PSPDebug = 1;
-			
-			if(PSPDebug == 1  && osl_keys->pressed.triangle)
-			{	
-				StopUnloadModule("modules/psplink.prx");			
-			}
+			LoadStartModule("modules/psplink.prx");
+		}
+		if(PSPDebug == 1  && osl_keys->pressed.triangle)
+		{	
+			StopUnloadModule("modules/psplink.prx");			
 		}
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 55 && cursor->y <= 108 && osl_keys->pressed.cross)
 		{	
 			RJL = 1;
 			LoadStartModule("modules/RemoteJoyLite.prx");
-
-			if(RJL == 1 && osl_keys->pressed.triangle)
-			{	
-				StopUnloadModule("modules/RemoteJoyLite.prx");
-			}
+		}
+		if(RJL == 1 && osl_keys->pressed.triangle)
+		{
+			StopUnloadModule("modules/RemoteJoyLite.prx");
 		}
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 222 && cursor->y <= 278 && osl_keys->pressed.cross)
 		{
-			backupPassword();
+			benchmarkDebugActivate = 1;
+		}
+		if (benchmarkDebugActivate == 1 && osl_keys->pressed.triangle)
+		{
+				benchmarkDebugActivate = 0;
 		}
 		
 	oslEndDrawing(); 
@@ -1360,7 +1365,7 @@ void settingsHighlight()
 		{
 			oslDrawImageXY(wifi, 16, 63);
 			oslDrawString(55,76,"Wi-Fi");
-			wlanStatus();
+			wlanStatus(1);
 		}
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 99 && cursor->y <= 141)
@@ -1413,8 +1418,8 @@ void settingsMenu()
 		
 	setfont();
 
-	if (!settingsbg || !onswitch || !offswitch || !about || !developeroptions || !wifi || !themes)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	if (!settingsbg || !onswitch || !offswitch || !about || !developeroptions || !wifi || !themes || !performance)
+		debugDisplay();
 
 	while (!osl_quit)
 	{
@@ -1428,7 +1433,7 @@ void settingsMenu()
 
 		oslDrawImageXY(settingsbg, 0, 19);
 
-		wlanStatus();
+		wlanStatus(1);
 		oslDrawString(55,76,"Wi-Fi");
 		oslDrawString(55,118,"Developer Options");
 		oslDrawString(55,161,"Display");

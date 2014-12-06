@@ -381,8 +381,8 @@ int gamemenu(int argc, char *argv[])
 	setfont();
 	
 	//Debugger
-	if (!gamebg || !cursor)
-		oslDebug("It seems certain files necessary for the program to run are missing. Please make sure you have all the files required to run the program.");
+	if (!gamebg)
+		debugDisplay();
 	
 	char menuEntry[NB_FOLDERS][MAX_NAME_SIZE];
 	int menuOffSet = 0;
