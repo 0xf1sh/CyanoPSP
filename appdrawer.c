@@ -116,7 +116,7 @@ int appdrawer()
 		
 		digitaltime(420,4,458);
 		battery();
-		navbar_buttons();
+		navbarButtons();
 		
 		if (settings_x <= -10 && fm_x <= -10)
 		{
@@ -252,7 +252,7 @@ int appdrawer()
 		if (cursor->x >= 385 && cursor->x <= 430 && cursor->y >= 103 && cursor->y <= 151 && osl_keys->pressed.cross)
 		{
 			appdrawer_deleteImages();
-			settingsmenu();
+			settingsMenu();
 		}
 		
 		if (cursor->x >= 266 && cursor->x <= 311 && cursor->y >= 25 && cursor->y <= 70 && osl_keys->pressed.cross)

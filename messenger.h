@@ -13,5 +13,5 @@ void doClient();
 void serverConnected(struct remotePsp *aPsp);
 void doServer();
 void activateOSK();
-void newmessage();
+void newMessage();
 int messenger();

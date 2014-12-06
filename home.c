@@ -38,9 +38,9 @@ int home()
 		oslDrawImageXY(pointer, 230, 180);
 		
 		digitaltime(420,4,458);
-		appdrawericon();
+		appDrawerIcon();
 		battery();
-		navbar_buttons();
+		navbarButtons();
 		androidQuickSettings();
 		oslDrawImage(cursor);
 			

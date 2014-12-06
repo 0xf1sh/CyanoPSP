@@ -32,7 +32,7 @@ int multitask()
 
 		digitaltime(420,4,458);
 		battery();
-		navbar_buttons();
+		navbarButtons();
 		androidQuickSettings();
 		oslDrawImage(cursor);
 		

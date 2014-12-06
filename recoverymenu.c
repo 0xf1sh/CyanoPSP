@@ -498,7 +498,7 @@ void ShowPage1()
 		region = chGetRegion();		
 
 		oslDrawStringf(10,20,"Kernel Version: %s (0x%08X)\n\n", FWs[type], sceKernelDevkitVersion());
-		pspgetmodel(10,30);
+		pspGetModel(10,30);
 		oslDrawStringf(10,60,"Module:         %s\n", Modules[model]);      
 		oslDrawStringf(10,70,"Motherboard:    %s\n\n", MBs[mb]);
 		oslDrawStringf(10,80,"Tachyon:        0x%08X\n", tachyon);
@@ -1277,7 +1277,7 @@ int mainRecoveryMenu()
 		
 		if (MenuSelection == 8 && osl_keys->pressed.cross)
 		{
-			standby_device();
+			deviceStandby();
 		}
 		
 		if (MenuSelection == 9 && osl_keys->pressed.cross)

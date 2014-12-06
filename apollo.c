@@ -169,17 +169,17 @@ void display_mp3_info(struct FILE_INFO *file) {
 		blitImageToScreen(0, 0, file->cover->imageWidth, file->cover->imageHeight, file->cover, 305, 23);  
    	*/
 
-	oslDrawStringf(MP3DISPLAY_X, 190, "ID3Tag: %s", file->mp3Info.ID3.versionfound);	 	
+	//oslDrawStringf(MP3DISPLAY_X, 190, "ID3Tag: %s", file->mp3Info.ID3.versionfound);	 	
 
-	oslDrawStringf(MP3DISPLAY_X, 200, "Title : %s", compact_str(file->mp3Info.ID3.ID3Title, 28));			 
+	//oslDrawStringf(MP3DISPLAY_X, 200, "Title : %s", compact_str(file->mp3Info.ID3.ID3Title, 28));			 
 
-	oslDrawStringf(MP3DISPLAY_X, 210, "Album : %s", compact_str(file->mp3Info.ID3.ID3Album, 28));			 
+	//oslDrawStringf(MP3DISPLAY_X, 210, "%s", compact_str(file->mp3Info.ID3.ID3Album, 28));			 
 
-	oslDrawStringf(MP3DISPLAY_X, 220, "Year  : %s", file->mp3Info.ID3.ID3Year);			 
+	//oslDrawStringf(MP3DISPLAY_X, 220, "Year  : %s", file->mp3Info.ID3.ID3Year);			 
 
-	oslDrawStringf(MP3DISPLAY_X, 230, "Artist: %s", compact_str(file->mp3Info.ID3.ID3Artist, 28));			 
+	oslDrawStringf(250, 81, "%s", compact_str(file->mp3Info.ID3.ID3Artist, 28));			 
 
-	oslDrawStringf(MP3DISPLAY_X, 240, "Genre : %s", compact_str(file->mp3Info.ID3.ID3GenreText, 28));			 	
+	//oslDrawStringf(MP3DISPLAY_X, 240, "Genre : %s", compact_str(file->mp3Info.ID3.ID3GenreText, 28));			 	
 		 	
 	
 	return 0;
@@ -187,10 +187,11 @@ void display_mp3_info(struct FILE_INFO *file) {
 
 void MP3Status()
 {
-	if (isPlaying = FALSE)
-		oslDrawImageXY(mp3pauseicon, 295, 249);
-	else if (isPlaying = TRUE)
 		oslDrawImageXY(mp3playicon, 295, 249);
+		if (osl_keys->pressed.cross)
+		oslDrawImageXY(mp3pauseicon, 295, 249);
+		else if (osl_keys->pressed.cross)
+		oslDrawImageXY(mp3pauseicon, 295, 249);
 }
 
 void MP3Play(char * path)
@@ -252,12 +253,14 @@ void MP3Play(char * path)
 		{
 			pspAudioEnd();
 			MP3_Stop();
+			releaseAudioCh();
 		}
 		
 		if(osl_keys->pressed.circle)
 		{
 			MP3_Pause();
 			MP3_End();
+			releaseAudioCh();
 			oslDeleteImage(nowplaying);
 			oslDeleteImage(mp3pauseicon);
 			oslDeleteImage(mp3playicon);

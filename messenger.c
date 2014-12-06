@@ -239,7 +239,7 @@ void doServer()
 	oslAdhocTerm();
 }
 
-void newmessage()
+void newMessage()
 {	
 	int skip = 0;
     char message[250] = "";
@@ -262,7 +262,7 @@ void newmessage()
 		digitaltime(420,4,458);
 
 		battery();
-		navbar_buttons();
+		navbarButtons();
 		androidQuickSettings();
 		oslDrawImage(cursor);
 		
@@ -357,7 +357,7 @@ int messenger()
 
 		battery();
 		digitaltime(420,4,458);
-		navbar_buttons();
+		navbarButtons();
 		androidQuickSettings();
 		oslDrawImage(cursor);
 		
@@ -402,7 +402,7 @@ int messenger()
 		if (cursor->x >= 275 && cursor->x <= 376 && cursor->y >= 20 && cursor->y <= 52 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(messengerbg);
-			newmessage();
+			newMessage();
 		}
 		
 		if (cursor->x >= 378 && cursor->x <= 434 && cursor->y >= 20 && cursor->y <= 52 && osl_keys->pressed.cross)

@@ -57,7 +57,7 @@ void shutdown_device()
 	scePowerRequestStandby();
 }
 
-void standby_device()
+void deviceStandby()
 {
 	scePowerRequestSuspend();
 	return 0;

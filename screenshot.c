@@ -1,6 +1,6 @@
 #include "screenshot.h"
 
-void makescreenshotdir()
+void makeScreenshotDir()
 {
 	SceUID dir = sceIoDopen(screenshotpath);
 	
@@ -11,58 +11,46 @@ void makescreenshotdir()
 	else 
 	{
 		sceIoMkdir("ms0:/PSP/GAME/CyanogenMod/screenshots",0777);
-}
+	}
 }
 
-int FileExists(const char *file) //Check if file exists
+static void genScreenshotFileName(int lastNumber, char *fileName, const char *ext) //Change the file name starting from 0001
 {
-FILE *f;
+	int a, b, c, d;
 
-f = fopen(file, "rb");
-if(f)
-{
-fclose(f);
-return 1;
-}
-return 0;
-}
+	a = lastNumber / 1000;
+	lastNumber -= a * 1000;
 
-static void GenScreenshotFileName(int lastNumber, char *fileName, const char *ext) //Change the file name starting from 0001
-{
-int a, b, c, d;
+	b = lastNumber / 100;
+	lastNumber -= b * 100;
 
-a = lastNumber / 1000;
-lastNumber -= a * 1000;
-b = lastNumber / 100;
-lastNumber -= b * 100;
-c = lastNumber / 10;
-lastNumber -= c * 10;
-d = lastNumber;
+	c = lastNumber / 10;
+	lastNumber -= c * 10;
 
-sprintf(fileName, "ms0:/PSP/GAME/CyanogenMod/screenshots/screenshot%i%i%i%i%s", a, b, c, d, ext);
+	d = lastNumber;
 
+	sprintf(fileName, "ms0:/PSP/GAME/CyanogenMod/screenshots/screenshot%i%i%i%i%s", a, b, c, d, ext);
 }
 
 void screenshot() //Takes screenshot
 {
+	makeScreenshotDir();
 
-makescreenshotdir();
+	sprintf(checkname, "%s", "screenshot"); 
 
-sprintf(checkname, "%s", "screenshot"); 
+	if(lastNumber == -1)
+	{
+		lastNumber = 0;
+	}
 
-if(lastNumber == -1)
-{
-lastNumber = 0;
-}
-
-GenScreenshotFileName(lastNumber, checkname, ".png"); 
-while (FileExists(checkname))
-{
-lastNumber++;
-GenScreenshotFileName(lastNumber, checkname, ".png");
-}
-oslWriteImageFile(OSL_SECONDARY_BUFFER, checkname, 0);
-lastNumber++;
-
+	genScreenshotFileName(lastNumber, checkname, ".png"); 
+	
+	while (fileExists(checkname))
+	{
+		lastNumber++;
+		genScreenshotFileName(lastNumber, checkname, ".png");
+	}
+	oslWriteImageFile(OSL_SECONDARY_BUFFER, checkname, 0);
+	lastNumber++;
 }
 

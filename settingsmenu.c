@@ -22,7 +22,7 @@
 #include "include/ram.h"
 #include "include/utils.h"
 #include "fm.h"
-#include "settingsmenu.h"
+#include "settingsMenu.h"
 #include "clock.h"
 #include "lock.h"
 #include "multi.h"
@@ -38,38 +38,22 @@
 OSL_IMAGE *settingsbg, *cursor, *usbdebug, *aboutbg, *offswitch, *onswitch, *themebg, *performancebg, *wifibg, *developerbg, *about, *highlight, 
 		  *developeroptions, *themes, *wifi, *processorbg, *background, *appicon1, *appicon2, *navbar, *apollo, *gmail, *messengericon, *browser, *cpuset, 
 		  *check, *backicon, *homeicon, *multicon, *calc, *clockx, *email, *people, *calendar, *phone, *gallery, *isoloadericon, *fb, *settings, *updatesbg, 
-		  *performance, *recoverybg, *easteregg;
+		  *performance, *recoverybg, *easterEggImg;
 
 //definition of our sounds
 OSL_SOUND *tone;
 
-char defaultTheme;
-char defaultZip;
-char InputTheme;
-int ThemeZip;
-int theme;
 char name;
 int setclock;
-int setclockrlimit = 0;
-int setclockllimit = 9;
 char Version[10] = "2.4";
 char lang[12] = "Uk English";
-char theme_bootanim[10] = "";
-char theme_icons[10] = "";
-char theme_style[10] = "";
-char theme_fonts[10] = "";
 static char Settings_message[100] = "";
-static char buffer[100] = "";
-
-int OnlineUpdater();
-int connectAPCallback(int state);
-int connectToAP(int config);
 
 const int cpu_list[] = { 20, 75, 100, 133, 166, 222, 266, 300, 333 };
 const int bus_list[] = { 10, 37, 50, 66, 83, 111, 133, 150, 166 };
 int current = 0;
 
-int OnlineUpdater()
+void onlineUpdater()
 {
 	int skip = 0;
     int browser = 0;
@@ -112,7 +96,7 @@ int OnlineUpdater()
 					sceKernelExitGame();
 					}
 					oslDeleteImage(recoverybg);
-					about_menu();
+					aboutMenu();
                 }
             }
             oslEndDrawing();
@@ -139,7 +123,7 @@ int OnlineUpdater()
 	oslNetTerm();
 }
 	
-void wlanstatus()
+void wlanStatus()
 {
 	if (sceWlanGetSwitchState() == 0)
 		oslDrawImageXY(offswitch, 370, 62);
@@ -149,7 +133,7 @@ void wlanstatus()
 	
 }
 
-void wlanstatus1()
+void wlanStatus1()
 {
 	if (sceWlanGetSwitchState() == 0)
 		oslDrawImageXY(offswitch, 222, 14);
@@ -206,7 +190,7 @@ int getBusClock()
     return scePowerGetBusClockFrequency();
 }
 
-void pspgetcpu_bus()
+void pspGetCpuBus()
 {	
 	if(getCpuClock() == 20 && getBusClock() == 10)
 	{
@@ -259,7 +243,7 @@ void pspgetcpu_bus()
 	}
 }
 
-void pspgetmodel(int x, int y)
+void pspGetModel(int x, int y)
 {
 	char pspmodel = kuKernelGetModel();
 	
@@ -294,7 +278,7 @@ void pspgetmodel(int x, int y)
 	}
 }
 
-void about_menu()
+void aboutMenu()
 {	
 	aboutbg = oslLoadImageFilePNG("system/settings/aboutbg.png", OSL_IN_RAM, OSL_PF_8888);
 	highlight = oslLoadImageFilePNG("system/settings/highlight.png", OSL_IN_RAM, OSL_PF_8888);
@@ -320,7 +304,7 @@ void about_menu()
 
 		oslDrawString(37,73,"CyanoPSP Updates");
 		oslDrawString(37,87,"Click for, view or install available updates");
-		pspgetmodel(37,133);
+		pspGetModel(37,133);
 		oslDrawStringf(37,119,"CyanoPSP: %s",Version);
 		oslDrawString(37,147,"Build Date - Fri Oct 31 11:20 PM EST 2014");
 		oslDrawString(37,172,"Kernel Version");
@@ -340,12 +324,12 @@ void about_menu()
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 95 && cursor->y <= 151)
 		{
 			oslDrawImageXY(highlight, 15, 110);
-			pspgetmodel(37,133);
+			pspGetModel(37,133);
 			oslDrawStringf(37,119,"CyanoPSP: %s",Version);
 			oslDrawString(37,147,"Build Date - Fri Oct 31 11:20 PM EST 2014");
 		}
 		
-		navbar_buttons();
+		navbarButtons();
 		androidQuickSettings();
 		oslDrawImage(cursor);
 		
@@ -363,14 +347,14 @@ void about_menu()
 		{	
 			oslDeleteImage(aboutbg);
 			oslDeleteImage(highlight);
-			settingsmenu();	
+			settingsMenu();	
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			oslDeleteImage(aboutbg);
 			oslDeleteImage(highlight);
-			settingsmenu();	
+			settingsMenu();	
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
@@ -389,7 +373,7 @@ void about_menu()
 		{
 			oslDeleteImage(aboutbg);
 			oslDeleteImage(highlight);
-			updates_menu();
+			updatesMenu();
 		}
 		
 		
@@ -401,7 +385,7 @@ void about_menu()
 			{
 				oslDeleteImage(aboutbg);
 				oslDeleteImage(highlight);
-				EasterEgg();
+				easterEgg();
 			}
 		}
 		
@@ -423,12 +407,12 @@ void about_menu()
 	oslEndDrawing(); 
     oslEndFrame(); 
 	oslSyncFrame();	
-}
+	}
 }
 
-void EasterEgg()
+void easterEgg()
 {
-	easteregg = oslLoadImageFilePNG("system/settings/easteregg.png", OSL_IN_RAM, OSL_PF_8888);
+	easterEggImg = oslLoadImageFilePNG("system/settings/easteregg.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	while (!osl_quit)
 	{
@@ -437,21 +421,20 @@ void EasterEgg()
 		oslStartDrawing();
 		oslClearScreen(RGB(0,0,0));
 		controls();
-		oslDrawImageXY(easteregg, 0, 0);
+		oslDrawImageXY(easterEggImg, 0, 0);
 		
 		if(osl_keys->pressed.circle)
 		{
-			oslDeleteImage(easteregg);
-			about_menu();
+			oslDeleteImage(easterEggImg);
+			aboutMenu();
 		}
-		
 		oslEndDrawing(); 
         oslEndFrame(); 
 		oslSyncFrame();
 	}
 }
 
-void updates_menu()
+void updatesMenu()
 {		    
 	updatesbg = oslLoadImageFilePNG("system/settings/updatesbg.png", OSL_IN_RAM, OSL_PF_8888);
 	highlight = oslLoadImageFilePNG("system/settings/highlight.png", OSL_IN_RAM, OSL_PF_8888);
@@ -486,10 +469,10 @@ void updates_menu()
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 45 && cursor->y <= 90 && osl_keys->pressed.cross)
 		{
-			OnlineUpdater();
+			onlineUpdater();
 		}
 		
-		navbar_buttons();
+		navbarButtons();
 		androidQuickSettings();
 		oslDrawImage(cursor);
 		
@@ -507,14 +490,14 @@ void updates_menu()
 		{
 			oslDeleteImage(updatesbg);
 			oslDeleteImage(highlight);
-			about_menu();
+			aboutMenu();
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(updatesbg);
 			oslDeleteImage(highlight);
-			about_menu();
+			aboutMenu();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
@@ -536,11 +519,11 @@ void updates_menu()
 	oslEndDrawing(); 
     oslEndFrame(); 
 	oslSyncFrame();	
-}
+	}
 	oslNetTerm();
 }
 
-void performance_menu()
+void performanceMenu()
 {	
 	performancebg = oslLoadImageFilePNG("system/settings/performancebg.png", OSL_IN_RAM, OSL_PF_8888);
 	highlight = oslLoadImageFilePNG("system/settings/highlight.png", OSL_IN_RAM, OSL_PF_8888);
@@ -581,7 +564,7 @@ void performance_menu()
 			oslDrawString(40,161,"Ram Management");
 		}
 		
-		navbar_buttons();
+		navbarButtons();
 		androidQuickSettings();
 		oslDrawImage(cursor);
 		
@@ -599,14 +582,14 @@ void performance_menu()
 		{
 			oslDeleteImage(highlight);
 			oslDeleteImage(performancebg);
-			settingsmenu();
+			settingsMenu();
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(highlight);
 			oslDeleteImage(performancebg);
-			settingsmenu();
+			settingsMenu();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
@@ -620,14 +603,14 @@ void performance_menu()
 		{
 			oslDeleteImage(highlight);
 			oslDeleteImage(performancebg);
-			processor_menu();
+			processorMenu();
 		}
 
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 140 && cursor->y <= 196 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(highlight);
 			oslDeleteImage(performancebg);
-			ram_menu();
+			ramMenu();
 		}
 		
 		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
@@ -642,7 +625,7 @@ void performance_menu()
 	oslEndDrawing(); 
     oslEndFrame(); 
 	oslSyncFrame();	
-}
+	}
 }
 
 void wait_release(unsigned int buttons) 
@@ -682,7 +665,7 @@ void set_cpu_clock(int n)
 		scePowerSetClockFrequency(333,333,166);
 }
 
-void processor_menu(int argc, char *argv[])
+void processorMenu()
 {	
 	int timer;
 
@@ -712,7 +695,6 @@ void processor_menu(int argc, char *argv[])
 		oslDrawImageXY(processorbg, 0, 19);
 		
 		oslDrawString(35,74,"Current CPU Frequency");
-		pspgetcpu_bus();
 		oslDrawString(35,128,"CPU Overclock");
 		oslDrawString(35,184,"Minimum CPU Frequency");
 		oslDrawString(35,197,"20 MHz");
@@ -756,7 +738,7 @@ void processor_menu(int argc, char *argv[])
 		
 		oslDrawStringf(35,87,"%d/%d",cpu_list[current],bus_list[current]);
 		
-		navbar_buttons();
+		navbarButtons();
 		androidQuickSettings();
 		oslDrawImage(cursor);
 		
@@ -769,14 +751,14 @@ void processor_menu(int argc, char *argv[])
 		{
 			oslDeleteImage(processorbg);
 			oslDeleteImage(highlight);
-			performance_menu();
+			performanceMenu();
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			oslDeleteImage(processorbg);
 			oslDeleteImage(highlight);
-			performance_menu();
+			performanceMenu();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
@@ -798,10 +780,10 @@ void processor_menu(int argc, char *argv[])
 	oslEndDrawing(); 
     oslEndFrame(); 
 	oslSyncFrame();	
-}
+	}
 }
 
-void ram_menu(int argc, char *argv[])
+void ramMenu()
 {	
 	performancebg = oslLoadImageFilePNG("system/settings/performancebg.png", OSL_IN_RAM, OSL_PF_8888);
 	highlight = oslLoadImageFilePNG("system/settings/highlight.png", OSL_IN_RAM, OSL_PF_8888);
@@ -830,7 +812,7 @@ void ram_menu(int argc, char *argv[])
 		
 		oslDrawStringf(40,98,"RAM Avilable: %d MB Available\n",oslGetRamStatus().maxAvailable/1000000); 
 	
-		navbar_buttons();
+		navbarButtons();
 		digitaltime(420,4,458);
 		battery();
 		androidQuickSettings();
@@ -845,14 +827,14 @@ void ram_menu(int argc, char *argv[])
 		{
 			oslDeleteImage(highlight);
 			oslDeleteImage(performancebg);
-			performance_menu();
+			performanceMenu();
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
 			oslDeleteImage(highlight);
 			oslDeleteImage(performancebg);
-			performance_menu();
+			performanceMenu();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
@@ -874,12 +856,22 @@ void ram_menu(int argc, char *argv[])
 	oslEndDrawing(); 
     oslEndFrame(); 
 	oslSyncFrame();	
-}
+	}
 }
 
 /* Work in Progress Theme Manager */
 
 /*
+
+int ThemeZip;
+int theme;
+char defaultTheme;
+char defaultZip;
+char InputTheme;
+char theme_bootanim[10] = "";
+char theme_icons[10] = "";
+char theme_style[10] = "";
+char theme_fonts[10] = "";
 
 void ThemePackLocation()
 {
@@ -1015,7 +1007,7 @@ void SetZipName()
 
 */
 
-void DisplayMenu()
+void displayMenu()
 {	
 	themebg = oslLoadImageFilePNG("system/settings/themebg.png", OSL_IN_RAM, OSL_PF_8888);
 
@@ -1044,7 +1036,7 @@ void DisplayMenu()
 		digitaltime(420,4,458);
 
 		battery();
-		navbar_buttons();
+		navbarButtons();
 		androidQuickSettings();
 		oslDrawImage(cursor);
 		
@@ -1061,13 +1053,13 @@ void DisplayMenu()
 		if (osl_keys->pressed.circle)
 		{
 			oslDeleteImage(themebg);
-			settingsmenu();
+			settingsMenu();
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{
 			oslDeleteImage(themebg);
-			settingsmenu();
+			settingsMenu();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
@@ -1088,10 +1080,10 @@ void DisplayMenu()
 	oslEndDrawing(); 
     oslEndFrame(); 
 	oslSyncFrame();	
-}
+	}
 }
 
-void wifi_menu()
+void wifiMenu()
 {	
 	wifibg = oslLoadImageFilePNG("system/settings/wifibg.png", OSL_IN_RAM, OSL_PF_8888);
 	offswitch = oslLoadImageFilePNG("system/settings/offswitch.png", OSL_IN_RAM, OSL_PF_8888);
@@ -1105,6 +1097,7 @@ void wifi_menu()
 	int enabled = 1;
     int selectedConfig = 0;
 	int wifi_y = 50;
+	static char buffer[100] = "";
 	
 	//Get connections list:
     struct oslNetConfig configs[OSL_MAX_NET_CONFIGS];
@@ -1141,11 +1134,11 @@ void wifi_menu()
 		
 		oslDrawString(30, 200, Settings_message);
 		
-		wlanstatus1();
+		wlanStatus1();
 		digitaltime(420,4,458);
 
 		battery();
-		navbar_buttons();
+		navbarButtons();
 		androidQuickSettings();
 		
 		if (osl_keys->released.cross)
@@ -1180,7 +1173,7 @@ void wifi_menu()
 			oslDeleteImage(wifibg);	
 			oslDeleteImage(offswitch);	
 			oslDeleteImage(onswitch);	
-			settingsmenu();
+			settingsMenu();
 		}
 
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
@@ -1188,7 +1181,7 @@ void wifi_menu()
 			oslDeleteImage(wifibg);	
 			oslDeleteImage(offswitch);	
 			oslDeleteImage(onswitch);
-			settingsmenu();
+			settingsMenu();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
@@ -1211,11 +1204,11 @@ void wifi_menu()
 	oslEndDrawing(); 
     oslEndFrame(); 
 	oslSyncFrame();	
-}
+	}
 	oslNetTerm();
 }
 
-void developer_menu()
+void developerMenu()
 {
 	int RJL = 0;
 	int PSPDebug = 0;
@@ -1279,8 +1272,8 @@ void developer_menu()
 			oslDrawString(35,236,"Backup Password");
 		}
 		
+		navbarButtons();
 		androidQuickSettings();
-		navbar_buttons();
 		oslDrawImage(cursor);
 		
 		if (osl_keys->pressed.square)
@@ -1298,7 +1291,7 @@ void developer_menu()
 			oslDeleteImage(developerbg);
 			oslDeleteImage(check);
 			oslDeleteImage(highlight);
-			settingsmenu();
+			settingsMenu();
 		}
 		
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
@@ -1306,7 +1299,7 @@ void developer_menu()
 			oslDeleteImage(developerbg);
 			oslDeleteImage(check);
 			oslDeleteImage(highlight);
-			settingsmenu();
+			settingsMenu();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
@@ -1358,16 +1351,16 @@ void developer_menu()
 	oslEndDrawing(); 
     oslEndFrame(); 
 	oslSyncFrame();	
-}	
+	}	
 }
 
-void settings_highlight()
+void settingsHighlight()
 {
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 53 && cursor->y <= 98)
 		{
 			oslDrawImageXY(wifi, 16, 63);
 			oslDrawString(55,76,"Wi-Fi");
-			wlanstatus();
+			wlanStatus();
 		}
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 99 && cursor->y <= 141)
@@ -1395,7 +1388,7 @@ void settings_highlight()
 		}
 }
 
-void settings_deleteImages()
+void settingsDeleteResources()
 {
 	oslDeleteImage(settingsbg);
 	oslDeleteImage(about);
@@ -1407,7 +1400,7 @@ void settings_deleteImages()
 	oslDeleteImage(performance);
 }
 
-int settingsmenu()
+void settingsMenu()
 {
 	settingsbg = oslLoadImageFilePNG("system/settings/settingsbg.png", OSL_IN_RAM, OSL_PF_8888);
 	offswitch = oslLoadImageFilePNG("system/settings/offswitch.png", OSL_IN_RAM, OSL_PF_8888);
@@ -1435,7 +1428,7 @@ int settingsmenu()
 
 		oslDrawImageXY(settingsbg, 0, 19);
 
-		wlanstatus();
+		wlanStatus();
 		oslDrawString(55,76,"Wi-Fi");
 		oslDrawString(55,118,"Developer Options");
 		oslDrawString(55,161,"Display");
@@ -1444,9 +1437,9 @@ int settingsmenu()
 		
 		digitaltime(420,4,458);
 		battery();
-		settings_highlight();
+		settingsHighlight();
+		navbarButtons();
 		androidQuickSettings();
-		navbar_buttons();
 		oslDrawImage(cursor);
 		
 		if (osl_keys->pressed.square)
@@ -1470,19 +1463,19 @@ int settingsmenu()
 		
 		if (osl_keys->pressed.circle)
 		{	
-			settings_deleteImages();
+			settingsDeleteResources();
 			appdrawer();
 		}
 			
 		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
-			settings_deleteImages();
+			settingsDeleteResources();
 			appdrawer();
 		}
 		
 		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
 		{	
-			settings_deleteImages();
+			settingsDeleteResources();
 			home();
 		}
 
@@ -1493,32 +1486,32 @@ int settingsmenu()
 			
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 53 && cursor->y <= 98 && osl_keys->pressed.cross)
 		{	
-			settings_deleteImages();
-			wifi_menu();
+			settingsDeleteResources();
+			wifiMenu();
 		}
 		
 		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 99 && cursor->y <= 141 && osl_keys->pressed.cross)
 		{	
-			settings_deleteImages();
-			developer_menu();
+			settingsDeleteResources();
+			developerMenu();
 		}
 		
 		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 142 && cursor->y <= 183 && osl_keys->pressed.cross)
 		{	
-			settings_deleteImages();
-			DisplayMenu();
+			settingsDeleteResources();
+			displayMenu();
 		}
 		
 		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 184 && cursor->y <= 227 && osl_keys->pressed.cross)
 		{
-			settings_deleteImages();
-			performance_menu();
+			settingsDeleteResources();
+			performanceMenu();
 		}
 				
 		if (cursor->x >= 0 && cursor->x <= 480 && cursor->y >= 228 && cursor->y <= 250 && osl_keys->pressed.cross)
 		{	
-			settings_deleteImages();
-			about_menu();
+			settingsDeleteResources();
+			aboutMenu();
 		}
 		
 		if (osl_pad.held.R && osl_keys->pressed.triangle)
@@ -1528,5 +1521,5 @@ int settingsmenu()
 	oslEndDrawing(); 
     oslEndFrame(); 
 	oslSyncFrame();	
-}
+	}
 }

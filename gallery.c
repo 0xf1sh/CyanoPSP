@@ -119,7 +119,6 @@ void showImage(const char * path)
 	}
 	//delete image
 	oslDeleteImage(image);	
-	return 1;
 }
 
 void galleryControls() //Controls
@@ -232,7 +231,6 @@ char * galleryBrowse(const char * path)
         oslEndFrame(); 
 		oslSyncFrame();	
 	}
-		
 	return returnMe;
 }
 

@@ -227,7 +227,7 @@ void stopWatch()
 		oslDrawImageXY(stop_watch, 0, 19);
 
 		battery();
-		navbar_buttons();
+		navbarButtons();
 		androidQuickSettings();
 		digitaltime(420,4,458);
 		oslDrawImage(cursor);
@@ -327,7 +327,7 @@ int pspclock()
 		oslDrawImageXY(clockbg, 0, 19);
 
 		battery();
-		navbar_buttons();
+		navbarButtons();
 		androidQuickSettings();
 		digitaltime(420,4,458);
 		oslDrawImage(cursor);

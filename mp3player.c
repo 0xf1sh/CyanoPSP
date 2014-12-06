@@ -6,6 +6,7 @@
 #include <pspdebug.h>
 #include <pspiofilemgr.h>
 #include <pspdisplay.h>
+#include <pspaudio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
@@ -627,4 +628,12 @@ int MP3_EndOfStream()
     if (eos == 1)
 	return 1;
     return 0;
+}
+
+void releaseAudioCh()
+{
+        int i;
+
+        for (i = 0; i <= PSP_AUDIO_CHANNEL_MAX; i++)
+                sceAudioChRelease(i);
 }

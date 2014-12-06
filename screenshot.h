@@ -5,7 +5,6 @@
 char checkname[256];
 static int lastNumber = -1;
 
-void makescreenshotdir();
-int FileExists(const char *file);
-static void GenScreenshotFileName(int lastNumber, char *fileName, const char *ext);
+void makeScreenshotDir();
+static void genScreenshotFileName(int lastNumber, char *fileName, const char *ext);
 void screenshot();
