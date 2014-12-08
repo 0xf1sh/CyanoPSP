@@ -47,6 +47,8 @@ static int runningFlag = 1;
 static char message[100] = "";
 static char buffer[100] = "";
 
+int scePower_0442D852(int unknown);
+
 int initOSLib() //Intialize OsLib
 {
     oslInit(0);
@@ -289,7 +291,6 @@ void battery() // Draws the battery icon depending on its percentage.
 		
 	if (benchmarkDebugActivate == 1 && benchmarkDebugActivate != 0)
 	oslSysBenchmarkDisplay();
-	
 }
 
 void appDrawerIcon() //Draws the app drawer icon. Draws a different icon of the same size once hovered with the cursor.

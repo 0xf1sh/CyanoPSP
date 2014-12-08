@@ -1,5 +1,6 @@
 #include "power_menu.h"
 #include "lock.h"
+//#include <scepower.h>
 
 OSL_IMAGE *background, *cursor, *power, *apollo, *gmail, *messengericon, *browser, *pointer, *powerOff, *cancelPowerOff, *okPowerOff, *power1, *recovery1, *screenshot1;
 
@@ -146,6 +147,7 @@ void PowerOffMenu()
 				oslDeleteImage(cancelPowerOff);
 				oslDeleteImage(okPowerOff);
 				scePowerRequestStandby();
+				//scePower_0442D852(50000);
 			}
 		}
 		

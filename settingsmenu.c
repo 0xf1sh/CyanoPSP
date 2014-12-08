@@ -22,7 +22,7 @@
 #include "include/ram.h"
 #include "include/utils.h"
 #include "fm.h"
-#include "settingsMenu.h"
+#include "settingsmenu.h"
 #include "clock.h"
 #include "lock.h"
 #include "multi.h"
@@ -310,7 +310,7 @@ void aboutMenu()
 		oslDrawString(37,87,"Click for, view or install available updates");
 		pspGetModel(37,133);
 		oslDrawStringf(37,119,"CyanoPSP: %s",Version);
-		oslDrawString(37,147,"Build Date - Sat Dec 6 5:44 PM EST 2014");
+		oslDrawString(37,147,"Build Date - Mon Dec 8 3:10 PM EST 2014");
 		oslDrawString(37,172,"Kernel Version");
 		oslDrawString(37,186,"Undefined-pspsdk_oslib");
 		oslDrawString(37,200,"joellovesanna@psp #1");
@@ -330,7 +330,7 @@ void aboutMenu()
 			oslDrawImageXY(highlight, 15, 110);
 			pspGetModel(37,133);
 			oslDrawStringf(37,119,"CyanoPSP: %s",Version);
-			oslDrawString(37,147,"Build Date - Sat Dec 6 5:44 PM EST 2014");
+			oslDrawString(37,147,"Build Date - Mon Dec 8 3:10 PM EST 2014");
 		}
 		
 		navbarButtons();
@@ -1217,14 +1217,14 @@ void wifiMenu()
 
 void developerMenu()
 {
-	int RJL = 0;
-	int PSPDebug = 0;
-
+	int RJL;
+	int PSPDebug;
+	
 	developerbg = oslLoadImageFilePNG("system/settings/developerbg.png", OSL_IN_RAM, OSL_PF_8888);
-	check = oslLoadImageFilePNG("system/settings/check.png", OSL_IN_RAM, OSL_PF_8888);
 	highlight = oslLoadImageFilePNG("system/settings/highlight.png", OSL_IN_RAM, OSL_PF_8888);
+	check = oslLoadImageFilePNG("system/settings/check.png", OSL_IN_RAM, OSL_PF_8888);
 
-	if (!developerbg || !check || !highlight)
+	if (!developerbg || !highlight || !check)
 		debugDisplay();
 	
 	setfont();
@@ -1241,16 +1241,16 @@ void developerMenu()
 
 		oslDrawImageXY(developerbg, 0, 19);
 		oslDrawImageXY(check, 422, 177);
-
+		
 		oslDrawString(35,62,"Toggle Remote Joy Lite");
 		oslDrawString(35,76,"Displays your PSP screen on your computer via USB.");
-		oslDrawString(35,90,"Press Triangle to disable or it may cause the program to crash");
+		oslDrawString(35,90,"Press Triangle to disable or it may cause the program to crash.");
 		oslDrawString(35,128,"Toggle USB Debugging");
 		oslDrawString(35,142,"Press Triangle to disable or it may cause the program to crash");
 		oslDrawString(35,174,"Advanced Reboot");
 		oslDrawString(35,188,"When unlocked, include option in the power menu for");
 		oslDrawString(35,202,"rebooting into recovery");
-		oslDrawString(35,236,"Display system benchmark results. Press triangle to disable");
+		oslDrawString(35,236,"Display system benchmark results. Press triangle to disable.");
 			
 		digitaltime(420,4,458);
 		battery();
@@ -1260,20 +1260,20 @@ void developerMenu()
 			oslDrawImageXY(highlight, 15, 55);
 			oslDrawString(35,62,"Toggle Remote Joy Lite");
 			oslDrawString(35,76,"Displays your PSP screen on your computer via USB.");
-			oslDrawString(35,90,"Press Triangle to disable or it may cause the program to crash");
+			oslDrawString(35,90,"Press Triangle to disable or it may cause the program to crash.");
 		}
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 109 && cursor->y <= 165)
 		{
 			oslDrawImageXY(highlight, 15, 109);
 			oslDrawString(35,128,"Toggle USB Debugging");
-			oslDrawString(35,142,"Press Triangle to disable or it may cause the program to crash");
+			oslDrawString(35,142,"Press Triangle to disable or it may cause the program to crash.");
 		}
 		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 222 && cursor->y <= 278)
 		{
 			oslDrawImageXY(highlight, 15, 222);
-			oslDrawString(35,236,"Display system benchmark results. Press triangle to disable");
+			oslDrawString(35,236,"Display system benchmark results. Press triangle to disable.");
 		}
 		
 		navbarButtons();
@@ -1324,16 +1324,6 @@ void developerMenu()
 			screenshot();
 		}
 		
-		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 109 && cursor->y <= 165 && osl_keys->pressed.cross)
-		{
-			PSPDebug = 1;
-			LoadStartModule("modules/psplink.prx");
-		}
-		if(PSPDebug == 1  && osl_keys->pressed.triangle)
-		{	
-			StopUnloadModule("modules/psplink.prx");			
-		}
-		
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 55 && cursor->y <= 108 && osl_keys->pressed.cross)
 		{	
 			RJL = 1;
@@ -1344,13 +1334,23 @@ void developerMenu()
 			StopUnloadModule("modules/RemoteJoyLite.prx");
 		}
 		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 109 && cursor->y <= 165 && osl_keys->pressed.cross)
+		{
+			PSPDebug = 1;
+			LoadStartModule("modules/psplink.prx");
+		}
+		if(PSPDebug == 1  && osl_keys->pressed.triangle)
+		{	
+			StopUnloadModule("modules/psplink.prx");			
+		}
+
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 222 && cursor->y <= 278 && osl_keys->pressed.cross)
 		{
 			benchmarkDebugActivate = 1;
 		}
 		if (benchmarkDebugActivate == 1 && osl_keys->pressed.triangle)
 		{
-				benchmarkDebugActivate = 0;
+			benchmarkDebugActivate = 0;
 		}
 		
 	oslEndDrawing(); 
