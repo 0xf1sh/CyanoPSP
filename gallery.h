@@ -19,5 +19,5 @@ void showImage(const char * path);
 void galleryControls();
 char * galleryBrowse(const char * path);
 void galleryUnload();
+void galleryView(char * browseDirectory);
 int galleryApp();
-void galleryview(char * browseDirectory);

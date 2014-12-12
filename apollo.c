@@ -303,7 +303,7 @@ void MP3Play(char * path)
 }
 
 void mp3FileDisplay()
-{	
+{
 	oslDrawImageXY(mp3bg, 0, 19);
 	oslDrawImageXY(mp3_select,8,(current - curScroll)*55+MP3_CURR_DISPLAY_Y);
 
@@ -379,16 +379,29 @@ void mp3Controls() //Controls
 	
 	if (osl_keys->pressed.circle)
 	{		
-			if(!strcmp("ms0:/MUSIC", lastDir))
+			if(!strcmp("ms0:/MUSIC", lastDir)) 
 			{
 				oslDeleteImage(mp3bg);
-			oslDeleteImage(mp3_select);
-			oslDeleteFont(pgfFont);
-			appdrawer();
+				oslDeleteImage(mp3_select);
+				appdrawer();
+			}
+			if(!strcmp("ms0:/PSP/MUSIC", lastDir)) 
+			{
+				oslDeleteImage(mp3bg);
+				oslDeleteImage(mp3_select);
+				appdrawer();
+			}
+			if(!strcmp("ms0:/PSP/GAME/CyanogenMod/downloads", lastDir)) 
+			{
+				oslDeleteImage(mp3bg);
+				oslDeleteImage(mp3_select);
+				appdrawer();
 			}
 			else
 			{
-				dirBack();
+				oslDeleteImage(mp3bg);
+				oslDeleteImage(mp3_select);
+				mp3player();
 			}		
 	}
 	
@@ -459,34 +472,120 @@ char * mp3Browse(const char * path)
 	return returnMe;
 }
 
-int mp3player()
+void mp3View(char * browseDirectory)
 {	
+	mp3bg = oslLoadImageFilePNG("system/app/apollo/mp3bg.png", OSL_IN_RAM, OSL_PF_8888);
+	mp3_select = oslLoadImageFilePNG("system/app/apollo/mp3_select.png", OSL_IN_RAM, OSL_PF_8888);
+
+	char * Directory = mp3Browse(browseDirectory);
+
+	while (!osl_quit)
+	{		
+		LowMemExit();
+	
+		oslStartDrawing();
+		oslClearScreen(RGB(0,0,0));	
+		
+		centerText(480/2, 272/2, Directory, 50);	// Shows the path that 'Directory' was supposed to receive from mp3Browse();
+	 
+		oslEndDrawing(); 
+        oslEndFrame(); 
+		oslSyncFrame();	
+	}	
+	return 0;
+}
+
+int mp3player() 
+{
 	mp3bg = oslLoadImageFilePNG("system/app/apollo/mp3bg.png", OSL_IN_RAM, OSL_PF_8888);
 	mp3_select = oslLoadImageFilePNG("system/app/apollo/mp3_select.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	if (!mp3bg || !mp3_select)
 		debugDisplay();
-	
-	pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
-	oslSetFont(pgfFont);
-	
-	makeMusicDir();
 		
-	char * Directory = mp3Browse("ms0:/MUSIC");
+	setfont();
 	
+	int MenuSelection = 1; // Pretty obvious
+	int selector_x = 8; //The x position of the first selection
+	int selector_y = 35; //The y position of the first selection
+	int selector_image_x; //Determines the starting x position of the selection
+	int selector_image_y = 55; //Determines the starting y position of the selection
+	int numMenuItems = 3; //Amount of items in the menu
+	int selection = 0;
+
 	while (!osl_quit)
-	{	
+	{		
 		LowMemExit();
-
-		oslReadKeys();
+	
 		oslStartDrawing();
+		oslReadKeys();
 		oslClearScreen(RGB(0,0,0));	
+		oslDrawImageXY(mp3bg, 0, 19);
+		oslDrawImage(mp3_select);
 		
-		centerText(480/2, 272/2, Directory, 50);
-
+		oslDrawStringf(20,108,"MUSIC");
+		oslDrawStringf(20,163,"PSP/MUSIC");
+		oslDrawStringf(20,218,"PSP/GAME/CyanogenMod/Downloads");
+		
+		battery();
+		digitaltime(420,4,458);
+		
+		mp3_select->x = selector_image_x; //Sets the selection coordinates
+        mp3_select->y = selector_image_y; //Sets the selection coordinates
+        
+        selector_image_x = selector_x+(mp3XSelection*MenuSelection); //Determines where the selection image is drawn for each selection
+        selector_image_y = selector_y+(mp3YSelection*MenuSelection); //Determines where the selection image is drawn for each selection
+        
+        if (osl_keys->pressed.down) MenuSelection++; //Moves the selector down
+        if (osl_keys->pressed.up) MenuSelection--; //Moves the selector up
+        
+        if (MenuSelection > numMenuItems) MenuSelection = 1; //Sets the selection to the first
+        if (MenuSelection < 1) MenuSelection = numMenuItems; //Sets the selection back to last
+		
+		if (MenuSelection == 1 && osl_keys->pressed.cross)
+        {	
+			oslDeleteImage(mp3bg);
+			oslDeleteImage(mp3_select);
+			mp3View("ms0:/MUSIC");
+        }
+		if (MenuSelection == 2 && osl_keys->pressed.cross)
+        {		
+			oslDeleteImage(mp3bg);
+			oslDeleteImage(mp3_select);
+			mp3View("ms0:/PSP/MUSIC");
+        }
+		if (MenuSelection == 3 && osl_keys->pressed.cross)
+        {			
+			oslDeleteImage(mp3bg);
+			oslDeleteImage(mp3_select);
+			mp3View("ms0:/PSP/GAME/CyanogenMod/downloads");
+        }
+		
+		if (osl_keys->pressed.circle)
+		{
+			oslDeleteImage(mp3bg);
+			oslDeleteImage(mp3_select);
+			appdrawer();
+		}
+		
+		if (osl_keys->pressed.square)
+		{
+			powermenu();
+		}
+		
+		if (osl_keys->pressed.L)
+		{
+			lockscreen();
+		}
+	
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
+		{
+			screenshot();
+		}
+		
 		oslEndDrawing(); 
         oslEndFrame(); 
 		oslSyncFrame();	
-		}
+	}	
+	return selection;
 }

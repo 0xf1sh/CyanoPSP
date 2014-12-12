@@ -158,21 +158,22 @@ void galleryControls() //Controls
 	{		
 			if(!strcmp("ms0:/PICTURE", lastDir)) 
 			{
-				filemanager_unload();
+				galleryUnload();
 				appdrawer();
 			}
 			if(!strcmp("ms0:/PSP/PHOTO", lastDir)) 
 			{
-				filemanager_unload();
+				galleryUnload();
 				appdrawer();
 			}
 			if(!strcmp("ms0:/PSP/GAME/CyanogenMod/screenshots", lastDir)) 
 			{
-				filemanager_unload();
+				galleryUnload();
 				appdrawer();
 			}
 			else
 			{
+				galleryUnload();
 				galleryApp();
 			}		
 	}
@@ -242,7 +243,30 @@ void galleryUnload()
 	oslDeleteImage(gallerybg);
 	oslDeleteImage(gallerySelection);
 	oslDeleteImage(galleryThumbnail);
-	oslDeleteFont(pgfFont);
+}
+
+void galleryView(char * browseDirectory)
+{	
+	gallerybg = oslLoadImageFilePNG("system/app/gallery/gallerybg.png", OSL_IN_RAM, OSL_PF_8888);
+	gallerySelection = oslLoadImageFilePNG("system/app/gallery/highlight.png", OSL_IN_RAM, OSL_PF_8888);
+	galleryThumbnail = oslLoadImageFilePNG("system/app/gallery/ic_images.png", OSL_IN_RAM, OSL_PF_8888);
+
+	char * Directory = galleryBrowse(browseDirectory);
+
+	while (!osl_quit)
+	{		
+		LowMemExit();
+	
+		oslStartDrawing();
+		oslClearScreen(RGB(0,0,0));	
+		
+		centerText(480/2, 272/2, Directory, 50);	// Shows the path that 'Directory' was supposed to receive from mp3Browse();
+	 
+		oslEndDrawing(); 
+        oslEndFrame(); 
+		oslSyncFrame();	
+	}	
+	return 0;
 }
 
 int galleryApp() 
@@ -251,9 +275,7 @@ int galleryApp()
 	gallerySelection = oslLoadImageFilePNG("system/app/gallery/highlight.png", OSL_IN_RAM, OSL_PF_8888);
 	galleryThumbnail = oslLoadImageFilePNG("system/app/gallery/ic_images.png", OSL_IN_RAM, OSL_PF_8888);
 		
-	pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(255,255,255,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
-	oslSetFont(pgfFont);
+	setfont();
 	
 	if (!gallerybg || !gallerySelection || !galleryThumbnail)
 		debugDisplay();
@@ -297,16 +319,19 @@ int galleryApp()
         if (MenuSelection < 1) MenuSelection = numMenuItems; //Sets the selection back to last
 		
 		if (MenuSelection == 1 && osl_keys->pressed.cross)
-        {			
-			galleryview("ms0:/PICTURE");
+        {		
+			galleryUnload();
+			galleryView("ms0:/PICTURE");
         }
 		if (MenuSelection == 2 && osl_keys->pressed.cross)
-        {			
-			galleryview("ms0:/PSP/PHOTO");
+        {		
+			galleryUnload();
+			galleryView("ms0:/PSP/PHOTO");
         }
 		if (MenuSelection == 3 && osl_keys->pressed.cross)
         {			
-			galleryview("ms0:/PSP/GAME/CyanogenMod/screenshots");
+			galleryUnload();
+			galleryView("ms0:/PSP/GAME/CyanogenMod/screenshots");
         }
 		
 		if (osl_keys->pressed.circle)
@@ -335,24 +360,4 @@ int galleryApp()
 		oslSyncFrame();	
 	}	
 	return selection;
-}
-
-void galleryview(char * browseDirectory)
-{	
-	char * Directory = galleryBrowse(browseDirectory);
-
-	while (!osl_quit)
-	{		
-		LowMemExit();
-	
-		oslStartDrawing();
-		oslClearScreen(RGB(0,0,0));	
-		
-		centerText(480/2, 272/2, Directory, 50);	// Shows the path that 'Directory' was supposed to receive from mp3Browse();
-	 
-		oslEndDrawing(); 
-        oslEndFrame(); 
-		oslSyncFrame();	
-	}	
-	return 0;
 }
