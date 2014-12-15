@@ -24,16 +24,12 @@
 #include "settingsmenu.h"
 
 #define Version "flash0:/vsh/etc/version.txt"
-#define PWD "password.TXT"
 
 extern void CheckerPrintf(char *fmt, ...);
 
 OSL_IMAGE *recoverybg, *Selector;
 
 OSL_FONT *roboto;
-
-int selector_image_x; //Determines the starting x position of the selection
-int selector_image_y; //Determines the starting y position of the selection
 
 SceCtrlData pad;
 
@@ -345,130 +341,6 @@ void ShowPage2()
 	}
 }
 
-// Don't judge ;) I prefer the long and easy way lol.
-// I tried using oslDrawStringf("Kernel Version: %s (0x%08X)\n\n", FWs[type], sceKernelDevkitVersion());
-// Returned null, so yeah.
-
-void sceKernelVersion()
-{
-	if(sceKernelDevkitVersion() == 0x01000300) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 1.00 (0x01000300)");
-	}
-    else if(sceKernelDevkitVersion() == 0x01050001) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 1.50 (0x01050001)");
-	}
-	else if(sceKernelDevkitVersion() == 0x01050100) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 1.51 (0x01050100)");
-	}
-	else if(sceKernelDevkitVersion() == 0x01050200) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 1.52 (0x01050200)");
-	}
-	else if(sceKernelDevkitVersion() == 0x02000010) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 2.00 (0x02000010)");
-	}
-	else if(sceKernelDevkitVersion() == 0x02050010) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 2.50 (0x02050010)");
-	}
-	else if(sceKernelDevkitVersion() == 0x02060010) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 2.60 (0x02060010)");
-	}
-	else if(sceKernelDevkitVersion() == 0x02070010) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 2.70 (0x02070010)");
-	}
-	else if(sceKernelDevkitVersion() == 0x02070110) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 2.71 (0x02070110)");
-	}
-	else if(sceKernelDevkitVersion() == 0x02080010) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 2.80 (0x02080010)");
-	}
-	else if(sceKernelDevkitVersion() == 0x02080110) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 2.81 (0x02080110)");
-	}
-	else if(sceKernelDevkitVersion() == 0x02080210) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 2.82 (0x02080210)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03000010) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.00 (0x03000010)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03000110) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.01 (0x03000110)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03000210) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.02 (0x03000210)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03000310) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.03 (0x03000310)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03010010) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.10 (0x03010010)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03010110) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.11 (0x03010110)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03030010) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.30 (0x03030010)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03040010) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.40 (0x03040010)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03050010) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.50 (0x03050010)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03050110) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.51 (0x03050110)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03050210) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.52 (0x03050210)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03070010) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.70 (0x03070010)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03070110) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.71 (0x03070110)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03070210) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.72 (0x03070210)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03070310) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.73 (0x03070310)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03080010) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.80 (0x03080010)");
-	}
-	else if(sceKernelDevkitVersion() == 0x03090010) 
-	{
-		oslDrawStringf(10,20,"Kernel Version: 3.90 (0x03090010)");
-	}
-}
-
 void ShowPage1()
 {
     int baryon, pommel, tachyon, fuseid, fusecfg, mb, model, type, region;
@@ -570,7 +442,7 @@ void ShowVersionTxt()
 	}
 }
 
-void ConfigurationMenu()
+int ConfigurationMenu()
 {
 	int MenuSelection = 1; // Pretty obvious
 	int selector_x = 0; //The x position of the first selection
@@ -621,21 +493,25 @@ void ConfigurationMenu()
 		
 		if (MenuSelection == 1 && osl_keys->pressed.cross)
         {
+			unloadRecoveryMenuRes();
 			ShowAdvancedCnfMenu();
         }
 	
 		if (MenuSelection == 2 && osl_keys->pressed.cross)
         {
+			unloadRecoveryMenuRes();
 			ShowCnfMenu();
         }
 		
 		if (MenuSelection == 3 && osl_keys->pressed.cross)
         {
+			unloadRecoveryMenuRes();
 			ShowSystemMenu();
         }
 		
 		if (MenuSelection == 4 && osl_keys->pressed.cross)
         {
+			unloadRecoveryMenuRes();
 			ShowBatteryMenu();
         }
 		
@@ -657,7 +533,7 @@ void ConfigurationMenu()
 	return selection;
 }
 
-void ShowAdvancedCnfMenu(void)
+int ShowAdvancedCnfMenu()
 {	
 	
 	int MenuSelection = 1; // Pretty obvious
@@ -711,38 +587,45 @@ void ShowAdvancedCnfMenu(void)
         {
 			config.umdactivatedplaincheck = !config.umdactivatedplaincheck;
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowAdvancedCnfMenu();
         }
         if (MenuSelection == 2 && osl_keys->pressed.cross)
         {
 			config.executebootbin = !config.executebootbin;
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowAdvancedCnfMenu();
         }	
         if (MenuSelection == 3 && osl_keys->pressed.cross)
         {
 			config.xmbplugins = !config.xmbplugins;
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowAdvancedCnfMenu();
         }	
         if (MenuSelection == 4 && osl_keys->pressed.cross)
         {
 			config.gameplugins = !config.gameplugins;
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowAdvancedCnfMenu();
         }
         if (MenuSelection == 5 && osl_keys->pressed.cross)
         {
 			config.popsplugins = !config.popsplugins;
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowAdvancedCnfMenu();
         }
 		if (osl_keys->pressed.L)
 		{
+			unloadRecoveryMenuRes();
 			ShowBatteryMenu();
         }
 		if (osl_keys->pressed.R)
 		{
+			unloadRecoveryMenuRes();
 			ShowCnfMenu();
         }
 		if (MenuSelection == 6 && osl_keys->pressed.cross)
@@ -762,7 +645,7 @@ void ShowAdvancedCnfMenu(void)
 	return selection;
 }
 
-void ShowCnfMenu(void)
+int ShowCnfMenu()
 {
     int MenuSelection = 1; // Pretty obvious
 	int selector_x = 0; //The x position of the first selection
@@ -824,24 +707,28 @@ void ShowCnfMenu(void)
         {
 			config.skiplogo = !config.skiplogo;
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowCnfMenu();
         }
         if (MenuSelection == 2 && osl_keys->pressed.cross)
         {
 			config.hidecorrupt = !config.hidecorrupt;
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowCnfMenu();
         }	
         if (MenuSelection == 3 && osl_keys->pressed.cross)
         {
 			config.gamekernel150 = !config.gamekernel150;
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowCnfMenu();
         }	
         if (MenuSelection == 4 && osl_keys->pressed.cross)
         {
 			config.startupprog = !config.startupprog;
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowCnfMenu();
         }
         if (MenuSelection == 5 && osl_keys->pressed.cross)
@@ -855,6 +742,7 @@ void ShowCnfMenu(void)
             else if(config.umdmode == MODE_OE_LEGACY)
                 config.umdmode = MODE_UMD;
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowCnfMenu();
         }
         if (MenuSelection == 6 && osl_keys->pressed.cross)
@@ -888,6 +776,7 @@ void ShowCnfMenu(void)
             else if(config.fakeregion == FAKE_REGION_DEBUG_TYPE_II)
                 config.fakeregion = FAKE_REGION_DISABLED;
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowCnfMenu();
         }
         if (MenuSelection == 8 && osl_keys->pressed.cross)
@@ -906,36 +795,42 @@ void ShowCnfMenu(void)
                 config.usbdevice = USBDEVICE_MEMORYSTICK;
 				
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowCnfMenu();
         } 
         if (MenuSelection == 9 && osl_keys->pressed.cross)
         {
 			config.notusedaxupd = !config.notusedaxupd;
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowCnfMenu();
         }
         if (MenuSelection == 10 && osl_keys->pressed.cross)
         {
 			config.hidepics = !config.hidepics;
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowCnfMenu();
         } 
         if (MenuSelection == 11 && osl_keys->pressed.cross)
         {
 			config.useversiontxt = !config.useversiontxt;
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowCnfMenu();
         } 
         if (MenuSelection == 12 && osl_keys->pressed.cross)
         {
 			config.slimcolors = !config.slimcolors;
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowCnfMenu();
         } 
         if (MenuSelection == 13 && osl_keys->pressed.cross)
         {
 			config.hidemac = !config.hidemac;
 			sctrlSESetConfig(&config);
+			unloadRecoveryMenuRes();
 			ShowCnfMenu();
         }
         if (MenuSelection == 14 && osl_keys->pressed.cross)
@@ -944,11 +839,13 @@ void ShowCnfMenu(void)
 		    ConfigurationMenu();
         }	
 		if (osl_keys->pressed.L)
-		{
+		{	
+			unloadRecoveryMenuRes();
 			ShowAdvancedCnfMenu();
         }
 		if (osl_keys->pressed.R)
 		{
+			unloadRecoveryMenuRes();
 			ShowSystemMenu();
         }
 		if (osl_keys->pressed.circle)
@@ -963,7 +860,7 @@ void ShowCnfMenu(void)
 	return selection;
 }
 
-void ShowSystemMenu(void)
+int ShowSystemMenu()
 {
     int MenuSelection = 1; // Pretty obvious
 	int selector_x = 0; //The x position of the first selection
@@ -1015,30 +912,35 @@ void ShowSystemMenu(void)
         {
 		    oslDrawStringf(10,200,"Assigning...");
 			swap_buttons();
+			unloadRecoveryMenuRes();
 			ShowSystemMenu();
         }
 		if (MenuSelection == 2 && osl_keys->pressed.cross)
         {
 		    oslDrawStringf(10,200,"Activating...");
 			active_wma();
+			unloadRecoveryMenuRes();
 			ShowSystemMenu();
         }
 		if (MenuSelection == 3 && osl_keys->pressed.cross)
         {
 		    oslDrawStringf(10,200,"Activating...");
 			active_flash();
+			unloadRecoveryMenuRes();
 			ShowSystemMenu();
         }
 		if (MenuSelection == 4 && osl_keys->pressed.cross)
         {
 		    oslDrawStringf(10,200,"Faking...");
 			fake_name();
+			unloadRecoveryMenuRes();
 			ShowSystemMenu();
         }
 		if (MenuSelection == 5 && osl_keys->pressed.cross)
         {
 		    oslDrawStringf(10,200,"Hiding...");
 			hide_mac();
+			unloadRecoveryMenuRes();
 			ShowSystemMenu();
         }
 		if (MenuSelection == 6 && osl_keys->pressed.cross)
@@ -1048,10 +950,12 @@ void ShowSystemMenu(void)
         } 
 		if (osl_keys->pressed.L)
 		{
+			unloadRecoveryMenuRes();
 			ShowCnfMenu();
         }
 		if (osl_keys->pressed.R)
 		{
+			unloadRecoveryMenuRes();
 			ShowBatteryMenu();
         }
 		if (osl_keys->pressed.circle)
@@ -1066,7 +970,7 @@ void ShowSystemMenu(void)
 	return selection;
 }
 
-void ShowBatteryMenu(void)
+int ShowBatteryMenu()
 {
 	char BatSerCurrent[4];
 	
@@ -1123,6 +1027,7 @@ void ShowBatteryMenu(void)
 			oslDrawStringf(10,200,"Creating Pandora Battery...");
 			SetBatSer(0xFFFF, 0xFFFF);
 	        oslDrawStringf(10,210,"Done");
+			unloadRecoveryMenuRes();
 			ShowBatteryMenu();
         }
 		if (MenuSelection == 2 && osl_keys->pressed.cross)
@@ -1132,6 +1037,7 @@ void ShowBatteryMenu(void)
 			oslDrawStringf(10,200,"Creating AutoBoot Battery...");
 			SetBatSer(0x0000, 0x0000);
 			oslDrawStringf(10,210,"Done");
+			unloadRecoveryMenuRes();
 			ShowBatteryMenu();
         }
 		if (MenuSelection == 3 && osl_keys->pressed.cross)
@@ -1141,6 +1047,7 @@ void ShowBatteryMenu(void)
 			oslDrawStringf(10,210,"Creating Normal Battery...");
 			SetBatSer(0x5241, 0x4E44);
 			oslDrawStringf(10,200,"Done");
+			unloadRecoveryMenuRes();
 			ShowBatteryMenu();
         }
 		if (MenuSelection == 4 && osl_keys->pressed.cross)
@@ -1151,6 +1058,7 @@ void ShowBatteryMenu(void)
 			GetBatSer(BatSerCurrent);
 			WriteFile("ms0:/batser.bin", BatSerCurrent, 4);
 			oslDrawStringf(10,200,"Done");
+			unloadRecoveryMenuRes();
 			ShowBatteryMenu();
         }
 		if (MenuSelection == 5 && osl_keys->pressed.cross)
@@ -1160,10 +1068,12 @@ void ShowBatteryMenu(void)
         } 
 		if (osl_keys->pressed.L)
 		{
+			unloadRecoveryMenuRes();
 			ShowSystemMenu();
         }
 		if (osl_keys->pressed.R)
 		{
+			unloadRecoveryMenuRes();
 			ShowAdvancedCnfMenu();
         }
 		if (osl_keys->pressed.circle)
@@ -1215,7 +1125,7 @@ int mainRecoveryMenu()
 		
 		oslDrawImageXY(recoverybg, 0, 0);
 		oslDrawImage(Selector);
-		oslDrawStringf(10,5,"CWM-based Recovery v1.0\n");
+		oslDrawStringf(10,5,"CWM-based Recovery v1.1\n");
 		
 		oslDrawStringf(10,20,"- toggle USB");
 		oslDrawStringf(10,30,"- system information");
@@ -1251,16 +1161,19 @@ int mainRecoveryMenu()
 		
 		if (MenuSelection == 2 && osl_keys->pressed.cross)
 		{
+			unloadRecoveryMenuRes();
 			ShowPage1();
 		}
 		
 		if (MenuSelection == 3 && osl_keys->pressed.cross)
 		{
+			unloadRecoveryMenuRes();
 			ConfigurationMenu();
 		}
 		
 		if (MenuSelection == 4 && osl_keys->pressed.cross)
 		{
+			unloadRecoveryMenuRes();
 			ShowVersionTxt();
 		}
 		
