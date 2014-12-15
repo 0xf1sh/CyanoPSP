@@ -40,10 +40,6 @@ void powermenu()
 			oslDrawImageXY(power1, 102, 47);
 			if (osl_keys->pressed.cross)
 			{	
-				oslDeleteImage(power);
-				oslDeleteImage(power1);
-				oslDeleteImage(recovery1);
-				oslDeleteImage(screenshot1);
 				PowerOffMenu();
 			}
 		}
@@ -158,7 +154,7 @@ void PowerOffMenu()
 			oslDeleteImage(powerOff);
 			oslDeleteImage(cancelPowerOff);
 			oslDeleteImage(okPowerOff);
-			powermenu();
+			return;
 		}
 
 		if (osl_pad.held.R && osl_keys->pressed.triangle)
