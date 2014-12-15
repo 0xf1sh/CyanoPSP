@@ -911,6 +911,8 @@ int ShowSystemMenu()
 		if (MenuSelection == 1 && osl_keys->pressed.cross)
         {
 		    oslDrawStringf(10,200,"Assigning...");
+			oslSyncFrame();
+			sceKernelDelayThread(2*1000000);
 			swap_buttons();
 			unloadRecoveryMenuRes();
 			ShowSystemMenu();
@@ -918,6 +920,8 @@ int ShowSystemMenu()
 		if (MenuSelection == 2 && osl_keys->pressed.cross)
         {
 		    oslDrawStringf(10,200,"Activating...");
+			oslSyncFrame();
+			sceKernelDelayThread(2*1000000);
 			active_wma();
 			unloadRecoveryMenuRes();
 			ShowSystemMenu();
@@ -925,6 +929,8 @@ int ShowSystemMenu()
 		if (MenuSelection == 3 && osl_keys->pressed.cross)
         {
 		    oslDrawStringf(10,200,"Activating...");
+			oslSyncFrame();
+			sceKernelDelayThread(2*1000000);
 			active_flash();
 			unloadRecoveryMenuRes();
 			ShowSystemMenu();
@@ -932,6 +938,8 @@ int ShowSystemMenu()
 		if (MenuSelection == 4 && osl_keys->pressed.cross)
         {
 		    oslDrawStringf(10,200,"Faking...");
+			oslSyncFrame();
+			sceKernelDelayThread(2*1000000);
 			fake_name();
 			unloadRecoveryMenuRes();
 			ShowSystemMenu();
@@ -939,6 +947,8 @@ int ShowSystemMenu()
 		if (MenuSelection == 5 && osl_keys->pressed.cross)
         {
 		    oslDrawStringf(10,200,"Hiding...");
+			oslSyncFrame();
+			sceKernelDelayThread(2*1000000);
 			hide_mac();
 			unloadRecoveryMenuRes();
 			ShowSystemMenu();
@@ -1025,8 +1035,12 @@ int ShowBatteryMenu()
 			if(chGetPSPCreatePandora() == 1) oslDrawStringf(10,190,"Your hardware is not supported.");
 			
 			oslDrawStringf(10,200,"Creating Pandora Battery...");
+			oslSyncFrame();
+			sceKernelDelayThread(2*1000000);
 			SetBatSer(0xFFFF, 0xFFFF);
 	        oslDrawStringf(10,210,"Done");
+			oslSyncFrame();
+			sceKernelDelayThread(1*1000000);
 			unloadRecoveryMenuRes();
 			ShowBatteryMenu();
         }
@@ -1035,8 +1049,12 @@ int ShowBatteryMenu()
 			if(chGetPSPCreatePandora() == 1) oslDrawStringf(10,190,"Your hardware is not supported.");
 			
 			oslDrawStringf(10,200,"Creating AutoBoot Battery...");
+			oslSyncFrame();
+			sceKernelDelayThread(2*1000000);
 			SetBatSer(0x0000, 0x0000);
 			oslDrawStringf(10,210,"Done");
+			oslSyncFrame();
+			sceKernelDelayThread(1*1000000);
 			unloadRecoveryMenuRes();
 			ShowBatteryMenu();
         }
@@ -1045,19 +1063,31 @@ int ShowBatteryMenu()
 			if(chGetPSPCreatePandora() == 1) oslDrawStringf(10,190,"Your hardware is not supported.");
 			
 			oslDrawStringf(10,210,"Creating Normal Battery...");
+			oslSyncFrame();
+			sceKernelDelayThread(2*1000000);
 			SetBatSer(0x5241, 0x4E44);
 			oslDrawStringf(10,200,"Done");
+			oslSyncFrame();
+			sceKernelDelayThread(1*1000000);
 			unloadRecoveryMenuRes();
 			ShowBatteryMenu();
         }
 		if (MenuSelection == 4 && osl_keys->pressed.cross)
         {
-			if(chGetPSPCreatePandora() == 1) oslDrawStringf(10,190,"Your hardware is not supported.");
-			
+			if(chGetPSPCreatePandora() == 1) 
+			{	
+				oslDrawStringf(10,190,"Your hardware is not supported.");
+				oslSyncFrame();
+				sceKernelDelayThread(3*1000000);
+			}
 			oslDrawStringf(10,210,"Dumping Battery Serial...");
+			oslSyncFrame();
+			sceKernelDelayThread(2*1000000);
 			GetBatSer(BatSerCurrent);
 			WriteFile("ms0:/batser.bin", BatSerCurrent, 4);
 			oslDrawStringf(10,200,"Done");
+			oslSyncFrame();
+			sceKernelDelayThread(1*1000000);
 			unloadRecoveryMenuRes();
 			ShowBatteryMenu();
         }
