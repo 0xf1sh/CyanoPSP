@@ -38,105 +38,128 @@ SEConfig config;
 void ShowPage5()
 {
     int type, size, psp, pan, cfw;
-	
-	CheckerInitMainScreen("Advanced Configuration, CFW & PSP Utility Info");
-	
+
 	psp = chGetPSPHackable();
 	pan = chGetPSPCreatePandora();
     cfw = chDetectCFW();
 	
 	chGetIplAttribute(&type, &size);
 	sctrlSEGetConfig(&config);
-
-	CheckerPrintf("Plain modules in UMD/ISO     (currently: %s)\n", config.umdactivatedplaincheck ? "Enabled" : "Disabled");
-    CheckerPrintf("Execute PBOOT.BIN in UMD/ISO (currently: %s)\n", config.executebootbin ? "Enabled" : "Disabled");
-    CheckerPrintf("XMB Plugins                  (currently: %s)\n", config.xmbplugins ? "Disabled" : "Enabled");
-    CheckerPrintf("GAME Plugins                 (currently: %s)\n", config.gameplugins ? "Disabled" : "Enabled");
-    CheckerPrintf("POPS Plugins                 (currently: %s)\n\n", config.popsplugins ? "Disabled" : "Enabled");
-    CheckerPrintf("IPL:                %s (Size: 0x%08X)\n", IPLs[type], size);
-	CheckerPrintf("CFW:                %s\n\n", CFWs[cfw]);
-	CheckerPrintf("PSP Hackable:       %s\n", PSPUtils[psp]);
-	CheckerPrintf("PSP Create Pandora: %s\n\n\n", PSPUtils[pan]);
 	
-	CheckerPrintf("Press L/R to switch sections, X to edit and Circle to return.\n");
+	recoverybg = oslLoadImageFilePNG("android_bootable_recovery/res/images/recoverybg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	sceKernelDelayThread(200000);
-	
-	while (1)
+	while (!osl_quit)
 	{
-		sceCtrlReadBufferPositive(&pad, 1);
+		LowMemExit();
+		
+		oslStartDrawing();	
+		
+		oslReadKeys();
+	
+		oslClearScreen(RGB(0,0,0));
+		
+		oslDrawImageXY(recoverybg, 0, 0);
+		
+		oslDrawStringf(10,5,"Advanced Configuration, CFW & PSP Utility Info");
 
-		if (pad.Buttons & PSP_CTRL_LTRIGGER)
+		oslDrawStringf(10,20,"Plain modules in UMD/ISO     (currently: %s)\n", config.umdactivatedplaincheck ? "Enabled" : "Disabled");
+		oslDrawStringf(10,30,"Execute PBOOT.BIN in UMD/ISO (currently: %s)\n", config.executebootbin ? "Enabled" : "Disabled");
+		oslDrawStringf(10,40,"XMB Plugins                  (currently: %s)\n", config.xmbplugins ? "Disabled" : "Enabled");
+		oslDrawStringf(10,50,"GAME Plugins                 (currently: %s)\n", config.gameplugins ? "Disabled" : "Enabled");
+		oslDrawStringf(10,60,"POPS Plugins                 (currently: %s)\n\n", config.popsplugins ? "Disabled" : "Enabled");
+		oslDrawStringf(10,70,"IPL:                %s (Size: 0x%08X)\n", IPLs[type], size);
+		oslDrawStringf(10,80,"CFW:                %s\n\n", CFWs[cfw]);
+		oslDrawStringf(10,90,"PSP Hackable:       %s\n", PSPUtils[psp]);
+		oslDrawStringf(10,100,"PSP Create Pandora: %s\n\n\n", PSPUtils[pan]);
+
+		oslDrawStringf(10,200,"Press L/R to switch sections, X to edit and Circle to return.\n");
+		
+		if (osl_keys->pressed.L)
 		{
-			sceKernelDelayThread(250000);
+			oslDeleteImage(recoverybg);
 			ShowPage4();
         }
-		if (pad.Buttons & PSP_CTRL_RTRIGGER)
+		if (osl_keys->pressed.R)
 		{
-			sceKernelDelayThread(250000);
+			oslDeleteImage(recoverybg);
 			ShowPage1();
         }
-		if (pad.Buttons & PSP_CTRL_CROSS)
+		if (osl_keys->pressed.cross)
 		{
+			oslDeleteImage(recoverybg);
 			ShowAdvancedCnfMenu();
         }
-		if (pad.Buttons & PSP_CTRL_CIRCLE)
+		if (osl_keys->pressed.circle)
 		{
+			oslDeleteImage(recoverybg);
 			mainRecoveryMenu();
-        }
-		
-		sceKernelDelayThread(10000);
+		}
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();
 	}
 }
 
 void ShowPage4()
 {
-    CheckerInitMainScreen("Miscellaneous");
-
 	sctrlSEGetConfig(&config);
-
-	CheckerPrintf("Skip Sony logo                 (currently: %s)\n", config.skiplogo ? "Enabled" : "Disabled");
-    CheckerPrintf("Hide corrupt icons             (currently: %s)\n", config.hidecorrupt ? "Enabled" : "Disabled");
-    CheckerPrintf("Game folder homebrew           (currently: %s)\n", config.gamekernel150 ? "1.50 Kernel" : "6.XX Kernel");
-    CheckerPrintf("Autoboot program at /PSP/GAME/BOOT/ (currently: %s)\n", config.startupprog ? "Enabled" : "Disabled");
-    CheckerPrintf("UMD Mode                       (currently: %s)\n", umdmodes[config.umdmode]);
-    CheckerPrintf("Fake region                    (currently: %s)\n", regions[config.fakeregion]);
-    CheckerPrintf("Use VshMenu                    (currently: %s)\n", vshmenuoptions[config.vshmenu]);
-    CheckerPrintf("XMB Usb Device                 (currently: %s)\n", usbdevices[config.usbdevice]);
-    CheckerPrintf("Use network update             (currently: %s)\n", config.notusedaxupd ? "Disabled" : "Enabled");
-    CheckerPrintf("Hide PIC1.PNG and PIC0.PNG     (currently: %s)\n", config.hidepics ? "Enabled" : "Disabled");
-    CheckerPrintf("Use version.txt                (currently: %s)\n", config.useversiontxt ? "Enabled" : "Disabled");
-    CheckerPrintf("Use Slim colors on Classic PSP (currently: %s)\n", config.slimcolors ? "Enabled" : "Disabled");
-    CheckerPrintf("Hide MAC address               (currently: %s)\n\n\n", config.hidemac ? "Enabled" : "Disabled");
 	
-	CheckerPrintf("Press L/R to switch sections, X to edit and Circle to return.\n");
+	recoverybg = oslLoadImageFilePNG("android_bootable_recovery/res/images/recoverybg.png", OSL_IN_RAM, OSL_PF_8888);
 	
-	sceKernelDelayThread(200000);
-	
-	while (1)
+	while (!osl_quit)
 	{
-		sceCtrlReadBufferPositive(&pad, 1);
+		LowMemExit();
+		
+		oslStartDrawing();	
+		
+		oslReadKeys();
+	
+		oslClearScreen(RGB(0,0,0));
+		
+		oslDrawImageXY(recoverybg, 0, 0);
+		
+		oslDrawStringf(10,5,"Miscellaneous");
+	
 
-		if (pad.Buttons & PSP_CTRL_LTRIGGER)
+		oslDrawStringf(10,20,"Skip Sony logo                 (currently: %s)\n", config.skiplogo ? "Enabled" : "Disabled");
+		oslDrawStringf(10,30,"Hide corrupt icons             (currently: %s)\n", config.hidecorrupt ? "Enabled" : "Disabled");
+		oslDrawStringf(10,40,"Game folder homebrew           (currently: %s)\n", config.gamekernel150 ? "1.50 Kernel" : "6.XX Kernel");
+		oslDrawStringf(10,50,"Autoboot program at /PSP/GAME/BOOT/ (currently: %s)\n", config.startupprog ? "Enabled" : "Disabled");
+		oslDrawStringf(10,60,"UMD Mode                       (currently: %s)\n", umdmodes[config.umdmode]);
+		oslDrawStringf(10,70,"Fake region                    (currently: %s)\n", regions[config.fakeregion]);
+		oslDrawStringf(10,80,"Use VshMenu                    (currently: %s)\n", vshmenuoptions[config.vshmenu]);
+		oslDrawStringf(10,90,"XMB Usb Device                 (currently: %s)\n", usbdevices[config.usbdevice]);
+		oslDrawStringf(10,100,"Use network update             (currently: %s)\n", config.notusedaxupd ? "Disabled" : "Enabled");
+		oslDrawStringf(10,110,"Hide PIC1.PNG and PIC0.PNG     (currently: %s)\n", config.hidepics ? "Enabled" : "Disabled");
+		oslDrawStringf(10,120,"Use version.txt                (currently: %s)\n", config.useversiontxt ? "Enabled" : "Disabled");
+		oslDrawStringf(10,130,"Use Slim colors on Classic PSP (currently: %s)\n", config.slimcolors ? "Enabled" : "Disabled");
+		oslDrawStringf(10,140,"Hide MAC address               (currently: %s)\n\n\n", config.hidemac ? "Enabled" : "Disabled");
+	
+		oslDrawStringf(10,200,"Press L/R to switch sections, X to edit and Circle to return.\n");
+		
+		if (osl_keys->pressed.L)
 		{
-			sceKernelDelayThread(250000);
+			oslDeleteImage(recoverybg);
 			ShowPage3();
         }
-		if (pad.Buttons & PSP_CTRL_RTRIGGER)
+		if (osl_keys->pressed.R)
 		{
-			sceKernelDelayThread(250000);
+			oslDeleteImage(recoverybg);
 			ShowPage5();
         }
-		if (pad.Buttons & PSP_CTRL_CROSS)
+		if (osl_keys->pressed.cross)
 		{
+			oslDeleteImage(recoverybg);
 			ShowCnfMenu();
         }
-		if (pad.Buttons & PSP_CTRL_CIRCLE)
+		if (osl_keys->pressed.circle)
 		{
+			oslDeleteImage(recoverybg);
 			mainRecoveryMenu();
-        }
-		
-		sceKernelDelayThread(10000);
+		}
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();
 	}
 }
 
@@ -257,6 +280,7 @@ void ShowPage3()
         }
 		if (osl_keys->pressed.cross)
 		{
+			oslDeleteImage(recoverybg);
 			ShowSystemMenu();
         }
 		if (osl_keys->pressed.circle)
@@ -264,7 +288,6 @@ void ShowPage3()
 			oslDeleteImage(recoverybg);
 			mainRecoveryMenu();
 		}
-		
 	oslEndDrawing(); 
     oslEndFrame(); 
 	oslSyncFrame();
@@ -327,6 +350,7 @@ void ShowPage2()
         }
 		if (osl_keys->pressed.cross)
 		{
+			oslDeleteImage(recoverybg);
 			ShowBatteryMenu();
         }
 		if (osl_keys->pressed.circle)
