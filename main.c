@@ -41,8 +41,8 @@ PSP_HEAP_SIZE_KB(20*1024);
 //declaration
 OSL_IMAGE *background, *cursor, *ic_allapps, *ic_allapps_pressed, *navbar, *wificon, *apollo, *gmail, *messengericon, *browser, *google, *notif, *batt100, 
 		  *batt80, *batt60, *batt40, *batt20, *batt10, *batt0, *battcharge, *pointer, *pointer1, *backicon, *homeicon, *multicon, *usbdebug, *quickSettings,
-		  *recoverybg, *welcome, *ok, *transbackground, *notif2 , *wifibg, *playing, *debug;
-
+		  *recoverybg, *welcome, *ok, *transbackground, *notif2 , *wifibg, *playing, *debug, *brightness, *control;
+		  
 //definition of our sounds
 OSL_SOUND *tone;
 OSL_FONT *DroidSans;
@@ -666,10 +666,9 @@ void LowMemExit() //This is temporary until I come up with a solution. It exits 
 int brightnessControl() 
 {
 	SceUID modid;
-	int controlX = 120;
 	
-	OSL_IMAGE *brightness = oslLoadImageFilePNG("system/home/menu/brightness.png", OSL_IN_RAM, OSL_PF_8888);
-	OSL_IMAGE *control = oslLoadImageFilePNG("system/home/menu/brightnesscontrol.png", OSL_IN_RAM, OSL_PF_8888);
+	brightness = oslLoadImageFilePNG("system/home/menu/brightness.png", OSL_IN_RAM, OSL_PF_8888);
+	control = oslLoadImageFilePNG("system/home/menu/brightnesscontrol.png", OSL_IN_RAM, OSL_PF_8888);
 	
 	if (!brightness || !control)
 		debugDisplay();
@@ -680,61 +679,65 @@ int brightnessControl()
 	
 	SceCtrlData pad;
 	
+	control->y = 148;
+	control->x = 120;
+	
+	modid = pspSdkLoadStartModule("modules/brightness.prx", PSP_MEMORY_PARTITION_KERNEL);
+	
 	while (!osl_quit)
 	{
-	//Draws images onto the screen
-	oslStartDrawing();
+		oslStartDrawing();
+		
+		if (osl_keys->held.up)
+		{
+			control->x += 10;
+		}
+		
+		oslDrawImageXY(quickSettings,0,0);
+		oslDrawImageXY(brightness,104,56);
+		oslDrawImage(control);
+		oslDrawStringf(10,10,"Brightness Tester Sample\n");
+		oslDrawStringf(10,30,"Press UP to increase the brightness.");
+		oslDrawStringf(10,40,"Press DOWN to decrease the brightness.");
+		oslDrawStringf(10,50,"Press START to print the current brightness level to the screen.");
+		oslDrawStringf(10,70,"Brightness level %i\n", getBrightness());
+		oslDrawStringf(10,80,"Brightness level %i\n", getBrightness());
+		oslDrawStringf(10,100,"Press Circle to exit.");
 	
-	if (osl_keys->pressed.up)
-	{
-		control->x+=10;
-	}
+		//This was in while (1) {}
+		int amt = getBrightness();
 	
-	oslDrawImageXY(brightness,104,56);
-	oslDrawImageXY(control,120,148);
-	oslDrawStringf(10,10,"Brightness Tester Sample\n");
-	oslDrawStringf(10,30,"Press UP to increase the brightness.");
-	oslDrawStringf(10,40,"Press DOWN to decrease the brightness.");
-	oslDrawStringf(10,50,"Press START to print the current brightness level to the screen.");
+		if (amt < 10) 
+		{
+			setBrightness(10);
+		}
 
-	modid = pspSdkLoadStartModule("modules/brightness.prx", PSP_MEMORY_PARTITION_KERNEL);
+		if (amt > 90) 
+		{
+			setBrightness(90);
+		}
 
-	oslDrawStringf(10,70,"Brightness level %i\n", getBrightness());
-	oslDrawStringf(10,80,"Brightness level %i\n", getBrightness());
-	oslDrawStringf(10,100,"Press Circle to exit.");
-
-	//This was in while (1) {}
-	int amt = getBrightness();
+		sceCtrlReadBufferPositive(&pad, 1);
 	
-	if (amt < 10) 
-	{
-		setBrightness(10);
-	}
-
-	if (amt > 90) 
-	{
-		setBrightness(90);
-	}
-
-	sceCtrlReadBufferPositive(&pad, 1);
+		if (pad.Buttons & PSP_CTRL_CIRCLE) 
+		{
+			oslDeleteImage(brightness);
+			oslDeleteImage(control);
+			return;
+		}
 	
-	if (pad.Buttons & PSP_CTRL_CIRCLE) 
-	{
-		return;
-	}
+		if (pad.Buttons & PSP_CTRL_UP) 
+		{
+			setBrightness(getBrightness() + 1);
+		}
 	
-	if (pad.Buttons & PSP_CTRL_UP) 
-	{
-		setBrightness(getBrightness() + 1);
-	}
-	
-	if (pad.Buttons & PSP_CTRL_DOWN) 
-	{
-		setBrightness(getBrightness() - 1);
-	}
-		oslEndDrawing(); 
-        oslEndFrame(); 
-		oslSyncFrame();	
+		if (pad.Buttons & PSP_CTRL_DOWN) 
+		{
+			setBrightness(getBrightness() - 1);
+		}
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();	
 	}
 }
 
