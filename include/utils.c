@@ -171,6 +171,6 @@ int enableUsbEx(u32 device)
    return 1;
 }
 
-void isUSBCableConnected(){
+int isUSBCableConnected(){
     return (sceUsbGetState() & PSP_USB_CABLE_CONNECTED);
 }

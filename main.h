@@ -20,3 +20,4 @@ void LowMemExit();
 void firstBootMessage();
 void setfont();
 void navbarButtons();
+int brightnessControl();

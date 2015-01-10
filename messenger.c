@@ -14,8 +14,8 @@ OSL_FONT *pgfFont;
 void printInfo()
 {
 	u8 *macAddress = oslAdhocGetMacAddress();
-	oslDrawStringf(10, 10, "Current state: %s", oslAdhocGetState() == ADHOC_INIT ? "OK" : "KO");
-	oslDrawStringf(10, 25, "Your MAC address: %02X:%02X:%02X:%02X:%02X:%02X", macAddress[0], macAddress[1], macAddress[2], macAddress[3], macAddress[4], macAddress[5]);
+	oslDrawStringf(10, 40, "Current state: %s", oslAdhocGetState() == ADHOC_INIT ? "OK" : "KO");
+	oslDrawStringf(10, 50, "Your MAC address: %02X:%02X:%02X:%02X:%02X:%02X", macAddress[0], macAddress[1], macAddress[2], macAddress[3], macAddress[4], macAddress[5]);
 }
 
 //The client is connected and can send data:
@@ -29,8 +29,8 @@ void clientConnected(struct remotePsp *aPsp)
         if (!skip){
             oslStartDrawing();
 			printInfo();
-			oslDrawStringf(10, 40, "Press O to send a message to %s", aPsp->name);
-            oslDrawString(150, 250, "Press X to quit");
+			oslDrawStringf(10, 60, "Press O to send a message to %s", aPsp->name);
+            oslDrawString(10, 70, "Press O to abort");
 
             oslEndDrawing();
         }
@@ -72,8 +72,8 @@ void doClient()
 
 			printInfo();
 			if (oslAdhocGetRemotePspCount())
-				oslDrawString(10, 40, "Press X to request a connection");
-			oslDrawString(10, 55, "Press O to abort");
+				oslDrawString(10, 60, "Press X to request a connection");
+				oslDrawString(10, 70, "Press O to abort");
 			for (i=0; i < oslAdhocGetRemotePspCount(); i++)
 			{
 				if (i == current)

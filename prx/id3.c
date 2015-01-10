@@ -2,8 +2,8 @@
 #include <string.h>
 #include <pspkernel.h>
 #include <stdlib.h>
-#include "system/opendir.h"
-#include "system/libminiconv.h"
+#include "../system/opendir.h"
+#include "../system/libminiconv.h"
 
 #include "id3.h"
 struct genre

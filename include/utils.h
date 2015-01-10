@@ -20,5 +20,5 @@ void fadeIn(OSL_IMAGE* bg, int x, int y);
 int disableUsb(void);
 int enableUsb();
 int enableUsbEx(u32 device);
-void isUSBCableConnected();
+int isUSBCableConnected();
 

@@ -1,6 +1,10 @@
 #include <pspkernel.h>
 #include <pspdebug.h>
+#include <pspdisplay.h>
 #include <pspsdk.h>
+#include <pspctrl.h>
+#include <pspsysmem.h>
+#include <string.h>
 #include <malloc.h> 
 
 //OSLib
@@ -30,7 +34,7 @@
 
 #define ADDRESS "www.google.com"
 
-PSP_MODULE_INFO("CyanoPSP - C",  1, 2, 4);
+PSP_MODULE_INFO("CyanoPSP - C",  1, 3, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU); 
 PSP_HEAP_SIZE_KB(20*1024);
 
@@ -59,6 +63,25 @@ int initOSLib() //Intialize OsLib
     oslSetKeyAutorepeatInterval(10);
     return 0;
 }
+
+// Functions imported from prx:
+
+int imposeGetVolume();
+int imposeSetVolume();
+int imposeGetMute();
+int imposeSetMute(int value);
+
+int getBrightness(void);
+void setBrightness(int brightness);
+
+int imposeSetBrightness(int value);
+int imposeGetBrightness();
+int displayEnable(void);
+int displayDisable(void);
+int getBrightness();
+void setBrightness(int brightness);
+int readButtons(SceCtrlData *pad_data, int count);
+int imposeSetHomePopup(int value);
  
 /* Exit callback */
 int exit_callback(int arg1, int arg2, void *common)
@@ -402,6 +425,11 @@ void androidQuickSettings()
 	
 	if (notif_enabled ==1)
 			{
+				if (cursor->x >= 0 && cursor->x <= 78 && cursor->y >= 41 && cursor->y <= 135 && osl_keys->pressed.cross)
+				{	
+					brightnessControl();
+				}
+			
 				if (cursor->x >= 80 && cursor->x <= 158 && cursor->y >= 41 && cursor->y <= 135 && osl_keys->pressed.cross)
 				{	
 					notif_y = notif_y-272;
@@ -632,6 +660,124 @@ void LowMemExit() //This is temporary until I come up with a solution. It exits 
 	if (oslGetRamStatus().maxAvailable <= 1500000)
 	{
 		oslQuit();
+	}
+}
+
+int brightnessControl() 
+{
+	SceUID modid;
+	int controlX = 120;
+	
+	OSL_IMAGE *brightness = oslLoadImageFilePNG("system/home/menu/brightness.png", OSL_IN_RAM, OSL_PF_8888);
+	OSL_IMAGE *control = oslLoadImageFilePNG("system/home/menu/brightnesscontrol.png", OSL_IN_RAM, OSL_PF_8888);
+	
+	if (!brightness || !control)
+		debugDisplay();
+	
+	pspDebugScreenInit();
+	
+	setfont();
+	
+	SceCtrlData pad;
+	
+	while (!osl_quit)
+	{
+	//Draws images onto the screen
+	oslStartDrawing();
+	
+	if (osl_keys->pressed.up)
+	{
+		control->x+=10;
+	}
+	
+	oslDrawImageXY(brightness,104,56);
+	oslDrawImageXY(control,120,148);
+	oslDrawStringf(10,10,"Brightness Tester Sample\n");
+	oslDrawStringf(10,30,"Press UP to increase the brightness.");
+	oslDrawStringf(10,40,"Press DOWN to decrease the brightness.");
+	oslDrawStringf(10,50,"Press START to print the current brightness level to the screen.");
+
+	modid = pspSdkLoadStartModule("modules/brightness.prx", PSP_MEMORY_PARTITION_KERNEL);
+
+	oslDrawStringf(10,70,"Brightness level %i\n", getBrightness());
+	oslDrawStringf(10,80,"Brightness level %i\n", getBrightness());
+	oslDrawStringf(10,100,"Press Circle to exit.");
+
+	//This was in while (1) {}
+	int amt = getBrightness();
+	
+	if (amt < 10) 
+	{
+		setBrightness(10);
+	}
+
+	if (amt > 90) 
+	{
+		setBrightness(90);
+	}
+
+	sceCtrlReadBufferPositive(&pad, 1);
+	
+	if (pad.Buttons & PSP_CTRL_CIRCLE) 
+	{
+		return;
+	}
+	
+	if (pad.Buttons & PSP_CTRL_UP) 
+	{
+		setBrightness(getBrightness() + 1);
+	}
+	
+	if (pad.Buttons & PSP_CTRL_DOWN) 
+	{
+		setBrightness(getBrightness() - 1);
+	}
+		oslEndDrawing(); 
+        oslEndFrame(); 
+		oslSyncFrame();	
+	}
+}
+
+int bootMenu()
+{
+	setfont();
+
+	while (!osl_quit)
+	{
+		oslStartDrawing();
+		
+		oslCls();
+	
+		oslPrintf("\n CyanoPSP BootMenu\n");
+		
+		sceKernelDelayThread(3000000);
+		
+		oslPrintf("\n Checking Modules...\n");
+		
+		sceKernelDelayThread(3000000);
+		
+		oslPrintf("\n\n loading modules ...\n");   
+		if(pspSdkLoadStartModule("brightness.prx", PSP_MEMORY_PARTITION_KERNEL) < 0)   
+		{   
+			oslPrintf(" Error loading module brightness.prx\n");   
+			sceKernelDelayThread(5000000);   
+			return -1;   
+		}   
+		
+		oslPrintf("\n - brightness.prx loaded\n");
+		
+		sceKernelDelayThread(3000000);
+		
+		oslPrintf("\n\n Done!");
+	
+		//Ends Printing and Drawing
+		oslEndDrawing(); 
+
+		//End's Frame
+        oslEndFrame(); 
+		
+		//Synchronizes the screen 
+		oslSyncFrame();	
 	}
 }
 

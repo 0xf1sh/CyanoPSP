@@ -45,7 +45,7 @@ OSL_SOUND *tone;
 
 char name;
 int setclock;
-char Version[10] = "2.4";
+char Version[10] = "3.0";
 char lang[12] = "Uk English";
 static char Settings_message[100] = "";
 
@@ -817,7 +817,7 @@ void ramMenu()
 		
 		oslDrawImageXY(performancebg, 0, 19);
 		
-		oslDrawStringf(40,98,"RAM Avilable: %d MB Available\n",oslGetRamStatus().maxAvailable/1000000); 
+		oslDrawStringf(40,98,"RAM Available: %d MB Available\n",oslGetRamStatus().maxAvailable/1000000); 
 	
 		navbarButtons();
 		digitaltime(420,4,458);
