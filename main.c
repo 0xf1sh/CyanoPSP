@@ -680,17 +680,52 @@ int brightnessControl()
 	SceCtrlData pad;
 	
 	control->y = 148;
-	control->x = 120;
+		
+	int llimit = 120;
+	int rlimit = 335;
 	
 	modid = pspSdkLoadStartModule("modules/brightness.prx", PSP_MEMORY_PARTITION_KERNEL);
 	
 	while (!osl_quit)
 	{
 		oslStartDrawing();
+		oslReadKeys();
 		
-		if (osl_keys->held.up)
+			if (getBrightness() == 10)
 		{
-			control->x += 10;
+			control->x = 120;
+		}
+		else if (getBrightness() == 20)
+		{
+			control->x = 147;
+		}
+		else if (getBrightness() == 30)
+		{
+			control->x = 174;
+		}
+		else if (getBrightness() == 40)
+		{
+			control->x = 201;
+		}
+		else if (getBrightness() == 50)
+		{
+			control->x = 228;
+		}
+		else if (getBrightness() == 60)
+		{
+			control->x = 255;
+		}
+		else if (getBrightness() == 70)
+		{
+			control->x = 282;
+		}
+		else if (getBrightness() == 80)
+		{
+			control->x = 309;
+		}
+		else if (getBrightness() == 90)
+		{
+			control->x = 335;
 		}
 		
 		oslDrawImageXY(quickSettings,0,0);
@@ -703,6 +738,26 @@ int brightnessControl()
 		oslDrawStringf(10,70,"Brightness level %i\n", getBrightness());
 		oslDrawStringf(10,80,"Brightness level %i\n", getBrightness());
 		oslDrawStringf(10,100,"Press Circle to exit.");
+	
+		if (osl_keys->held.up)
+		{
+			control->x += 3;
+		}
+		
+		if (osl_keys->held.down)
+		{
+			control->x -= 3;
+		}
+		
+		if (control->x <= llimit)
+		{
+			control->x = llimit;
+		}
+		
+		else if (control->x >= rlimit)
+		{
+			control->x = rlimit;
+		}		
 	
 		//This was in while (1) {}
 		int amt = getBrightness();
