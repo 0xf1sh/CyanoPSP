@@ -82,6 +82,18 @@ int getBrightness();
 void setBrightness(int brightness);
 int readButtons(SceCtrlData *pad_data, int count);
 int imposeSetHomePopup(int value);
+
+void initSystemButtons();
+unsigned int readSystemButtons(void);
+unsigned int readHomeButton(void);
+unsigned int readVolumeButtons(void);
+unsigned int readVolUpButton(void);
+unsigned int readVolDownButton(void);
+unsigned int readNoteButton(void);
+unsigned int readScreenButton(void);
+unsigned int readHoldSwitch(void);
+unsigned int readWLANSwitch(void);
+int readMainVolume(void);
  
 /* Exit callback */
 int exit_callback(int arg1, int arg2, void *common)
@@ -664,9 +676,7 @@ void LowMemExit() //This is temporary until I come up with a solution. It exits 
 }
 
 int brightnessControl() 
-{
-	SceUID modid;
-	
+{	
 	brightness = oslLoadImageFilePNG("system/home/menu/brightness.png", OSL_IN_RAM, OSL_PF_8888);
 	control = oslLoadImageFilePNG("system/home/menu/brightnesscontrol.png", OSL_IN_RAM, OSL_PF_8888);
 	
@@ -684,14 +694,14 @@ int brightnessControl()
 	int llimit = 120;
 	int rlimit = 335;
 	
-	modid = pspSdkLoadStartModule("modules/brightness.prx", PSP_MEMORY_PARTITION_KERNEL);
+	SceUID modid = pspSdkLoadStartModule("modules/brightness.prx", PSP_MEMORY_PARTITION_KERNEL);
 	
 	while (!osl_quit)
 	{
 		oslStartDrawing();
 		oslReadKeys();
 		
-			if (getBrightness() == 10)
+		if (getBrightness() == 10)
 		{
 			control->x = 120;
 		}
@@ -729,15 +739,21 @@ int brightnessControl()
 		}
 		
 		oslDrawImageXY(quickSettings,0,0);
+		getDayOfWeek(65,10);
+		getMonthOfYear(65,25);
+		oslDrawStringf(1,110, "BRIGHTNESS");
+		oslDrawStringf(90,110, "SETTINGS");
+		oslDrawStringf(185,110, "Wi-Fi");
+		oslDrawStringf(268,110, "%d%%",scePowerGetBatteryLifePercent());
+		oslDrawStringf(340,110, "ROTATE");
+		oslDrawStringf(428,110, "SLEEP");
+		oslDrawStringf(25,200, "LOCK-");
+		oslDrawStringf(20,210, "SCREEN");
+		oslDrawStringf(90,200, "HEADS UP");
+		oslDrawStringf(95,210, "ENABLED");
+		digitaltime(2,10,40);
 		oslDrawImageXY(brightness,104,56);
 		oslDrawImage(control);
-		oslDrawStringf(10,10,"Brightness Tester Sample\n");
-		oslDrawStringf(10,30,"Press UP to increase the brightness.");
-		oslDrawStringf(10,40,"Press DOWN to decrease the brightness.");
-		oslDrawStringf(10,50,"Press START to print the current brightness level to the screen.");
-		oslDrawStringf(10,70,"Brightness level %i\n", getBrightness());
-		oslDrawStringf(10,80,"Brightness level %i\n", getBrightness());
-		oslDrawStringf(10,100,"Press Circle to exit.");
 	
 		if (osl_keys->held.up)
 		{
@@ -789,6 +805,41 @@ int brightnessControl()
 		if (pad.Buttons & PSP_CTRL_DOWN) 
 		{
 			setBrightness(getBrightness() - 1);
+		}
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();	
+	}
+}
+
+int sysButtons() 
+{		
+	pspDebugScreenInit();
+	
+	setfont();
+	
+	SceCtrlData pad;
+	
+	SceUID modid = pspSdkLoadStartModule("modules/sysbuttons.prx", PSP_MEMORY_PARTITION_KERNEL);
+	
+	while (!osl_quit)
+	{
+		oslStartDrawing();
+		oslReadKeys();
+		
+		if (readHomeButton)
+		{
+			powermenu();
+		}
+
+		if (readVolUpButton)
+		{
+			oslDrawStringf(240,136,"Volume up initiated");
+		}
+	
+		if (readVolDownButton) 
+		{
+			oslDrawStringf(240,146,"Volume down initiated");
 		}
 	oslEndDrawing(); 
     oslEndFrame(); 
