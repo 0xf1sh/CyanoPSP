@@ -446,7 +446,7 @@ void updatesMenu()
 	updatesbg = oslLoadImageFilePNG("system/settings/updatesbg.png", OSL_IN_RAM, OSL_PF_8888);
 	highlight = oslLoadImageFilePNG("system/settings/highlight.png", OSL_IN_RAM, OSL_PF_8888);
 
-	if (!updatesbg || highlight)
+	if (!updatesbg || !highlight)
 		debugDisplay();
 	
 	setfont();
@@ -734,11 +734,11 @@ void processorMenu()
 			current = 0;
 		}
 		
-		if (pad.Buttons & PSP_CTRL_LTRIGGER)
+		if (osl_keys->pressed.L)
 		{
 		set_cpu_clock(1);
 		}
-		if (pad.Buttons & PSP_CTRL_RTRIGGER)
+		if (osl_keys->pressed.R)
 		{
 		set_cpu_clock(2);
 		}
