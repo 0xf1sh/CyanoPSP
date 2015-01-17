@@ -7,7 +7,7 @@
 #include "gallery.h"
 #include "screenshot.h"
 
-OSL_IMAGE *background, *cursor, *apollo, *gmail, *messengericon, *browser, *google, *calc, *clockx, *email, *people, *calendar, *phone, 
+OSL_IMAGE *background, *cursor, *apollo, *gmail, *messengericon, *browser, *google, *calc, *clockx, *email, *people, *calendar, *umd, 
 		  *gallery, *fb, *settings,*pointer, *pointer1, *isoloadericon, *backicon, *homeicon, *multicon;
 
 void appdrawer_loadImages()
@@ -17,7 +17,7 @@ void appdrawer_loadImages()
 	fb = oslLoadImageFilePNG("system/home/icons/fb.png", OSL_IN_RAM, OSL_PF_8888);
 	settings = oslLoadImageFilePNG("system/home/icons/settings.png", OSL_IN_RAM, OSL_PF_8888);
 	gallery = oslLoadImageFilePNG("system/home/icons/gallery.png", OSL_IN_RAM, OSL_PF_8888);
-	phone = oslLoadImageFilePNG("system/home/icons/phone.png", OSL_IN_RAM, OSL_PF_8888);
+	umd = oslLoadImageFilePNG("system/home/icons/umd.png", OSL_IN_RAM, OSL_PF_8888);
 	calc = oslLoadImageFilePNG("system/home/icons/calc.png", OSL_IN_RAM, OSL_PF_8888);
 	calendar = oslLoadImageFilePNG("system/home/icons/calendar.png", OSL_IN_RAM, OSL_PF_8888);
 	people = oslLoadImageFilePNG("system/home/icons/people.png", OSL_IN_RAM, OSL_PF_8888);
@@ -31,7 +31,7 @@ void appdrawer_deleteImages()
 	oslDeleteImage(fb);
 	oslDeleteImage(settings);
 	oslDeleteImage(gallery);
-	oslDeleteImage(phone);
+	oslDeleteImage(umd);
 	oslDeleteImage(calc);
 	oslDeleteImage(calendar);
 	oslDeleteImage(people);
@@ -62,10 +62,10 @@ int appdrawer()
 	int messenger_text_x = 211; 
 	int people_x = 277;
 	int people_text_x = 279;
-	int phone_x = 337;
-	int phone_text_x = 340;
-	int settings_x = 396;
-	int settings_text_x = 397;
+	int settings_x = 338;
+	int settings_test_x = 335;
+	int umd_x = 402;
+	int umd_text_x = 406;
 
 	//loads appdrawer icons
 	appdrawer_loadImages();
@@ -73,7 +73,7 @@ int appdrawer()
 
 	int highlight = 0;
 	
-	if (!clockx || !settings || !email || !gallery || !calc || !phone || !calendar || !people || !fb || !isoloadericon)
+	if (!clockx || !settings || !email || !gallery || !calc || !umd || !calendar || !people || !fb || !isoloadericon)
 		debugDisplay();
 		
 	while (!osl_quit)
@@ -109,16 +109,16 @@ int appdrawer()
 		oslDrawString(messenger_text_x,175,"Messages");
 		oslDrawImageXY(people, people_x, 120);
 		oslDrawString(people_text_x,175,"People");
-		oslDrawImageXY(phone, phone_x, 120);
-		oslDrawString(phone_text_x,175,"Phone");
 		oslDrawImageXY(settings, settings_x, 120);
-		oslDrawString(settings_text_x,175,"Settings");
+		oslDrawString(settings_test_x,175,"Settings");
+		oslDrawImageXY(umd, umd_x, 122);
+		oslDrawString(umd_text_x,175,"UMD");
 		
 		digitaltime(420,4,458);
 		battery();
 		navbarButtons();
 		
-		if (settings_x <= -10 && fm_x <= -10)
+		if (umd_x <= -10 && fm_x <= -10)
 		{
 			oslDrawImageXY(pointer1, 221, 222);
 			oslDrawImageXY(pointer1, 231, 222);
@@ -164,10 +164,10 @@ int appdrawer()
 			messenger_text_x = messenger_text_x-10;
 			people_x = people_x-10;
 			people_text_x = people_text_x-10;
-			phone_x = phone_x-10;
-			phone_text_x = phone_text_x-10;
 			settings_x = settings_x-10;
-			settings_text_x = settings_text_x-10;
+			settings_test_x = settings_test_x-10;
+			umd_x = umd_x-10;
+			umd_text_x = umd_text_x-10;
 		}
 		
 		else if (osl_pad.held.right && (osl_pad.held.cross))
@@ -194,10 +194,10 @@ int appdrawer()
 			messenger_text_x = messenger_text_x+10;
 			people_x = people_x+10;
 			people_text_x = people_text_x+10;
-			phone_x = phone_x+10;
-			phone_text_x = phone_text_x+10;
 			settings_x = settings_x+10;
-			settings_text_x = settings_text_x+10;
+			settings_test_x = settings_test_x+10;
+			umd_x = umd_x+10;
+			umd_text_x = umd_text_x+10;
 		}
 		
 		if (osl_keys->pressed.square)
@@ -249,7 +249,7 @@ int appdrawer()
 			}
 		}
 		
-		if (cursor->x >= 385 && cursor->x <= 430 && cursor->y >= 103 && cursor->y <= 151 && osl_keys->pressed.cross)
+		if (cursor->x >= 335 && cursor->x <= 390 && cursor->y >= 119 && cursor->y <= 188 && osl_keys->pressed.cross)
 		{
 			appdrawer_deleteImages();
 			settingsMenu();

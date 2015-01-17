@@ -36,7 +36,7 @@
 
 PSP_MODULE_INFO("CyanoPSP - C",  1, 3, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU); 
-PSP_HEAP_SIZE_KB(20*1024);
+PSP_HEAP_SIZE_KB(24000);
 
 //declaration
 OSL_IMAGE *background, *cursor, *ic_allapps, *ic_allapps_pressed, *navbar, *wificon, *apollo, *gmail, *messengericon, *browser, *google, *notif, *batt100, 
