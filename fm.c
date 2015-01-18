@@ -220,15 +220,26 @@ void DeleteFile(const char * path)
 		oslDrawStringf(270,190,"to confirm");
 		
 		oslReadKeys();
-	
+		
 		if (osl_keys->pressed.cross) 
 		{
-			sceIoRemove(path);
-			oslDeleteImage(deletion);
-			refresh();
+			if (strcmp(folderIcons[current].fileType, "fld")==0)
+			{
+				DeleteRecursive(path);
+				oslSyncFrame();
+				sceKernelDelayThread(3*1000000);
+				oslDeleteImage(deletion);
+				refresh();
+			}
+			else
+			{
+				sceIoRemove(path);
+				oslDeleteImage(deletion);
+				refresh();
+			}
 		}
-
-		else if (osl_keys->pressed.circle) 
+		
+		if (osl_keys->pressed.circle) 
 		{
 			oslDeleteImage(deletion);
 			return;
@@ -239,33 +250,47 @@ void DeleteFile(const char * path)
 	}
 }
 
-void recursiveDelete(const char *dir) 
-{ 
-int fd; 
-SceIoDirent dirent; 
-fd = sceIoDopen(dir); 
-char fullname[512]; 
-memset(&dirent, 0, sizeof dirent);
- 
-	while (!osl_quit) // && sceIoDread(fd, &dirent) > 0
-	{ 
-		sprintf(fullname, "%s/%s", dir, dirent.d_name); 
- 
-		if ((FIO_S_IFREG & (dirent.d_stat.st_mode & FIO_S_IFMT)) == 0) 
-		{ 
-			recursiveDelete(fullname); 
-			printf("Deleting directory: %s\n", fullname); 
-			sceIoRmdir(fullname); 
-		} 
-	
-		else 
-		{ 
-			printf("Deleting file: %s %i\n", fullname, FIO_S_IFREG & (dirent.d_stat.st_mode & FIO_S_IFMT)); 
-			sceIoRemove(fullname); 
-		} 
-	}	 
- sceIoDclose(fd); 
- sceIoRmdir(dir); 
+int DeleteRecursive(char *path) //Thanks Moonchild!
+{
+  SceUID dfd;
+
+   if ((dfd = sceIoDopen(path)) > 0)
+   {
+      SceIoDirent dir;
+
+      memset(&dir, 0, sizeof(SceIoDirent));
+
+      while (sceIoDread(dfd, &dir) > 0)
+      {
+         char filePath[512];
+
+         if(FIO_S_ISDIR(dir.d_stat.st_mode))
+         {
+            if (dir.d_name[0] != '.')
+            {
+               sprintf(filePath, "%s%s/", path, dir.d_name);
+               DeleteRecursive(filePath);
+            }
+         }
+         else
+         {
+            SceUID fd;            
+
+            strcpy(filePath, path);
+            strcat(filePath, dir.d_name);
+            
+            //Do something with the files found here     
+            sceIoRemove(filePath);
+         }
+      }
+   }
+
+  sceIoDclose(dfd);
+  
+  //Remove the directories too
+  sceIoRmdir(path);
+  
+  return 1;
 }
 
 char * buffer;
@@ -340,7 +365,8 @@ void displayTextFromFile()
 		
 		oslClearScreen(RGB(0,0,0));
 		oslDrawImageXY(textview,0,19);
-	
+		battery();
+		
 		if(checkTextFile(folderIcons[current].filePath) == -1)
 			oslDrawStringf(40,33,"Unable to Open");
 
@@ -659,10 +685,6 @@ char * dirBrowse(const char * path)
 {
 	folderScan(path);
 	dirVars();
-	
-	pgfFont = oslLoadFontFile("system/fonts/DroidSans.pgf");
-	oslIntraFontSetStyle(pgfFont, 0.5, RGBA(0,0,0,255), RGBA(0,0,0,0), INTRAFONT_ALIGN_LEFT);
-	oslSetFont(pgfFont);
 	
 	while (!osl_quit)
 	{		
