@@ -626,16 +626,49 @@ void firstBootMessage()
 
 	if (firstBoot!= 0)
 	{
-		oslDrawImageXY(transbackground, 0, 0);
-		oslDrawImageXY(welcome, 140, 40);
-		oslDrawImageXY(ok, 360, 200);
 		fclose(firstBootTxt);
 	
-		if (cursor->x >= 360 && cursor->x <= 460 && cursor->y >= 200 && cursor->y <= 250 && osl_keys->pressed.cross)
-		{
-			firstBootTxt = fopen("system/firstBoot.txt", "w"); 
-			fprintf(firstBootTxt, "0", firstBoot);
-			fclose(firstBootTxt);
+		while (!osl_quit)
+		{		
+			oslStartDrawing();
+
+			controls();
+
+			oslDrawImage(background);		
+			oslDrawImageXY(apollo, 105, 190);
+			oslDrawImageXY(browser, 276, 190);
+			oslDrawImageXY(gmail, 331, 190);
+			oslDrawImageXY(messengericon, 160, 190);
+			oslDrawImageXY(pointer, 230, 180);
+		
+			digitaltime(420,4,458); 
+		
+			oslSetTransparentColor(RGB(0,0,0));
+			appDrawerIcon();
+			oslDisableTransparentColor();
+		
+			battery();
+			navbarButtons();
+		
+			oslDrawImageXY(transbackground, 0, 0);
+			oslDrawImageXY(welcome, 140, 40);
+			oslDrawImageXY(ok, 360, 200);
+			oslDrawImage(cursor);
+	
+			if (cursor->x >= 360 && cursor->x <= 460 && cursor->y >= 200 && cursor->y <= 250 && osl_keys->pressed.cross)
+			{
+				firstBootTxt = fopen("system/firstBoot.txt", "w"); 
+				fprintf(firstBootTxt, "0", firstBoot);
+				fclose(firstBootTxt);
+				oslDeleteImage(welcome);
+				oslDeleteImage(ok);
+				oslDeleteImage(transbackground);
+				unloadIcons();
+				home();
+			}
+		oslEndDrawing(); 
+        oslEndFrame(); 
+		oslSyncFrame();	
 		}
 	}
 		

@@ -30,6 +30,7 @@ void powermenu()
 		oslDrawImageXY(gmail, 331, 190);
 		oslDrawImageXY(messengericon, 160, 190);
 		oslDrawImageXY(pointer, 231, 180);
+		navbarButtons();
 		oslDrawImageXY(power, 102, 41);		
 		
 		digitaltime(420,4,458);
@@ -117,6 +118,7 @@ void PowerOffMenu()
 		oslDrawImageXY(gmail, 331, 190);
 		oslDrawImageXY(messengericon, 160, 190);
 		oslDrawImageXY(pointer, 231, 180);
+		navbarButtons();
 		oslDrawImageXY(powerOff, 90, 41);
 		
 		digitaltime(420,4,458);
