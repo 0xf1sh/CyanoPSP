@@ -1,5 +1,6 @@
 #include <pspkernel.h>
 #include <pspctrl.h>
+#include <pspumd.h>
 
 //PSP Net Stuff
 #include <pspnet.h>
@@ -1215,6 +1216,287 @@ void wifiMenu()
 	oslNetTerm();
 }
 
+/* Build a path, append a directory slash if requested */
+void build_path(char *output, const char *root, const char *path, int append)
+{
+	while(*root != 0)
+	{
+		*output++ = *root++;
+	}
+
+	if(*(root-1) != '/')
+	{
+		*output++ = '/';
+	}
+
+	while(*path != 0)
+	{
+		*output++ = *path++;
+	}
+	if(append)
+		*output++ = '/';
+
+	*output++ = 0;
+}
+
+/* Define a write buffer */
+char write_buffer[128*1024];
+
+void write_file(const char *read_loc, const char *write_loc, const char *name)
+{
+	int fdin;
+	int fdout;
+	char readpath[256];
+	char writepath[256];
+
+	build_path(readpath, read_loc, name, 0);
+	build_path(writepath, write_loc, name, 0);
+	printf("Writing %s\n", writepath);
+
+	fdin = sceIoOpen(readpath, PSP_O_RDONLY, 0777);
+	if(fdin >= 0)
+	{
+		int bytesRead = 1;
+		fdout = sceIoOpen(writepath, PSP_O_WRONLY | PSP_O_CREAT | PSP_O_TRUNC, 0777);
+		if(fdout < 0)
+		{
+			printf("Couldn't open %s\n", writepath);
+		}
+
+		bytesRead = sceIoRead(fdin, write_buffer, sizeof(write_buffer));
+		while((bytesRead > 0) && (fdout >= 0))
+		{
+			sceIoWrite(fdout, write_buffer, bytesRead);
+			bytesRead = sceIoRead(fdin, write_buffer, sizeof(write_buffer));
+		}
+
+		if(fdout >= 0)
+		{
+			sceIoClose(fdout);
+		}
+
+		if(fdin >= 0)
+		{
+			sceIoClose(fdin);
+		}
+	}
+	else
+	{
+		printf("Couldn't open %s\n", readpath);
+	}
+}
+
+void DumpBootBin(void)
+{
+	int i;
+	int fd;
+
+	i = sceUmdCheckMedium();
+	if(i == 0)
+	{
+		oslDrawString(4,5,"Insert UMD");
+		i = sceUmdWaitDriveStat(PSP_UMD_PRESENT);
+	}
+
+	i = sceUmdActivate(1, "disc0:");
+	oslDrawString(4,5,"Mounted disc");
+	oslSyncFrame();
+	sceKernelDelayThread(2*1000000);
+
+	i = sceUmdWaitDriveStat(PSP_UMD_READY);
+
+	/* Open the UMD_DATA.BIN */
+	fd = sceIoOpen("disc0:/UMD_DATA.BIN", PSP_O_RDONLY, 0777);
+	if(fd >= 0)
+	{
+		char game_id[11];
+		char path[256];
+
+		sceIoRead(fd, game_id, 10);
+		sceIoClose(fd);
+		game_id[10] = 0;
+		build_path(path, "ms0:/", game_id, 0);
+		sceIoMkdir(path, 0777);
+
+		oslDrawStringf(4,15,"Found game %s\n", game_id);
+		write_file("disc0:/PSP_GAME/SYSDIR", path, "BOOT.BIN");
+		oslSyncFrame();
+		sceKernelDelayThread(3*1000000);
+	}
+}
+
+/* Dump a filing system */
+void dump_filesystem(const char *root, const char *write_loc)
+{
+	int dfd;
+	char next_root[256];
+	char next_write[256];
+
+	sceIoMkdir(write_loc, 0777);
+
+	dfd = sceIoDopen(root);
+	if(dfd > 0)
+	{
+		SceIoDirent dir;
+
+		while(sceIoDread(dfd, &dir) > 0)
+		{
+			if(dir.d_stat.st_attr & FIO_SO_IFDIR)
+			{
+				if(dir.d_name[0] != '.')
+				{
+					build_path(next_write, write_loc, dir.d_name, 0);
+					build_path(next_root, root, dir.d_name, 1);
+					dump_filesystem(next_root, next_write);
+				}
+			}
+			else
+			{
+				write_file(root, write_loc, dir.d_name);
+			}
+		}
+		sceIoDclose(dfd);
+	}
+}
+
+/* Dump memory */
+void dump_memory(void)
+{
+	int fd;
+
+	oslDrawString(4,5,"Dumping 28Megs from 0x8400000\n");
+	fd = sceIoOpen("ms0:/MEMORY.BIN", PSP_O_CREAT | PSP_O_TRUNC | PSP_O_WRONLY, 0777);
+	if(fd >= 0)
+	{
+		sceIoWrite(fd, (void *) 0x8400000, 28*1024*1024);
+		sceIoClose(fd);
+	}
+	oslSyncFrame();
+	sceKernelDelayThread(3*1000000);
+}
+
+void dumpMenu()
+{
+	developerbg = oslLoadImageFilePNG("system/settings/developerbg.png", OSL_IN_RAM, OSL_PF_8888);
+	highlight = oslLoadImageFilePNG("system/settings/highlight.png", OSL_IN_RAM, OSL_PF_8888);
+
+	setfont();
+
+	while (!osl_quit)
+	{
+		LowMemExit();
+		
+		oslStartDrawing();
+		
+		oslClearScreen(RGB(0,0,0));
+		
+		controls();	
+
+		oslDrawImageXY(developerbg, 0, 19);
+		
+		oslDrawString(35,76,"Dump UMD boot.bin");
+		oslDrawString(35,128,"Dump Flash 0");
+		oslDrawString(35,188,"Dump Flash 1");
+		oslDrawString(35,236,"Dump Memory");
+			
+		digitaltime(420,4,458);
+		battery();
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 55 && cursor->y <= 108)
+		{
+			oslDrawImageXY(highlight, 15, 55);
+			oslDrawString(35,76,"Dump UMD boot.bin");
+		}
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 109 && cursor->y <= 165)
+		{
+			oslDrawImageXY(highlight, 15, 109);
+			oslDrawString(35,128,"Dump Flash 0");
+		}
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 166 && cursor->y <= 221)
+		{
+			oslDrawImageXY(highlight, 15, 166);
+			oslDrawString(35,188,"Dump Flash 1");
+		}
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 222 && cursor->y <= 278)
+		{
+			oslDrawImageXY(highlight, 15, 222);
+			oslDrawString(35,236,"Dump Memory");
+		}
+		
+		navbarButtons();
+		androidQuickSettings();
+		oslDrawImage(cursor);
+		
+		if (osl_keys->pressed.square)
+		{
+			powermenu();
+		}
+		
+		if (osl_keys->pressed.L)
+		{
+			lockscreen();
+        }
+		
+		if (osl_keys->pressed.circle)
+		{
+			oslDeleteImage(developerbg);
+			oslDeleteImage(highlight);
+			developerMenu();
+		}
+		
+		if (cursor->x >= 137 && cursor->x <= 200 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
+		{
+			oslDeleteImage(developerbg);
+			oslDeleteImage(highlight);
+			developerMenu();
+		}
+		
+		if (cursor->x >= 200 && cursor->x <= 276 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
+		{
+			oslDeleteImage(developerbg);
+			oslDeleteImage(highlight);
+			home();
+		}
+
+		if (cursor->x >= 276 && cursor->x <= 340 && cursor->y >= 237 && cursor->y <= 271 && osl_keys->pressed.cross)
+		{	
+			multitask();
+		}
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 55 && cursor->y <= 108 && osl_keys->pressed.cross)
+		{	
+			DumpBootBin();
+		}
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 109 && cursor->y <= 165 && osl_keys->pressed.cross)
+		{
+			dump_filesystem("flash0:/", "ms0:/flash0");
+		}
+		
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 166 && cursor->y <= 221 && osl_keys->pressed.cross)
+		{
+			dump_filesystem("flash1:/", "ms0:/flash1");
+		}
+
+		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 222 && cursor->y <= 278 && osl_keys->pressed.cross)
+		{
+			dump_memory();
+		}
+		
+		if (osl_pad.held.R && osl_keys->pressed.triangle)
+		{
+			screenshot();
+		}
+		
+	oslEndDrawing(); 
+    oslEndFrame(); 
+	oslSyncFrame();	
+	}	
+}
+
 void developerMenu()
 {
 	int RJL;
@@ -1250,7 +1532,7 @@ void developerMenu()
 		oslDrawString(35,174,"Advanced Reboot");
 		oslDrawString(35,188,"When unlocked, include option in the power menu for");
 		oslDrawString(35,202,"rebooting into recovery");
-		oslDrawString(35,236,"Display system benchmark results. Press triangle to disable.");
+		oslDrawString(35,236,"Dumping Tools");
 			
 		digitaltime(420,4,458);
 		battery();
@@ -1273,7 +1555,7 @@ void developerMenu()
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 222 && cursor->y <= 278)
 		{
 			oslDrawImageXY(highlight, 15, 222);
-			oslDrawString(35,236,"Display system benchmark results. Press triangle to disable.");
+			oslDrawString(35,236,"Dumping Tools");
 		}
 		
 		navbarButtons();
@@ -1346,11 +1628,10 @@ void developerMenu()
 
 		if (cursor->x >= 16 && cursor->x <= 480 && cursor->y >= 222 && cursor->y <= 278 && osl_keys->pressed.cross)
 		{
-			benchmarkDebugActivate = 1;
-		}
-		if (benchmarkDebugActivate == 1 && osl_keys->pressed.triangle)
-		{
-			benchmarkDebugActivate = 0;
+			oslDeleteImage(developerbg);
+			oslDeleteImage(check);
+			oslDeleteImage(highlight);
+			dumpMenu();
 		}
 		
 	oslEndDrawing(); 
