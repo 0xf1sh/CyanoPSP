@@ -1,5 +1,9 @@
 #include <pspkernel.h>
 #include <oslib/oslib.h>
+#include <pspumd.h> 
+#include <string.h>
+#include <psploadexec.h> 
+#include <psploadexec_kernel.h> 
 #include "clock.h"
 #include "lock.h"
 #include "multi.h"
@@ -253,6 +257,45 @@ int appdrawer()
 		{
 			appdrawer_deleteImages();
 			settingsMenu();
+		}
+		
+		if (cursor->x >= 395 && cursor->x <= 450 && cursor->y >= 119 && cursor->y <= 188 && osl_keys->pressed.cross)
+		{
+			int i;
+			
+			while(1) 
+			{
+				if(osl_keys->pressed.circle) 
+				{
+					break;
+				}	 
+
+				i = sceUmdCheckMedium();
+				
+				if (i == 0) 
+				{ 
+					oslDrawStringf(10,10,"UMD not inserted, returning home");
+					oslSyncFrame();
+					sceKernelDelayThread(2*1000000);
+					home();
+				}
+
+				i = sceUmdActivate(1, "disc0:");
+				oslDrawStringf(10,30,"Mounted UMD");
+				i = sceUmdWaitDriveStat(UMD_WAITFORINIT);
+				SceUID fd = sceIoOpen("disc0:/UMD_DATA.BIN", PSP_O_RDONLY, 0777);
+				
+				if(fd >= 0)
+				{
+					char game_id[11];
+					sceIoRead(fd, game_id, 10);
+					sceIoClose(fd);
+					game_id[10] = 0;
+					oslDrawStringf(10,50,"Found Game %s",game_id);
+				}
+					
+				sceKernelLoadExec("disc0:/PSP_GAME/SYSDIR/BOOT.BIN",0);
+				}
 		}
 		
 		if (cursor->x >= 266 && cursor->x <= 311 && cursor->y >= 25 && cursor->y <= 70 && osl_keys->pressed.cross)
