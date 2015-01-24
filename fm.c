@@ -11,7 +11,6 @@
 #include <pspiofilemgr.h>
 #include <stdlib.h>
 #include <oslib/oslib.h>
-#include <systemctrl.h>
 #include <psploadexec.h>
 #include <psploadexec_kernel.h>
 #include "apollo.h"
@@ -22,12 +21,17 @@
 #include "multi.h"
 #include "power_menu.h"
 #include "screenshot.h"
+#include "prx/iso loader/systemctrl_se.h"  
 #include "include/utils.h"
 
 OSL_IMAGE 	*filemanagerbg, *diricon, *imageicon, *mp3icon, *txticon, *unknownicon, *documenticon, *binaryicon, *videoicon, *archiveicon, *bar, 
 			*deletion, *action, *textview,  *gallerybar;
 
 OSL_FONT *pgfFont;
+
+//Functions imported from PRX
+void startISO(char* file,int driver);
+int launch_pops(char *path);
 
 int folderScan(const char* path )
 {
@@ -485,43 +489,43 @@ void dirDisplay()
 			oslDrawImageXY(unknownicon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
 		}
 		
-		if(((ext) != NULL) && ((strcmp(ext ,".mp3") == 0) || (strcmp(ext ,".mov") == 0) || (strcmp(ext ,".m4a") == 0) || (strcmp(ext ,".wav") == 0) || (strcmp(ext ,".ogg") == 0)))
+		if(((ext) != NULL) && ((strcmp(ext ,".mp3") == 0) || (strcmp(ext ,".mov") == 0) || (strcmp(ext ,".m4a") == 0) || (strcmp(ext ,".wav") == 0) || (strcmp(ext ,".ogg") == 0)) && (dirScan[i].directory == 0))
 		{
 			//Checks if the file is a music file.
 			oslDrawImageXY(mp3icon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
 		}
 		
-		if(((ext) != NULL) && ((strcmp(ext ,".mp4") == 0) || (strcmp(ext ,".mpg") == 0) || (strcmp(ext ,".flv") == 0) || (strcmp(ext ,".mpeg") == 0))) 
+		if(((ext) != NULL) && ((strcmp(ext ,".mp4") == 0) || (strcmp(ext ,".mpg") == 0) || (strcmp(ext ,".flv") == 0) || (strcmp(ext ,".mpeg") == 0)) && (dirScan[i].directory == 0)) 
 		{
 			//Checks if the file is a video.
 			oslDrawImageXY(videoicon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
 		}
 		
-		if(((ext) != NULL) && ((strcmp(ext ,".png") == 0) || (strcmp(ext ,".jpg") == 0) || (strcmp(ext ,".jpeg") == 0) || (strcmp(ext ,".gif") == 0))) 
+		if(((ext) != NULL) && ((strcmp(ext ,".png") == 0) || (strcmp(ext ,".jpg") == 0) || (strcmp(ext ,".jpeg") == 0) || (strcmp(ext ,".gif") == 0)) && (dirScan[i].directory == 0)) 
 		{
 			//Checks if the file is an image.
 			oslDrawImageXY(imageicon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
 		}
 		
-		if(((ext) != NULL) && ((strcmp(ext ,".PBP") == 0) || (strcmp(ext ,".prx") == 0) || (strcmp(ext ,".PRX") == 0) || (strcmp(ext ,".elf") == 0))) 
+		if(((ext) != NULL) && ((strcmp(ext ,".PBP") == 0) || (strcmp(ext ,".prx") == 0) || (strcmp(ext ,".PRX") == 0) || (strcmp(ext ,".elf") == 0)) && (dirScan[i].directory == 0)) 
 		{
 			//Checks if the file is a binary file.
 			oslDrawImageXY(binaryicon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
 		}
 		
-		if(((ext) != NULL) && ((strcmp(ext ,".txt") == 0) || (strcmp(ext ,".TXT") == 0) || (strcmp(ext ,".log") == 0) || (strcmp(ext ,".prop") == 0) || (strcmp(ext ,".lua") == 0)))
+		if(((ext) != NULL) && ((strcmp(ext ,".txt") == 0) || (strcmp(ext ,".TXT") == 0) || (strcmp(ext ,".log") == 0) || (strcmp(ext ,".prop") == 0) || (strcmp(ext ,".lua") == 0)) && (dirScan[i].directory == 0))
 		{
 			//Checks if the file is a text document.
 			oslDrawImageXY(txticon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
 		}
 		
-		if(((ext) != NULL) && ((strcmp(ext ,".doc") == 0) || (strcmp(ext ,".docx") == 0) || (strcmp(ext ,".pdf") == 0) || (strcmp(ext ,".ppt") == 0))) 
+		if(((ext) != NULL) && ((strcmp(ext ,".doc") == 0) || (strcmp(ext ,".docx") == 0) || (strcmp(ext ,".pdf") == 0) || (strcmp(ext ,".ppt") == 0)) && (dirScan[i].directory == 0)) 
 		{
 			//Checks if the file is a document.
 			oslDrawImageXY(documenticon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
 		}
 		
-		if(((ext) != NULL) && ((strcmp(ext ,".rar") == 0) || (strcmp(ext ,".zip") == 0) || (strcmp(ext ,".7z") == 0))) 
+		if(((ext) != NULL) && ((strcmp(ext ,".rar") == 0) || (strcmp(ext ,".zip") == 0) || (strcmp(ext ,".7z") == 0)) && (dirScan[i].directory == 0)) 
 		{
 			//Checks if the file is an archive.
 			oslDrawImageXY(archiveicon,45,(i - curScroll)*44+ICON_DISPLAY_Y);
@@ -558,6 +562,17 @@ void LoadExecPBP(char* file)
 	param.vshmain_args_size = 0;
 	param.vshmain_args = NULL;
 	sctrlKernelLoadExecVSHMs2(file,&param);
+}
+
+void launchISO(char* file)
+{
+	SceUID modid = pspSdkLoadStartModule("modules/ISOLoader.prx", PSP_MEMORY_PARTITION_KERNEL);
+	
+	while (1)
+	{
+		startISO(file, MODE_INFERNO);
+	}
+	
 }
 
 void dirControls() //Controls
@@ -632,6 +647,11 @@ void dirControls() //Controls
 	if (((ext) != NULL) && ((strcmp(ext ,".txt") == 0) || ((strcmp(ext ,".TXT") == 0)) || ((strcmp(ext ,".c") == 0)) || ((strcmp(ext ,".h") == 0)) || ((strcmp(ext ,".cpp") == 0))) && (osl_keys->pressed.cross))
 	{
 		displayTextFromFile(folderIcons[current].filePath);
+	}
+	
+	if (((ext) != NULL) && ((strcmp(ext ,".iso") == 0) || ((strcmp(ext ,".ISO") == 0))) && (osl_keys->held.cross))
+	{
+		launchISO(folderIcons[current].filePath);
 	}
 	
 	if (osl_keys->pressed.square)
